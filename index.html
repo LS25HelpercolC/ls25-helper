@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.60</title>
+<title>LS25 Helper v1.61</title>
 
 <style>
 
@@ -18,18 +18,15 @@ display:flex;
 height:100vh;
 }
 
-/* SIDEBAR */
-
 .sidebar{
-width:260px;
+width:250px;
 background:#111417;
 padding:20px;
-box-shadow:2px 0 10px rgba(0,0,0,0.5);
 }
 
 .sidebar h2{
-margin-top:0;
 color:#4caf50;
+margin-top:0;
 }
 
 .navBtn{
@@ -41,7 +38,6 @@ border-radius:6px;
 background:#2e7d32;
 color:white;
 cursor:pointer;
-font-size:15px;
 text-align:left;
 }
 
@@ -50,26 +46,20 @@ background:#4caf50;
 }
 
 .devTitle{
-margin-top:20px;
+margin-top:15px;
 font-size:13px;
 opacity:0.7;
 }
-
-/* CONTENT */
 
 .content{
 flex:1;
 padding:25px;
 overflow:auto;
-background-size:cover;
-background-position:center;
 }
-
-/* BOXES */
 
 .section{
 display:none;
-background:rgba(0,0,0,0.65);
+background:rgba(0,0,0,0.6);
 padding:25px;
 border-radius:10px;
 max-width:900px;
@@ -79,25 +69,20 @@ max-width:900px;
 display:block;
 }
 
-h2{
-margin-top:0;
-}
-
 input,select{
 padding:10px;
 margin:6px;
 border:none;
 border-radius:6px;
-width:200px;
 }
 
 button{
 padding:10px 14px;
 border:none;
 border-radius:6px;
-cursor:pointer;
 background:#4caf50;
 color:white;
+cursor:pointer;
 }
 
 button:hover{
@@ -110,7 +95,7 @@ font-size:18px;
 }
 
 .animalBtn{
-font-size:40px;
+font-size:38px;
 margin:10px;
 cursor:pointer;
 }
@@ -130,11 +115,11 @@ margin:5px 0;
 
 <h2>LS25 Helper</h2>
 
-<button class="navBtn" onclick="openSection('profit','field')">Profit Rechner</button>
-<button class="navBtn" onclick="openSection('planner','map')">Feldplanung</button>
-<button class="navBtn" onclick="openSection('work','tractor')">Arbeitszeit Rechner</button>
-<button class="navBtn" onclick="openSection('animals','animals')">Tierfutter Rechner</button>
-<button class="navBtn" onclick="openSection('todo','office')">Farm To-Do</button>
+<button class="navBtn" onclick="openSection('profit')">Profit Rechner</button>
+<button class="navBtn" onclick="openSection('planner')">Feldplanung</button>
+<button class="navBtn" onclick="openSection('work')">Arbeitszeit</button>
+<button class="navBtn" onclick="openSection('animals')">Tierfutter</button>
+<button class="navBtn" onclick="openSection('todo')">Farm To-Do</button>
 
 <div class="devTitle">──── In Entwicklung ────</div>
 
@@ -144,7 +129,7 @@ margin:5px 0;
 
 </div>
 
-<div class="content" id="contentArea">
+<div class="content">
 
 <!-- PROFIT -->
 
@@ -152,39 +137,56 @@ margin:5px 0;
 
 <h2>Profit Rechner</h2>
 
-<select id="cropSelect" onchange="setYield()">
+<select id="cropSelect">
 
 <option value="8900">🌾 Weizen</option>
 <option value="9600">🌾 Gerste</option>
 <option value="8800">🌾 Hafer</option>
 <option value="5800">🌱 Raps</option>
 <option value="9200">🌽 Mais (Korn)</option>
-<option value="45000">🌿 Mais (Silomais)</option>
+<option value="45000">🌿 Mais (Silage)</option>
 <option value="5000">🫘 Sojabohnen</option>
 <option value="7000">🌻 Sonnenblumen</option>
 <option value="42000">🥔 Kartoffeln</option>
 <option value="60000">🟥 Zuckerrüben</option>
+<option value="7000">🌾 Reis</option>
+<option value="8500">🌾 Sorghum</option>
+<option value="30000">🥕 Karotten</option>
+<option value="28000">🥔 Pastinaken</option>
+<option value="6000">🫘 Bohnen</option>
+<option value="6500">🫛 Erbsen</option>
+<option value="12000">🍇 Trauben</option>
+<option value="10000">🫒 Oliven</option>
+<option value="15000">🌲 Pappel</option>
+<option value="20000">🌿 Gras</option>
+<option value="4000">🌱 Ölrettich</option>
 
 </select>
-
-<br>
-
-<input id="yieldha" placeholder="Ertrag / ha" readonly>
 
 <br>
 
 <input id="fieldsize" placeholder="Feldgröße (ha)">
 <input id="price" placeholder="Preis pro 1000L">
 
-<h3>Düngung</h3>
+<h3>Fertilizer</h3>
 
 <select id="fert">
-<option value="1">Keine</option>
-<option value="1.25">1x Dünger</option>
-<option value="1.5">2x Dünger</option>
+
+<option value="0">Keine</option>
+<option value="0.25">1x Dünger</option>
+<option value="0.5">2x Dünger</option>
+
 </select>
 
-<br>
+<h3>Additive</h3>
+
+<label><input type="checkbox" id="mulch"> Mulchen</label><br>
+<label><input type="checkbox" id="roll"> Walzen</label><br>
+<label><input type="checkbox" id="lime"> Kalk</label><br>
+<label><input type="checkbox" id="weed"> Unkraut entfernt</label><br>
+<label><input type="checkbox" id="pf"> Precision Farming</label>
+
+<br><br>
 
 <button onclick="calculateProfit()">Berechnen</button>
 
@@ -196,11 +198,9 @@ margin:5px 0;
 
 <div id="planner" class="section">
 
-<h2>Feldplanung</h2>
+<h2>Was kann ich diesen Monat säen?</h2>
 
-<h3>Was kann ich diesen Monat säen?</h3>
-
-<select id="monthSelect" onchange="showCrops();showSeason();">
+<select id="monthSelect" onchange="showCrops()">
 
 <option value="1">Januar</option>
 <option value="2">Februar</option>
@@ -219,13 +219,9 @@ margin:5px 0;
 
 <div class="result" id="cropResult"></div>
 
-<h3>Saison Hinweise</h3>
-
-<div class="result" id="seasonInfo"></div>
-
 </div>
 
-<!-- WORKTIME -->
+<!-- WORK -->
 
 <div id="work" class="section">
 
@@ -234,8 +230,6 @@ margin:5px 0;
 <input id="width" placeholder="Arbeitsbreite (m)">
 <input id="speed" placeholder="Geschwindigkeit km/h">
 <input id="workField" placeholder="Feldgröße (ha)">
-
-<br>
 
 <button onclick="calcWork()">Berechnen</button>
 
@@ -251,19 +245,17 @@ margin:5px 0;
 
 <div>
 
-<span class="animalBtn" onclick="selectAnimal('Kuh')">🐄</span>
-<span class="animalBtn" onclick="selectAnimal('Schwein')">🐖</span>
-<span class="animalBtn" onclick="selectAnimal('Schaf')">🐑</span>
-<span class="animalBtn" onclick="selectAnimal('Huhn')">🐔</span>
-<span class="animalBtn" onclick="selectAnimal('Pferd')">🐎</span>
+<span class="animalBtn" onclick="selectAnimal(45)">🐄</span>
+<span class="animalBtn" onclick="selectAnimal(8)">🐖</span>
+<span class="animalBtn" onclick="selectAnimal(5)">🐑</span>
+<span class="animalBtn" onclick="selectAnimal(0.1)">🐔</span>
+<span class="animalBtn" onclick="selectAnimal(10)">🐎</span>
 
 </div>
 
-<div id="animalFoodTypes"></div>
-
 <input id="animalCount" placeholder="Anzahl Tiere">
 
-<button onclick="calcAnimalFood()">Berechnen</button>
+<button onclick="calcAnimal()">Berechnen</button>
 
 <div class="result" id="animalResult"></div>
 
@@ -275,7 +267,7 @@ margin:5px 0;
 
 <h2>Farm To-Do</h2>
 
-<input id="todoInput" placeholder="Neue Aufgabe">
+<input id="todoInput">
 <button onclick="addTodo()">Hinzufügen</button>
 
 <div id="todoList"></div>
@@ -289,9 +281,11 @@ margin:5px 0;
 <h2>In Entwicklung</h2>
 
 <ul>
+
 <li>Maschinen Arbeitsplaner</li>
 <li>Frucht Profit Vergleich</li>
 <li>Produktionsketten Rechner</li>
+
 </ul>
 
 </div>
@@ -301,53 +295,38 @@ margin:5px 0;
 
 <script>
 
-const backgrounds={
-field:"https://images.unsplash.com/photo-1560493676-04071c5f467b",
-tractor:"https://images.unsplash.com/photo-1592982537447-7440770cbfc9",
-animals:"https://images.unsplash.com/photo-1500595046743-cd271d694d30",
-office:"https://images.unsplash.com/photo-1519389950473-47ba0277781c",
-map:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
-}
-
-function openSection(id,bg){
+function openSection(id){
 
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
 document.getElementById(id).classList.add("active")
 
-if(bg){
-document.getElementById("contentArea").style.backgroundImage="url("+backgrounds[bg]+")"
-}
-
-}
-
-window.onload=function(){
-openSection('profit','field')
-showCrops()
-showSeason()
-loadTodos()
-}
-
-function setYield(){
-let crop=document.getElementById("cropSelect").value
-document.getElementById("yieldha").value=crop
 }
 
 function calculateProfit(){
 
-let size=parseFloat(document.getElementById("fieldsize").value)
-let yieldha=parseFloat(document.getElementById("yieldha").value)
-let price=parseFloat(document.getElementById("price").value)
-let fert=parseFloat(document.getElementById("fert").value)
+let base=parseFloat(document.getElementById("cropSelect").value)
+let size=parseFloat(document.getElementById("fieldsize").value)||0
+let price=parseFloat(document.getElementById("price").value)||0
 
-let yieldTotal=size*yieldha*fert
+let bonus=parseFloat(document.getElementById("fert").value)
+
+if(document.getElementById("mulch").checked) bonus+=0.025
+if(document.getElementById("roll").checked) bonus+=0.025
+if(document.getElementById("lime").checked) bonus+=0.15
+if(document.getElementById("weed").checked) bonus+=0.1
+if(document.getElementById("pf").checked) bonus+=0.05
+
+let yieldTotal=base*(1+bonus)*size
 let profit=(yieldTotal/1000)*price
 
 document.getElementById("profitResult").innerHTML=
+
 "Ertrag: "+Math.round(yieldTotal)+" L<br>Gewinn: "+Math.round(profit)+" €"
 
 }
 
 const cropCalendar={
+
 "Weizen":[8,9],
 "Gerste":[2,3,8,9],
 "Hafer":[2,3],
@@ -357,6 +336,7 @@ const cropCalendar={
 "Sonnenblumen":[4,5],
 "Kartoffeln":[4,5],
 "Zuckerrüben":[3,4]
+
 }
 
 function showCrops(){
@@ -367,39 +347,11 @@ let html=""
 
 for(let crop in cropCalendar){
 
-if(cropCalendar[crop].includes(month)){
-html+=crop+"<br>"
-}
+if(cropCalendar[crop].includes(month)) html+=crop+"<br>"
 
 }
 
 document.getElementById("cropResult").innerHTML=html
-
-}
-
-function showSeason(){
-
-let month=parseInt(document.getElementById("monthSelect").value)
-
-let text=""
-
-if(month>=3 && month<=5){
-text="Frühling: Säen und düngen."
-}
-
-if(month>=6 && month<=8){
-text="Sommer: Feldpflege."
-}
-
-if(month>=9 && month<=10){
-text="Herbst: Erntezeit."
-}
-
-if(month>=11 || month<=2){
-text="Winter: Planung und Verkauf."
-}
-
-document.getElementById("seasonInfo").innerHTML=text
 
 }
 
@@ -413,93 +365,42 @@ let haHour=(width*speed)/10
 let time=size/haHour
 
 document.getElementById("workResult").innerHTML=
-"Leistung: "+haHour.toFixed(2)+" ha/h<br>Zeit: "+time.toFixed(2)+" Stunden"
+"Zeit: "+time.toFixed(2)+" Stunden"
 
 }
 
-const animalFoodTypes={
+let animalFood=0
 
-"Kuh":{TMR:45,Heu:30,Silage:35,Gras:25},
-"Schwein":{Mais:8,Gerste:8,Weizen:8},
-"Schaf":{Gras:5,Heu:5},
-"Pferd":{Hafer:10,Heu:8},
-"Huhn":{Weizen:0.1}
+function selectAnimal(food){
+
+animalFood=food
 
 }
 
-let selectedFood=0
-
-function selectAnimal(name){
-
-let foods=animalFoodTypes[name]
-
-let html="<h3>"+name+"</h3>"
-
-for(let f in foods){
-html+=`<div onclick="selectFood(${foods[f]})">${f} (${foods[f]} L)</div>`
-}
-
-document.getElementById("animalFoodTypes").innerHTML=html
-
-}
-
-function selectFood(value){
-selectedFood=value
-}
-
-function calcAnimalFood(){
+function calcAnimal(){
 
 let count=parseFloat(document.getElementById("animalCount").value)
 
-let day=count*selectedFood
-let month=day*30
-let year=day*365
+let day=count*animalFood
 
 document.getElementById("animalResult").innerHTML=
-"Tag: "+day+" L<br>Monat: "+month+" L<br>Jahr: "+year+" L"
-
-}
-
-function loadTodos(){
-
-let todos=JSON.parse(localStorage.getItem("todos"))||[]
-
-let html=""
-
-todos.forEach((t,i)=>{
-html+=`<div class="todoItem">
-<input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${i})">
-${t.text}
-</div>`
-})
-
-document.getElementById("todoList").innerHTML=html
+"Futter pro Tag: "+day+" L"
 
 }
 
 function addTodo(){
 
-let text=document.getElementById("todoInput").value
-let todos=JSON.parse(localStorage.getItem("todos"))||[]
+let input=document.getElementById("todoInput")
 
-todos.push({text:text,done:false})
+let div=document.createElement("div")
 
-localStorage.setItem("todos",JSON.stringify(todos))
-document.getElementById("todoInput").value=""
+div.className="todoItem"
 
-loadTodos()
+div.innerText=input.value
 
-}
+document.getElementById("todoList").appendChild(div)
 
-function toggleTodo(i){
-
-let todos=JSON.parse(localStorage.getItem("todos"))
-
-todos[i].done=!todos[i].done
-
-localStorage.setItem("todos",JSON.stringify(todos))
-
-loadTodos()
+input.value=""
 
 }
 
