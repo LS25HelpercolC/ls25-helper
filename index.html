@@ -11,28 +11,13 @@ font-family:Arial;
 margin:0;
 color:white;
 text-align:center;
-
-background:url("https://images.unsplash.com/photo-1598514982443-7b2b2f70b6a6");
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
-}
-
-body::before{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.55);
-z-index:-1;
+background:#1e1e1e;
 }
 
 /* HEADER */
 
 header{
-background:rgba(0,0,0,0.7);
+background:#1b5e20;
 padding:15px;
 }
 
@@ -41,7 +26,6 @@ margin-top:10px;
 }
 
 .tabBtn{
-width:auto;
 padding:8px 14px;
 margin:3px;
 border:none;
@@ -55,22 +39,54 @@ cursor:pointer;
 background:#66bb6a;
 }
 
-/* TOOL BOX */
+/* TOOL AREA */
 
 .container{
+
 display:none;
 
-background:rgba(0,0,0,0.65);
 padding:20px;
 margin:20px auto;
 width:90%;
-max-width:650px;
+max-width:750px;
 border-radius:12px;
+
+background-size:cover;
+background-position:center;
+
 }
 
 .active{
 display:block;
 }
+
+/* TAB BACKGROUNDS */
+
+#profit{background-image:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef")}
+#best{background-image:url("https://images.unsplash.com/photo-1598514982443-7b2b2f70b6a6")}
+#work{background-image:url("https://images.unsplash.com/photo-1492496913980-501348b61469")}
+#planner{background-image:url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")}
+#bale{background-image:url("https://images.unsplash.com/photo-1464226184884-fa280b87c399")}
+#animals{background-image:url("https://images.unsplash.com/photo-1500595046743-cd271d694d30")}
+#production{background-image:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef")}
+#todo{background-image:url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6")}
+
+.container::before{
+content:"";
+position:absolute;
+left:0;
+right:0;
+top:0;
+bottom:0;
+background:rgba(0,0,0,0.55);
+border-radius:12px;
+}
+
+.container>*{
+position:relative;
+}
+
+/* INPUTS */
 
 input,select{
 padding:10px;
@@ -83,65 +99,44 @@ border-radius:6px;
 button.calc{
 background:#4caf50;
 color:white;
-font-weight:bold;
-cursor:pointer;
 padding:10px;
-width:90%;
+border:none;
+border-radius:6px;
+cursor:pointer;
 }
 
 button.calc:hover{
 background:#66bb6a;
 }
 
-/* RESULTS */
-
 .result{
 margin-top:10px;
 font-size:18px;
 }
 
-/* FIELD CONDITIONS */
+/* TODO */
 
-.conditions{
-background:rgba(0,0,0,0.35);
-padding:12px;
-border-radius:8px;
+#todoList{
 text-align:left;
 margin-top:10px;
 }
 
-.conditions label{
-display:flex;
-align-items:center;
-gap:8px;
-margin:4px 0;
-font-size:14px;
-}
-
-.conditions input[type="checkbox"]{
-width:16px;
-height:16px;
-transform:translateY(1px);
-}
-
-/* LANGUAGE BUTTON */
+/* LANGUAGE */
 
 .language-switch{
-
 position:fixed;
-bottom:15px;
-right:15px;
-
-background:rgba(0,0,0,0.7);
-padding:8px;
-border-radius:10px;
-
+bottom:10px;
+right:10px;
+background:rgba(0,0,0,0.6);
+padding:6px;
+border-radius:8px;
 }
 
 .language-switch button{
-width:auto;
-margin:2px;
-padding:6px 10px;
+border:none;
+background:none;
+font-size:18px;
+cursor:pointer;
 }
 
 </style>
@@ -151,14 +146,18 @@ padding:6px 10px;
 
 <header>
 
-<h1>🚜 LS25 Helper</h1>
+<h1 id="title">🚜 LS25 Helper</h1>
 
 <div class="tabs">
 
 <button class="tabBtn" onclick="openTab('profit')">Profit</button>
 <button class="tabBtn" onclick="openTab('best')">Best Crop</button>
-<button class="tabBtn" onclick="openTab('planner')">Planner</button>
 <button class="tabBtn" onclick="openTab('work')">Worktime</button>
+<button class="tabBtn" onclick="openTab('planner')">Planner</button>
+<button class="tabBtn" onclick="openTab('bale')">Bales</button>
+<button class="tabBtn" onclick="openTab('animals')">Animals</button>
+<button class="tabBtn" onclick="openTab('production')">Production</button>
+<button class="tabBtn" onclick="openTab('todo')">To-Do</button>
 
 </div>
 
@@ -168,43 +167,13 @@ padding:6px 10px;
 
 <div id="profit" class="container active">
 
-<h2>Profit Calculator</h2>
+<h2 id="profitTitle">Profit Calculator</h2>
 
 <input id="fieldsize" type="number" placeholder="Field Size (ha)">
-
-<select id="crop">
-
-<option value="8900">Wheat</option>
-<option value="9600">Barley</option>
-<option value="5800">Canola</option>
-<option value="9200">Corn</option>
-<option value="4500">Soybeans</option>
-
-</select>
-
+<input id="yield" type="number" placeholder="Yield per ha (L)">
 <input id="price" type="number" placeholder="Price per 1000L">
 
-<div class="conditions">
-
-<h3>Field Conditions</h3>
-
-<label>Fertilizer</label>
-
-<select id="fertilizer">
-<option value="1">None</option>
-<option value="1.225">1x</option>
-<option value="1.45">2x</option>
-</select>
-
-<label><input type="checkbox" id="lime"> Lime (+15%)</label>
-<label><input type="checkbox" id="weed"> Weeds removed (+15%)</label>
-<label><input type="checkbox" id="mulch"> Mulch (+2.5%)</label>
-<label><input type="checkbox" id="roll"> Roll (+2.5%)</label>
-<label><input type="checkbox" id="pf"> Precision Farming (+20%)</label>
-
-</div>
-
-<button class="calc" onclick="calculate()">Calculate Profit</button>
+<button class="calc" onclick="calculate()">Calculate</button>
 
 <div class="result" id="result"></div>
 
@@ -214,7 +183,7 @@ padding:6px 10px;
 
 <div id="best" class="container">
 
-<h2>Best Crop</h2>
+<h2 id="bestTitle">Best Crop</h2>
 
 <input id="bestFieldSize" type="number" placeholder="Field Size (ha)">
 
@@ -224,40 +193,77 @@ padding:6px 10px;
 
 </div>
 
-<!-- PLANNER -->
-
-<div id="planner" class="container">
-
-<h2>Field Planner</h2>
-
-<input id="fieldname" placeholder="Field Name">
-
-<select id="rotation">
-
-<option>Wheat → Canola → Barley</option>
-<option>Corn → Wheat → Soybeans</option>
-
-</select>
-
-<button class="calc" onclick="addField()">Add Field</button>
-
-<ul id="fields"></ul>
-
-</div>
-
 <!-- WORKTIME -->
 
 <div id="work" class="container">
 
-<h2>Worktime Calculator</h2>
+<h2 id="workTitle">Worktime Calculator</h2>
 
-<input id="width" type="number" placeholder="Working Width (m)">
-<input id="speed" type="number" placeholder="Speed (km/h)">
-<input id="fieldsizeWork" type="number" placeholder="Field Size (ha)">
+<input id="width" placeholder="Working Width (m)">
+<input id="speed" placeholder="Speed (km/h)">
+<input id="fieldsizeWork" placeholder="Field Size (ha)">
 
-<button class="calc" onclick="calcWork()">Calculate Time</button>
+<button class="calc" onclick="calcWork()">Calculate</button>
 
 <div class="result" id="workResult"></div>
+
+</div>
+
+<!-- BALE -->
+
+<div id="bale" class="container">
+
+<h2 id="baleTitle">Bale Calculator</h2>
+
+<input id="baleSize" placeholder="Bale Size (L)">
+<input id="baleCount" placeholder="Number of Bales">
+
+<button class="calc" onclick="calcBales()">Calculate</button>
+
+<div class="result" id="baleResult"></div>
+
+</div>
+
+<!-- ANIMALS -->
+
+<div id="animals" class="container">
+
+<h2 id="animalTitle">Animal Feed</h2>
+
+<input id="animalsCount" placeholder="Number of Animals">
+<input id="foodPerDay" placeholder="Food per Day">
+
+<button class="calc" onclick="calcAnimals()">Calculate</button>
+
+<div class="result" id="animalResult"></div>
+
+</div>
+
+<!-- PRODUCTION -->
+
+<div id="production" class="container">
+
+<h2 id="prodTitle">Production Profit</h2>
+
+<input id="prodInput" placeholder="Input Cost">
+<input id="prodOutput" placeholder="Output Value">
+
+<button class="calc" onclick="calcProduction()">Calculate</button>
+
+<div class="result" id="prodResult"></div>
+
+</div>
+
+<!-- TODO -->
+
+<div id="todo" class="container">
+
+<h2 id="todoTitle">Farm To-Do List</h2>
+
+<input id="todoInput" placeholder="New Task">
+<button class="calc" onclick="addTodo()">Add</button>
+
+<ul id="todoList"></ul>
 
 </div>
 
@@ -272,7 +278,7 @@ padding:6px 10px;
 
 <script>
 
-/* TAB SYSTEM */
+/* TABS */
 
 function openTab(tab){
 
@@ -289,71 +295,13 @@ document.getElementById(tab).classList.add("active")
 function calculate(){
 
 let size=fieldsize.value
-let yieldPerHa=crop.value
+let yieldHa=document.getElementById("yield").value
 let price=document.getElementById("price").value
 
-let modifier=parseFloat(fertilizer.value)
+let total=size*yieldHa
+let profit=(total/1000)*price
 
-if(weed.checked) modifier*=1.15
-if(lime.checked) modifier*=1.15
-if(mulch.checked) modifier*=1.025
-if(roll.checked) modifier*=1.025
-if(pf.checked) modifier*=1.20
-
-let totalYield=size*yieldPerHa*modifier
-let totalProfit=(totalYield/1000)*price
-
-result.innerHTML="Yield: "+Math.round(totalYield)+" L<br>Profit: €"+totalProfit.toFixed(0)
-
-}
-
-/* BEST CROP */
-
-function bestCrop(){
-
-let size=bestFieldSize.value
-
-let crops=[
-
-{name:"Wheat",yield:8900,price:900},
-{name:"Barley",yield:9600,price:850},
-{name:"Canola",yield:5800,price:1200},
-{name:"Corn",yield:9200,price:800},
-{name:"Soybeans",yield:4500,price:1500}
-
-]
-
-let best=""
-let bestProfit=0
-
-crops.forEach(c=>{
-
-let profit=(size*c.yield/1000)*c.price
-
-if(profit>bestProfit){
-
-bestProfit=profit
-best=c.name
-
-}
-
-})
-
-bestResult.innerHTML="Best Crop: "+best+"<br>Profit: €"+bestProfit.toFixed(0)
-
-}
-
-/* FIELD PLANNER */
-
-function addField(){
-
-let name=fieldname.value
-let rotation=document.getElementById("rotation").value
-
-let li=document.createElement("li")
-li.innerText=name+" – "+rotation
-
-fields.appendChild(li)
+result.innerHTML="Yield: "+total+" L<br>Profit: €"+profit.toFixed(0)
 
 }
 
@@ -371,6 +319,95 @@ let time=size/haPerHour
 workResult.innerHTML="Worktime: "+time.toFixed(2)+" hours"
 
 }
+
+/* BALES */
+
+function calcBales(){
+
+let size=baleSize.value
+let count=baleCount.value
+
+let total=size*count
+
+baleResult.innerHTML="Total: "+total+" L"
+
+}
+
+/* ANIMALS */
+
+function calcAnimals(){
+
+let animals=animalsCount.value
+let food=foodPerDay.value
+
+animalResult.innerHTML="Daily food: "+(animals*food)
+
+}
+
+/* PRODUCTION */
+
+function calcProduction(){
+
+let input=prodInput.value
+let output=prodOutput.value
+
+let profit=output-input
+
+prodResult.innerHTML="Profit: "+profit
+
+}
+
+/* TODO */
+
+function loadTodos(){
+
+let todos=JSON.parse(localStorage.getItem("todos"))||[]
+
+todoList.innerHTML=""
+
+todos.forEach((t,i)=>{
+
+let li=document.createElement("li")
+
+li.innerHTML=
+'<input type="checkbox" '+(t.done?'checked':'')+
+' onchange="toggleTodo('+i+')"> '+t.text
+
+todoList.appendChild(li)
+
+})
+
+}
+
+function addTodo(){
+
+let text=todoInput.value
+
+let todos=JSON.parse(localStorage.getItem("todos"))||[]
+
+todos.push({text:text,done:false})
+
+localStorage.setItem("todos",JSON.stringify(todos))
+
+todoInput.value=""
+
+loadTodos()
+
+}
+
+function toggleTodo(i){
+
+let todos=JSON.parse(localStorage.getItem("todos"))
+
+todos[i].done=!todos[i].done
+
+localStorage.setItem("todos",JSON.stringify(todos))
+
+loadTodos()
+
+}
+
+loadTodos()
 
 </script>
 
