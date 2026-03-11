@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>LS25 Helper</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#2e7d32;
+color:white;
+text-align:center;
+}
+
+header{
+background:#1b5e20;
+padding:15px;
+}
+
+.container{
+background:#1b5e20;
+padding:20px;
+margin:20px auto;
+width:90%;
+max-width:450px;
+border-radius:10px;
+}
+
+input,select,button{
+padding:10px;
+margin:6px;
+width:90%;
+border:none;
+border-radius:5px;
+}
+
+button{
+background:#4caf50;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.result{
+margin-top:10px;
+font-size:18px;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🚜 LS25 Helper</h1>
+
+<button onclick="setLang('en')">🇬🇧 English</button>
+<button onclick="setLang('de')">🇩🇪 Deutsch</button>
+
+</header>
+
+<div class="container">
+
+<h2 id="profitTitle">Profit Calculator</h2>
+
+<input id="fieldsize" type="number" placeholder="Field Size (ha)">
+
+<select id="crop">
+
+<option value="8000">Wheat</option>
+<option value="7500">Barley</option>
+<option value="6000">Canola</option>
+<option value="9000">Corn</option>
+<option value="5000">Soybeans</option>
+<option value="42000">Potatoes</option>
+<option value="60000">Sugar Beet</option>
+
+</select>
+
+<input id="price" type="number" placeholder="Price per 1000L">
+
+<button onclick="calculate()" id="calcBtn">Calculate Profit</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<div class="container">
+
+<h2 id="bestCropTitle">Best Crop Calculator</h2>
+
+<input id="bestFieldSize" type="number" placeholder="Field Size (ha)">
+
+<button onclick="bestCrop()" id="bestBtn">Find Best Crop</button>
+
+<div class="result" id="bestResult"></div>
+
+</div>
+
+<div class="container">
+
+<h2 id="plannerTitle">Field Planner</h2>
+
+<input id="fieldname" placeholder="Field Name">
+
+<select id="rotation">
+
+<option>Wheat → Canola → Barley</option>
+<option>Corn → Wheat → Soybeans</option>
+<option>Potatoes → Wheat → Corn</option>
+<option>Sugar Beet → Barley → Canola</option>
+
+</select>
+
+<button onclick="addField()" id="addBtn">Add Field</button>
+
+<ul id="fields"></ul>
+
+</div>
+
+<script>
+
+let lang="en"
+
+function setLang(l){
+
+lang=l
+
+if(lang==="de"){
+
+document.getElementById("profitTitle").innerText="Gewinn Rechner"
+document.getElementById("plannerTitle").innerText="Feldplanung"
+document.getElementById("bestCropTitle").innerText="Beste Frucht Rechner"
+
+document.getElementById("calcBtn").innerText="Gewinn berechnen"
+document.getElementById("bestBtn").innerText="Beste Frucht finden"
+document.getElementById("addBtn").innerText="Feld hinzufügen"
+
+document.getElementById("fieldsize").placeholder="Feldgröße (ha)"
+document.getElementById("price").placeholder="Preis pro 1000L"
+document.getElementById("fieldname").placeholder="Feld Name"
+
+}
+
+else{
+
+document.getElementById("profitTitle").innerText="Profit Calculator"
+document.getElementById("plannerTitle").innerText="Field Planner"
+document.getElementById("bestCropTitle").innerText="Best Crop Calculator"
+
+document.getElementById("calcBtn").innerText="Calculate Profit"
+document.getElementById("bestBtn").innerText="Find Best Crop"
+document.getElementById("addBtn").innerText="Add Field"
+
+document.getElementById("fieldsize").placeholder="Field Size (ha)"
+document.getElementById("price").placeholder="Price per 1000L"
+document.getElementById("fieldname").placeholder="Field Name"
+
+}
+
+}
+
+function calculate(){
+
+let size=document.getElementById("fieldsize").value
+let yieldPerHa=document.getElementById("crop").value
+let price=document.getElementById("price").value
+
+let totalYield=size*yieldPerHa
+let totalProfit=(totalYield/1000)*price
+
+if(lang==="de"){
+
+document.getElementById("result").innerHTML=
+"Ertrag: "+totalYield+" L<br>Gewinn: €"+totalProfit.toFixed(0)
+
+}
+
+else{
+
+document.getElementById("result").innerHTML=
+"Yield: "+totalYield+" L<br>Profit: €"+totalProfit.toFixed(0)
+
+}
+
+}
+
+function bestCrop(){
+
+let size=document.getElementById("bestFieldSize").value
+
+let crops=[
+{name:"Wheat",yield:8000,price:900},
+{name:"Barley",yield:7500,price:850},
+{name:"Canola",yield:6000,price:1200},
+{name:"Corn",yield:9000,price:800},
+{name:"Soybeans",yield:5000,price:1500}
+]
+
+let best=""
+let bestProfit=0
+
+crops.forEach(c=>{
+
+let profit=(size*c.yield/1000)*c.price
+
+if(profit>bestProfit){
+
+bestProfit=profit
+best=c.name
+
+}
+
+})
+
+document.getElementById("bestResult").innerHTML=
+"Best Crop: "+best+"<br>Profit: €"+bestProfit.toFixed(0)
+
+}
+
+function addField(){
+
+let name=document.getElementById("fieldname").value
+let rotation=document.getElementById("rotation").value
+
+let li=document.createElement("li")
+li.innerText=name+" – "+rotation
+
+document.getElementById("fields").appendChild(li)
+
+}
+
+</script>
+
+</body>
+</html>
