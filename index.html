@@ -12,7 +12,7 @@ margin:0;
 color:white;
 text-align:center;
 
-background:url("https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg");
+background:url("https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
@@ -35,76 +35,56 @@ padding:15px;
 }
 
 .container{
-
-background:rgba(0,0,0,0.6);
-
+background:rgba(0,0,0,0.65);
 padding:20px;
 margin:20px auto;
 width:90%;
 max-width:500px;
-
 border-radius:12px;
-
 }
 
 input,select,button{
-
 padding:10px;
 margin:6px;
 width:90%;
 border:none;
 border-radius:6px;
-
 }
 
 button{
-
 background:#4caf50;
 color:white;
 font-weight:bold;
 cursor:pointer;
-
 }
 
 button:hover{
-
 background:#66bb6a;
-
 }
 
 .result{
-
 margin-top:10px;
 font-size:18px;
-
 }
 
 .conditions{
-
 text-align:left;
-
 }
 
 .conditions label{
-
 display:block;
 margin:5px 0;
-
 }
 
 .note{
-
 font-size:12px;
 opacity:0.8;
 margin-top:10px;
-
 }
 
 ul{
-
 list-style:none;
 padding:0;
-
 }
 
 </style>
@@ -121,8 +101,6 @@ padding:0;
 
 </header>
 
-<!-- PROFIT CALCULATOR -->
-
 <div class="container">
 
 <h2 id="profitTitle">Profit Calculator</h2>
@@ -130,15 +108,13 @@ padding:0;
 <input id="fieldsize" type="number" placeholder="Field Size (ha)">
 
 <select id="crop">
-
-<option value="8900">Wheat</option>
-<option value="9600">Barley</option>
-<option value="5800">Canola</option>
-<option value="9200">Corn</option>
-<option value="4500">Soybeans</option>
-<option value="41300">Potatoes</option>
-<option value="57800">Sugar Beet</option>
-
+<option value="8900" id="wheat">Wheat</option>
+<option value="9600" id="barley">Barley</option>
+<option value="5800" id="canola">Canola</option>
+<option value="9200" id="corn">Corn</option>
+<option value="4500" id="soybeans">Soybeans</option>
+<option value="41300" id="potatoes">Potatoes</option>
+<option value="57800" id="sugarbeet">Sugar Beet</option>
 </select>
 
 <input id="price" type="number" placeholder="Price per 1000L">
@@ -193,14 +169,10 @@ padding:0;
 <div class="result" id="result"></div>
 
 <p class="note" id="noteText">
-
 ⚠️ Based on LS25 vanilla values. Mod maps may differ.
-
 </p>
 
 </div>
-
-<!-- BEST CROP -->
 
 <div class="container">
 
@@ -213,8 +185,6 @@ padding:0;
 <div class="result" id="bestResult"></div>
 
 </div>
-
-<!-- FIELD PLANNER -->
 
 <div class="container">
 
@@ -253,6 +223,14 @@ plannerTitle.innerText="Feldplanung"
 
 conditionsTitle.innerText="Feldbedingungen"
 
+wheat.innerText="Weizen"
+barley.innerText="Gerste"
+canola.innerText="Raps"
+corn.innerText="Mais"
+soybeans.innerText="Sojabohnen"
+potatoes.innerText="Kartoffeln"
+sugarbeet.innerText="Zuckerrüben"
+
 fertLabel.innerText="Düngung"
 
 fert0.innerText="Keine"
@@ -284,6 +262,14 @@ bestCropTitle.innerText="Best Crop Calculator"
 plannerTitle.innerText="Field Planner"
 
 conditionsTitle.innerText="Field Conditions"
+
+wheat.innerText="Wheat"
+barley.innerText="Barley"
+canola.innerText="Canola"
+corn.innerText="Corn"
+soybeans.innerText="Soybeans"
+potatoes.innerText="Potatoes"
+sugarbeet.innerText="Sugar Beet"
 
 fertLabel.innerText="Fertilizer"
 
@@ -337,13 +323,11 @@ function bestCrop(){
 let size=bestFieldSize.value
 
 let crops=[
-
 {name:"Wheat",yield:8900,price:900},
 {name:"Barley",yield:9600,price:850},
 {name:"Canola",yield:5800,price:1200},
 {name:"Corn",yield:9200,price:800},
 {name:"Soybeans",yield:4500,price:1500}
-
 ]
 
 let best=""
