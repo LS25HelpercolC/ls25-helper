@@ -2,32 +2,38 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.20</title>
+<title>LS25 Helper v1.30</title>
 
 <style>
 
 body{
 font-family:Arial;
 margin:0;
-background:#1f1f1f;
+background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover fixed;
 color:white;
-text-align:center;
+}
+
+.overlay{
+background:rgba(0,0,0,0.7);
+min-height:100vh;
+padding:20px;
 }
 
 header{
-background:#2e7d32;
-padding:15px;
+text-align:center;
+margin-bottom:20px;
 }
 
 .tabs{
-margin-top:10px;
+text-align:center;
+margin-bottom:20px;
 }
 
 .tabBtn{
-padding:8px 14px;
-margin:3px;
+padding:10px 16px;
+margin:5px;
 border:none;
-border-radius:6px;
+border-radius:8px;
 background:#4caf50;
 color:white;
 cursor:pointer;
@@ -39,200 +45,324 @@ background:#66bb6a;
 
 .container{
 display:none;
+max-width:900px;
+margin:auto;
+background:#2b2f36;
 padding:20px;
-margin:20px auto;
-width:90%;
-max-width:650px;
 border-radius:12px;
-background:#2c2c2c;
 }
 
 .active{
 display:block;
 }
 
-input{
-padding:10px;
-margin:6px;
-width:90%;
-border:none;
-border-radius:6px;
+.timeline{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+margin-top:10px;
 }
 
-button.calc{
-background:#4caf50;
-color:white;
-padding:10px;
+.month{
+text-align:center;
+font-size:12px;
+}
+
+.bar{
+height:20px;
+border-radius:6px;
+margin:2px;
+}
+
+.sow{
+background:#3498db;
+}
+
+.grow{
+background:#2ecc71;
+}
+
+.harvest{
+background:#f39c12;
+}
+
+.cropCard{
+margin-top:20px;
+padding:20px;
+background:#3a4048;
+border-radius:10px;
+}
+
+button{
+padding:8px 12px;
 border:none;
 border-radius:6px;
 cursor:pointer;
 }
 
-button.calc:hover{
-background:#66bb6a;
+.nextCrop button{
+margin:4px;
+background:#4caf50;
+color:white;
 }
 
-.result{
-margin-top:10px;
-font-size:18px;
-}
-
-.language-switch{
+.lang{
 position:fixed;
 bottom:10px;
 right:10px;
-background:#00000080;
-padding:6px;
-border-radius:8px;
-}
-
-.language-switch button{
-border:none;
-background:none;
-font-size:18px;
-cursor:pointer;
-color:white;
 }
 
 </style>
+
 </head>
 
 <body>
 
+<div class="overlay">
+
 <header>
 
-<h1 id="title">🚜 LS25 Helper</h1>
-
-<div class="tabs">
-
-<button id="tabProfit" class="tabBtn" onclick="openTab('profit')">Profit</button>
-<button id="tabBest" class="tabBtn" onclick="openTab('best')">Best Crop</button>
-<button id="tabWork" class="tabBtn" onclick="openTab('work')">Worktime</button>
-<button id="tabBale" class="tabBtn" onclick="openTab('bale')">Bales</button>
-<button id="tabAnimals" class="tabBtn" onclick="openTab('animals')">Animals</button>
-<button id="tabProd" class="tabBtn" onclick="openTab('production')">Production</button>
-<button id="tabTodo" class="tabBtn" onclick="openTab('todo')">To-Do</button>
-
-</div>
+<h1 id="title"></h1>
 
 </header>
 
-<!-- PROFIT -->
+<div class="tabs">
 
-<div id="profit" class="container active">
-
-<h2 id="profitTitle">Profit Calculator</h2>
-
-<input id="fieldsize" placeholder="Field Size (ha)">
-<input id="yieldha" placeholder="Yield per ha (L)">
-<input id="price" placeholder="Price per 1000L">
-
-<button class="calc" onclick="calculate()" id="calcBtn">Calculate</button>
-
-<div class="result" id="result"></div>
+<button class="tabBtn" onclick="openTab('calendar')" id="tabCalendar"></button>
+<button class="tabBtn" onclick="openTab('profit')" id="tabProfit"></button>
 
 </div>
 
-<!-- BEST CROP -->
+<div id="calendar" class="container active">
 
-<div id="best" class="container">
+<h2 id="calendarTitle"></h2>
 
-<h2 id="bestTitle">Best Crop</h2>
+<div class="cropCard">
 
-<input id="bestFieldSize" placeholder="Field Size (ha)">
+<h3 id="cropName"></h3>
 
-<button class="calc" onclick="bestCrop()" id="bestBtn">Find</button>
+<div id="timeline"></div>
 
-<div class="result" id="bestResult"></div>
+<h3 id="nextTitle"></h3>
 
-</div>
-
-<!-- WORKTIME -->
-
-<div id="work" class="container">
-
-<h2 id="workTitle">Worktime Calculator</h2>
-
-<input id="width" placeholder="Working Width (m)">
-<input id="speed" placeholder="Speed (km/h)">
-<input id="workField" placeholder="Field Size (ha)">
-
-<button class="calc" onclick="calcWork()" id="workBtn">Calculate</button>
-
-<div class="result" id="workResult"></div>
+<div id="nextCrops" class="nextCrop"></div>
 
 </div>
 
-<!-- BALES -->
+</div>
 
-<div id="bale" class="container">
+<div id="profit" class="container">
 
-<h2 id="baleTitle">Bale Calculator</h2>
+<h2 id="profitTitle"></h2>
 
-<input id="baleSize" placeholder="Bale Size">
-<input id="baleCount" placeholder="Number of Bales">
+<label id="fieldLabel"></label>
+<input id="fieldSize" type="number" value="2">
 
-<button class="calc" onclick="calcBales()" id="baleBtn">Calculate</button>
+<br><br>
 
-<div class="result" id="baleResult"></div>
+<label id="fertLabel"></label>
+
+<select id="fert">
+<option value="1">0%</option>
+<option value="1.25">50%</option>
+<option value="1.5">100%</option>
+</select>
+
+<br><br>
+
+<button onclick="calculate()" id="calcBtn"></button>
+
+<p id="yield"></p>
+<p id="profitResult"></p>
 
 </div>
 
-<!-- ANIMALS -->
+<div class="lang">
 
-<div id="animals" class="container">
-
-<h2 id="animalTitle">Animal Feed</h2>
-
-<input id="animalsCount" placeholder="Animals">
-<input id="foodPerDay" placeholder="Food per day">
-
-<button class="calc" onclick="calcAnimals()" id="animalBtn">Calculate</button>
-
-<div class="result" id="animalResult"></div>
-
-</div>
-
-<!-- PRODUCTION -->
-
-<div id="production" class="container">
-
-<h2 id="prodTitle">Production Profit</h2>
-
-<input id="prodInput" placeholder="Input Cost">
-<input id="prodOutput" placeholder="Output Value">
-
-<button class="calc" onclick="calcProduction()" id="prodBtn">Calculate</button>
-
-<div class="result" id="prodResult"></div>
-
-</div>
-
-<!-- TODO LIST -->
-
-<div id="todo" class="container">
-
-<h2 id="todoTitle">Farm To-Do</h2>
-
-<input id="todoInput" placeholder="New Task">
-<button class="calc" onclick="addTodo()" id="todoBtn">Add</button>
-
-<ul id="todoList"></ul>
-
-</div>
-
-<!-- LANGUAGE BUTTON -->
-
-<div class="language-switch">
-
-<button onclick="setLang('en')">🇬🇧</button>
 <button onclick="setLang('de')">🇩🇪</button>
+<button onclick="setLang('en')">🇬🇧</button>
+
+</div>
 
 </div>
 
 <script>
 
-/* TAB SYSTEM */
+let lang="de"
+let currentCrop="wheat"
+
+const translations={
+
+de:{
+title:"LS25 Farm Helfer",
+calendar:"Frucht Kalender",
+profit:"Gewinn Rechner",
+calendarTitle:"Frucht Timeline",
+profitTitle:"Ertrags Rechner",
+field:"Feldgröße (ha)",
+fert:"Düngung",
+calculate:"Berechnen",
+yield:"Ertrag",
+profitLabel:"Gewinn",
+next:"Empfohlene nächste Frucht",
+months:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
+},
+
+en:{
+title:"LS25 Farm Helper",
+calendar:"Crop Calendar",
+profit:"Profit Calculator",
+calendarTitle:"Crop Timeline",
+profitTitle:"Yield Calculator",
+field:"Field size (ha)",
+fert:"Fertilization",
+calculate:"Calculate",
+yield:"Yield",
+profitLabel:"Profit",
+next:"Recommended next crop",
+months:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+}
+
+}
+
+const crops={
+
+wheat:{
+name:{de:"Weizen",en:"Wheat"},
+yield:0.89,
+sow:[8,9],
+harvest:[6,7],
+next:["canola","soybean","barley"]
+},
+
+canola:{
+name:{de:"Raps",en:"Canola"},
+yield:0.58
+},
+
+soybean:{
+name:{de:"Sojabohnen",en:"Soybeans"},
+yield:0.45
+},
+
+barley:{
+name:{de:"Gerste",en:"Barley"},
+yield:0.88
+}
+
+}
+
+function setLang(l){
+
+lang=l
+render()
+
+}
+
+function render(){
+
+const t=translations[lang]
+
+document.getElementById("title").innerText=t.title
+document.getElementById("tabCalendar").innerText=t.calendar
+document.getElementById("tabProfit").innerText=t.profit
+document.getElementById("calendarTitle").innerText=t.calendarTitle
+document.getElementById("profitTitle").innerText=t.profitTitle
+
+document.getElementById("fieldLabel").innerText=t.field
+document.getElementById("fertLabel").innerText=t.fert
+document.getElementById("calcBtn").innerText=t.calculate
+
+document.getElementById("cropName").innerText=crops[currentCrop].name[lang]
+
+document.getElementById("nextTitle").innerText=t.next
+
+renderTimeline()
+renderNext()
+
+}
+
+function renderTimeline(){
+
+const t=translations[lang]
+const crop=crops[currentCrop]
+
+let html="<div class='timeline'>"
+
+for(let i=0;i<12;i++){
+
+html+=`<div class="month">${t.months[i]}</div>`
+
+}
+
+html+="</div>"
+
+html+="<div class='timeline'>"
+
+for(let i=0;i<12;i++){
+
+let cls=""
+
+if(crop.sow && crop.sow.includes(i)) cls="bar sow"
+if(crop.harvest && crop.harvest.includes(i)) cls="bar harvest"
+
+html+=`<div><div class="${cls}"></div></div>`
+
+}
+
+html+="</div>"
+
+document.getElementById("timeline").innerHTML=html
+
+}
+
+function renderNext(){
+
+const crop=crops[currentCrop]
+
+let html=""
+
+if(crop.next){
+
+crop.next.forEach(c=>{
+
+html+=`<button onclick="selectCrop('${c}')">${crops[c].name[lang]}</button>`
+
+})
+
+}
+
+document.getElementById("nextCrops").innerHTML=html
+
+}
+
+function selectCrop(c){
+
+currentCrop=c
+render()
+
+}
+
+function calculate(){
+
+const size=document.getElementById("fieldSize").value
+const fert=document.getElementById("fert").value
+
+const crop=crops[currentCrop]
+
+const baseYield=crop.yield*10000*size
+const totalYield=baseYield*fert
+
+const price=1.6
+
+const profit=totalYield*price
+
+document.getElementById("yield").innerText=
+translations[lang].yield+": "+Math.round(totalYield)+" L"
+
+document.getElementById("profitResult").innerText=
+translations[lang].profitLabel+": "+Math.round(profit)+" €"
+
+}
 
 function openTab(tab){
 
@@ -244,215 +374,7 @@ document.getElementById(tab).classList.add("active")
 
 }
 
-/* PROFIT */
-
-function calculate(){
-
-let size=document.getElementById("fieldsize").value
-let yieldha=document.getElementById("yieldha").value
-let price=document.getElementById("price").value
-
-let total=size*yieldha
-let profit=(total/1000)*price
-
-document.getElementById("result").innerHTML=
-(currentLang==="de"
-? "Ertrag: "+total+" L<br>Gewinn: "+profit
-: "Yield: "+total+" L<br>Profit: "+profit)
-
-}
-
-/* BEST CROP */
-
-function bestCrop(){
-
-let size=document.getElementById("bestFieldSize").value
-
-let crops=[
-{name:"Wheat",yield:8900,price:900},
-{name:"Barley",yield:9600,price:850},
-{name:"Canola",yield:5800,price:1200}
-]
-
-let best=""
-let bestProfit=0
-
-crops.forEach(c=>{
-
-let profit=(size*c.yield/1000)*c.price
-
-if(profit>bestProfit){
-bestProfit=profit
-best=c.name
-}
-
-})
-
-document.getElementById("bestResult").innerHTML=
-(currentLang==="de"
-? "Beste Frucht: "+best+" Gewinn: "+bestProfit
-: "Best Crop: "+best+" Profit: "+bestProfit)
-
-}
-
-/* WORKTIME */
-
-function calcWork(){
-
-let width=document.getElementById("width").value
-let speed=document.getElementById("speed").value
-let size=document.getElementById("workField").value
-
-let haHour=(width*speed)/10
-let time=size/haHour
-
-document.getElementById("workResult").innerHTML=
-(currentLang==="de"
-? "Arbeitszeit: "+time.toFixed(2)+" Stunden"
-: "Worktime: "+time.toFixed(2)+" hours")
-
-}
-
-/* BALES */
-
-function calcBales(){
-
-let size=document.getElementById("baleSize").value
-let count=document.getElementById("baleCount").value
-
-document.getElementById("baleResult").innerHTML=
-(currentLang==="de"
-? "Gesamt: "+(size*count)
-: "Total: "+(size*count))
-
-}
-
-/* ANIMALS */
-
-function calcAnimals(){
-
-let animals=document.getElementById("animalsCount").value
-let food=document.getElementById("foodPerDay").value
-
-document.getElementById("animalResult").innerHTML=
-(currentLang==="de"
-? "Futter pro Tag: "+animals*food
-: "Food per day: "+animals*food)
-
-}
-
-/* PRODUCTION */
-
-function calcProduction(){
-
-let input=document.getElementById("prodInput").value
-let output=document.getElementById("prodOutput").value
-
-document.getElementById("prodResult").innerHTML=
-(currentLang==="de"
-? "Gewinn: "+(output-input)
-: "Profit: "+(output-input))
-
-}
-
-/* TODO LIST */
-
-function loadTodos(){
-
-let todos=JSON.parse(localStorage.getItem("todos"))||[]
-
-let list=document.getElementById("todoList")
-list.innerHTML=""
-
-todos.forEach((t,i)=>{
-
-let li=document.createElement("li")
-
-li.innerHTML=
-'<input type="checkbox" '+(t.done?'checked':'')+
-' onchange="toggleTodo('+i+')"> '+t.text
-
-list.appendChild(li)
-
-})
-
-}
-
-function addTodo(){
-
-let text=document.getElementById("todoInput").value
-
-let todos=JSON.parse(localStorage.getItem("todos"))||[]
-
-todos.push({text:text,done:false})
-
-localStorage.setItem("todos",JSON.stringify(todos))
-
-document.getElementById("todoInput").value=""
-
-loadTodos()
-
-}
-
-function toggleTodo(i){
-
-let todos=JSON.parse(localStorage.getItem("todos"))
-
-todos[i].done=!todos[i].done
-
-localStorage.setItem("todos",JSON.stringify(todos))
-
-loadTodos()
-
-}
-
-loadTodos()
-
-/* LANGUAGE SYSTEM */
-
-let currentLang="en"
-
-function setLang(lang){
-
-currentLang=lang
-
-if(lang==="de"){
-
-document.getElementById("title").innerText="🚜 LS25 Helfer"
-
-document.getElementById("tabProfit").innerText="Gewinn"
-document.getElementById("tabBest").innerText="Beste Frucht"
-document.getElementById("tabWork").innerText="Arbeitszeit"
-document.getElementById("tabBale").innerText="Ballen"
-document.getElementById("tabAnimals").innerText="Tiere"
-document.getElementById("tabProd").innerText="Produktion"
-document.getElementById("tabTodo").innerText="Aufgaben"
-
-document.getElementById("profitTitle").innerText="Gewinn Rechner"
-document.getElementById("bestTitle").innerText="Beste Frucht"
-document.getElementById("workTitle").innerText="Arbeitszeit Rechner"
-document.getElementById("baleTitle").innerText="Ballen Rechner"
-document.getElementById("animalTitle").innerText="Tier Futter"
-document.getElementById("prodTitle").innerText="Produktions Gewinn"
-document.getElementById("todoTitle").innerText="Farm Aufgaben"
-
-}
-
-else{
-
-document.getElementById("title").innerText="🚜 LS25 Helper"
-
-document.getElementById("tabProfit").innerText="Profit"
-document.getElementById("tabBest").innerText="Best Crop"
-document.getElementById("tabWork").innerText="Worktime"
-document.getElementById("tabBale").innerText="Bales"
-document.getElementById("tabAnimals").innerText="Animals"
-document.getElementById("tabProd").innerText="Production"
-document.getElementById("tabTodo").innerText="To-Do"
-
-}
-
-}
+render()
 
 </script>
 
