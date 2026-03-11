@@ -24,7 +24,7 @@ background:#1b5e20;
 padding:20px;
 margin:20px auto;
 width:90%;
-max-width:500px;
+max-width:450px;
 border-radius:10px;
 }
 
@@ -73,68 +73,70 @@ margin-top:10px;
 
 </header>
 
-<!-- PROFIT CALCULATOR -->
-
 <div class="container">
 
 <h2 id="profitTitle">Profit Calculator</h2>
 
 <input id="fieldsize" type="number" placeholder="Field Size (ha)">
 
-<select id="crop"></select>
+<select id="crop">
+
+<option value="8900">Wheat</option>
+<option value="9600">Barley</option>
+<option value="5800">Canola</option>
+<option value="9200">Corn</option>
+<option value="4500">Soybeans</option>
+<option value="41300">Potatoes</option>
+<option value="57800">Sugar Beet</option>
+
+</select>
 
 <input id="price" type="number" placeholder="Price per 1000L">
 
-<button onclick="calculateProfit()" id="calcBtn">Calculate Profit</button>
+<label>Field Conditions</label>
+
+<select id="fertilizer">
+<option value="1">No Fertilizer</option>
+<option value="1.225">1x Fertilized</option>
+<option value="1.45">2x Fertilized</option>
+</select>
+
+<select id="weed">
+<option value="1">Weeds Present</option>
+<option value="1.15">Weeds Removed</option>
+</select>
+
+<select id="mulch">
+<option value="1">Not Mulched</option>
+<option value="1.025">Mulched</option>
+</select>
+
+<select id="roll">
+<option value="1">Not Rolled</option>
+<option value="1.025">Rolled</option>
+</select>
+
+<button onclick="calculate()" id="calcBtn">Calculate Profit</button>
 
 <div class="result" id="result"></div>
 
-</div>
-
-<!-- YIELD CALCULATOR -->
-
-<div class="container">
-
-<h2 id="yieldTitle">Yield Calculator</h2>
-
-<input id="yieldField" type="number" placeholder="Field Size (ha)">
-
-<select id="yieldCrop"></select>
-
-<select id="bonus">
-<option value="1">No Bonus</option>
-<option value="1.45">Fertilized</option>
-<option value="1.95">Fully Optimized</option>
-<option value="2.15">Precision Farming</option>
-</select>
-
-<button onclick="calculateYield()" id="yieldBtn">Calculate Yield</button>
-
-<div class="result" id="yieldResult"></div>
-
 <p class="note">
-⚠️ Vanilla LS25 values. Mod maps may differ.
+⚠️ Values based on LS25 vanilla maps. Mod maps may differ.
 </p>
 
 </div>
 
-<!-- BEST CROP -->
-
 <div class="container">
 
-<h2 id="bestTitle">Best Crop Calculator</h2>
+<h2 id="bestCropTitle">Best Crop Calculator</h2>
 
-<input id="bestField" type="number" placeholder="Field Size (ha)">
-
-<input id="bestPrice" type="number" placeholder="Price per 1000L">
+<input id="bestFieldSize" type="number" placeholder="Field Size (ha)">
 
 <button onclick="bestCrop()" id="bestBtn">Find Best Crop</button>
 
 <div class="result" id="bestResult"></div>
 
 </div>
-
-<!-- FIELD PLANNER -->
 
 <div class="container">
 
@@ -161,89 +163,103 @@ margin-top:10px;
 
 let lang="en"
 
-const crops={
-Wheat:8900,
-Barley:9600,
-Oat:5700,
-Corn:9200,
-Soybeans:4500,
-Canola:5800,
-Sunflower:6200,
-Potatoes:41300,
-"Sugar Beet":57800,
-Carrot:77000,
-Parsnip:69500,
-Onion:35000
-}
+function setLang(l){
 
-function loadCrops(){
+lang=l
 
-let cropSelect=document.getElementById("crop")
-let yieldSelect=document.getElementById("yieldCrop")
+if(lang==="de"){
 
-for(let crop in crops){
+document.getElementById("profitTitle").innerText="Gewinn Rechner"
+document.getElementById("plannerTitle").innerText="Feldplanung"
+document.getElementById("bestCropTitle").innerText="Beste Frucht Rechner"
 
-let option=document.createElement("option")
-option.value=crops[crop]
-option.text=crop
-cropSelect.appendChild(option)
+document.getElementById("calcBtn").innerText="Gewinn berechnen"
+document.getElementById("bestBtn").innerText="Beste Frucht finden"
+document.getElementById("addBtn").innerText="Feld hinzufügen"
 
-let option2=option.cloneNode(true)
-yieldSelect.appendChild(option2)
+document.getElementById("fieldsize").placeholder="Feldgröße (ha)"
+document.getElementById("price").placeholder="Preis pro 1000L"
+document.getElementById("fieldname").placeholder="Feld Name"
 
 }
 
+else{
+
+document.getElementById("profitTitle").innerText="Profit Calculator"
+document.getElementById("plannerTitle").innerText="Field Planner"
+document.getElementById("bestCropTitle").innerText="Best Crop Calculator"
+
+document.getElementById("calcBtn").innerText="Calculate Profit"
+document.getElementById("bestBtn").innerText="Find Best Crop"
+document.getElementById("addBtn").innerText="Add Field"
+
+document.getElementById("fieldsize").placeholder="Field Size (ha)"
+document.getElementById("price").placeholder="Price per 1000L"
+document.getElementById("fieldname").placeholder="Field Name"
+
 }
 
-loadCrops()
+}
 
-function calculateProfit(){
+function calculate(){
 
 let size=document.getElementById("fieldsize").value
 let yieldPerHa=document.getElementById("crop").value
 let price=document.getElementById("price").value
 
-let totalYield=size*yieldPerHa
-let profit=(totalYield/1000)*price
+let fertilizer=document.getElementById("fertilizer").value
+let weed=document.getElementById("weed").value
+let mulch=document.getElementById("mulch").value
+let roll=document.getElementById("roll").value
+
+let modifier=fertilizer*weed*mulch*roll
+
+let totalYield=size*yieldPerHa*modifier
+let totalProfit=(totalYield/1000)*price
+
+if(lang==="de"){
 
 document.getElementById("result").innerHTML=
-"Yield: "+Math.round(totalYield)+" L<br>Profit: €"+profit.toFixed(0)
+"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: €"+totalProfit.toFixed(0)
 
 }
 
-function calculateYield(){
+else{
 
-let size=document.getElementById("yieldField").value
-let yieldPerHa=document.getElementById("yieldCrop").value
-let bonus=document.getElementById("bonus").value
+document.getElementById("result").innerHTML=
+"Yield: "+Math.round(totalYield)+" L<br>Profit: €"+totalProfit.toFixed(0)
 
-let totalYield=size*yieldPerHa*bonus
-
-document.getElementById("yieldResult").innerHTML=
-"Yield: "+Math.round(totalYield)+" L"
+}
 
 }
 
 function bestCrop(){
 
-let size=document.getElementById("bestField").value
-let price=document.getElementById("bestPrice").value
+let size=document.getElementById("bestFieldSize").value
+
+let crops=[
+{name:"Wheat",yield:8900,price:900},
+{name:"Barley",yield:9600,price:850},
+{name:"Canola",yield:5800,price:1200},
+{name:"Corn",yield:9200,price:800},
+{name:"Soybeans",yield:4500,price:1500}
+]
 
 let best=""
 let bestProfit=0
 
-for(let crop in crops){
+crops.forEach(c=>{
 
-let profit=(size*crops[crop]/1000)*price
+let profit=(size*c.yield/1000)*c.price
 
 if(profit>bestProfit){
 
 bestProfit=profit
-best=crop
+best=c.name
 
 }
 
-}
+})
 
 document.getElementById("bestResult").innerHTML=
 "Best Crop: "+best+"<br>Profit: €"+bestProfit.toFixed(0)
