@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.45</title>
+<title>LS25 Helper v1.5</title>
 
 <style>
 
@@ -135,22 +135,12 @@ cursor:pointer;
 <option value="9600">🌾 Gerste</option>
 <option value="8800">🌾 Hafer</option>
 <option value="5800">🌱 Raps</option>
-<option value="9200">🌽 Mais</option>
+<option value="9200">🌽 Mais (Korn)</option>
+<option value="45000">🌿 Mais (Silomais)</option>
 <option value="5000">🫘 Sojabohnen</option>
 <option value="7000">🌻 Sonnenblumen</option>
 <option value="42000">🥔 Kartoffeln</option>
 <option value="60000">🌱 Zuckerrüben</option>
-<option value="7000">🌾 Reis</option>
-<option value="8500">🌾 Sorghum</option>
-<option value="30000">🥕 Karotten</option>
-<option value="28000">🥔 Pastinaken</option>
-<option value="6000">🫘 Bohnen</option>
-<option value="6500">🌱 Erbsen</option>
-<option value="12000">🍇 Trauben</option>
-<option value="10000">🫒 Oliven</option>
-<option value="15000">🌲 Pappel</option>
-<option value="20000">🌿 Gras</option>
-<option value="4000">🌱 Ölrettich</option>
 
 </select>
 
@@ -162,18 +152,16 @@ cursor:pointer;
 <h3>Düngung</h3>
 
 <select id="fert">
-
 <option value="1">Keine</option>
 <option value="1.25">1x Dünger</option>
 <option value="1.5">2x Dünger</option>
-
 </select>
 
 <h3>Additive</h3>
 
-<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label><br>
-<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label><br>
-<label><input type="checkbox" id="stones"> Steine entfernt (+2%)</label>
+<label><input type="checkbox" id="mulch"> Mulchen</label><br>
+<label><input type="checkbox" id="roll"> Walzen</label><br>
+<label><input type="checkbox" id="stones"> Steine entfernt</label>
 
 <br><br>
 
@@ -208,7 +196,11 @@ cursor:pointer;
 
 </select>
 
-<div id="cropResult" style="margin-top:15px;font-size:18px;"></div>
+<div id="cropResult"></div>
+
+<h3>Saison Hinweise</h3>
+
+<div id="seasonInfo"></div>
 
 </div>
 
@@ -241,7 +233,6 @@ cursor:pointer;
 <span class="animalBtn" onclick="selectAnimal('Schaf')">🐑</span>
 <span class="animalBtn" onclick="selectAnimal('Huhn')">🐔</span>
 <span class="animalBtn" onclick="selectAnimal('Pferd')">🐎</span>
-<span class="animalBtn" onclick="selectAnimal('Ziege')">🐐</span>
 
 </div>
 
@@ -262,7 +253,6 @@ cursor:pointer;
 <h2>Farm To-Do</h2>
 
 <input id="todoInput" placeholder="Neue Aufgabe">
-
 <button onclick="addTodo()">Hinzufügen</button>
 
 <div id="todoList"></div>
@@ -276,9 +266,9 @@ cursor:pointer;
 <h2>In Entwicklung</h2>
 
 <ul>
-<li>Beste Frucht Rechner</li>
-<li>Ballen Rechner</li>
-<li>Farmplanung</li>
+<li>Maschinen Arbeitsplaner</li>
+<li>Frucht Profit Vergleich</li>
+<li>Produktionsketten Rechner</li>
 </ul>
 
 </div>
@@ -310,15 +300,13 @@ document.getElementById("contentArea").style.backgroundImage="url("+backgrounds[
 window.onload=function(){
 openSection('profit','field')
 showCrops()
+showSeason()
 }
-
-/* PROFIT */
 
 function setYield(){
 let crop=document.getElementById("cropSelect").value
 document.getElementById("yieldha").value=crop
 }
-setYield()
 
 function calculateProfit(){
 
@@ -327,13 +315,7 @@ let yieldha=parseFloat(document.getElementById("yieldha").value)
 let price=parseFloat(document.getElementById("price").value)
 let fert=parseFloat(document.getElementById("fert").value)
 
-let bonus=1
-
-if(document.getElementById("mulch").checked) bonus+=0.025
-if(document.getElementById("roll").checked) bonus+=0.025
-if(document.getElementById("stones").checked) bonus+=0.02
-
-let yieldTotal=size*yieldha*fert*bonus
+let yieldTotal=size*yieldha*fert
 let profit=(yieldTotal/1000)*price
 
 document.getElementById("profitResult").innerHTML=
@@ -341,23 +323,16 @@ document.getElementById("profitResult").innerHTML=
 
 }
 
-/* CROP CALENDAR */
-
 const cropCalendar={
-
-"🌾 Weizen":[8,9],
-"🌾 Gerste":[2,3,8,9],
-"🌾 Hafer":[2,3],
-"🌱 Raps":[7,8],
-"🌽 Mais":[4,5],
-"🫘 Sojabohnen":[4,5],
-"🌻 Sonnenblumen":[4,5],
-"🥔 Kartoffeln":[4,5],
-"🌱 Zuckerrüben":[3,4],
-"🌾 Sorghum":[4,5],
-"🥕 Karotten":[3,4],
-"🌱 Erbsen":[3,4]
-
+"Weizen":[8,9],
+"Gerste":[2,3,8,9],
+"Hafer":[2,3],
+"Raps":[7,8],
+"Mais":[4,5],
+"Sojabohnen":[4,5],
+"Sonnenblumen":[4,5],
+"Kartoffeln":[4,5],
+"Zuckerrüben":[3,4]
 }
 
 function showCrops(){
@@ -378,7 +353,31 @@ document.getElementById("cropResult").innerHTML=html
 
 }
 
-/* WORKTIME */
+function showSeason(){
+
+let month=parseInt(document.getElementById("monthSelect").value)
+
+let text=""
+
+if(month>=3 && month<=5){
+text="Frühling: Säen und düngen."
+}
+
+if(month>=6 && month<=8){
+text="Sommer: Pflege der Felder."
+}
+
+if(month>=9 && month<=10){
+text="Herbst: Erntezeit."
+}
+
+if(month>=11 || month<=2){
+text="Winter: Planung und Verkauf."
+}
+
+document.getElementById("seasonInfo").innerHTML=text
+
+}
 
 function calcWork(){
 
@@ -394,16 +393,13 @@ document.getElementById("workResult").innerHTML=
 
 }
 
-/* ANIMALS */
-
 const animalFoodTypes={
 
 "Kuh":{TMR:45,Heu:30,Silage:35,Gras:25},
-"Schwein":{Mais:8,Gerste:8,Weizen:8,Soja:8},
+"Schwein":{Mais:8,Gerste:8,Weizen:8},
 "Schaf":{Gras:5,Heu:5},
 "Pferd":{Hafer:10,Heu:8},
-"Huhn":{Weizen:0.1},
-"Ziege":{Gras:6,Heu:6}
+"Huhn":{Weizen:0.1}
 
 }
 
@@ -416,9 +412,7 @@ let foods=animalFoodTypes[name]
 let html="<h3>"+name+"</h3>"
 
 for(let f in foods){
-
 html+=`<div onclick="selectFood(${foods[f]})">${f} (${foods[f]} L)</div>`
-
 }
 
 document.getElementById("animalFoodTypes").innerHTML=html
@@ -442,8 +436,6 @@ document.getElementById("animalResult").innerHTML=
 
 }
 
-/* TODO */
-
 function loadTodos(){
 
 let todos=JSON.parse(localStorage.getItem("todos"))||[]
@@ -451,14 +443,7 @@ let todos=JSON.parse(localStorage.getItem("todos"))||[]
 let html=""
 
 todos.forEach((t,i)=>{
-
-html+=`
-<div>
-<input type="checkbox" ${t.done?'checked':''}
-onchange="toggleTodo(${i})"> ${t.text}
-</div>
-`
-
+html+=`<div><input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${i})"> ${t.text}</div>`
 })
 
 document.getElementById("todoList").innerHTML=html
@@ -468,13 +453,11 @@ document.getElementById("todoList").innerHTML=html
 function addTodo(){
 
 let text=document.getElementById("todoInput").value
-
 let todos=JSON.parse(localStorage.getItem("todos"))||[]
 
 todos.push({text:text,done:false})
 
 localStorage.setItem("todos",JSON.stringify(todos))
-
 document.getElementById("todoInput").value=""
 
 loadTodos()
