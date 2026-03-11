@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.30</title>
+<title>LS25 Helper v1.40</title>
 
 <style>
 
@@ -13,43 +13,51 @@ background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") c
 color:white;
 }
 
-.overlay{
+.app{
+display:flex;
+height:100vh;
 background:rgba(0,0,0,0.75);
-min-height:100vh;
-padding:20px;
 }
 
-header{
-text-align:center;
-margin-bottom:20px;
+.sidebar{
+width:220px;
+background:#1b1f24;
+padding:15px;
 }
 
-.tabs{
-text-align:center;
-margin-bottom:20px;
+.sidebar h2{
+margin-top:0;
 }
 
-.tabBtn{
-padding:10px 14px;
-margin:4px;
+.navBtn{
+display:block;
+width:100%;
+margin:6px 0;
+padding:10px;
 border:none;
-border-radius:8px;
+border-radius:6px;
 background:#4caf50;
 color:white;
 cursor:pointer;
+text-align:left;
 }
 
-.tabBtn:hover{
+.navBtn:hover{
 background:#66bb6a;
 }
 
-.container{
+.content{
+flex:1;
+padding:20px;
+overflow:auto;
+}
+
+.section{
 display:none;
-max-width:900px;
-margin:auto;
 background:#2b2f36;
 padding:20px;
-border-radius:12px;
+border-radius:10px;
+max-width:900px;
 }
 
 .active{
@@ -59,8 +67,8 @@ display:block;
 input,select{
 padding:8px;
 margin:5px;
-border-radius:6px;
 border:none;
+border-radius:6px;
 }
 
 button{
@@ -75,12 +83,7 @@ margin-top:10px;
 font-size:18px;
 }
 
-ul{
-list-style:none;
-padding:0;
-}
-
-/* Crop Planner */
+/* Timeline */
 
 .timeline{
 display:grid;
@@ -94,8 +97,8 @@ font-size:12px;
 }
 
 .bar{
-height:20px;
-border-radius:5px;
+height:18px;
+border-radius:4px;
 margin:2px;
 }
 
@@ -107,16 +110,21 @@ background:#3498db;
 background:#f39c12;
 }
 
-.nextCrop button{
+/* Crop Buttons */
+
+.cropButtons button{
 margin:4px;
 background:#4caf50;
 color:white;
 }
 
-.language{
-position:fixed;
-bottom:10px;
-right:10px;
+/* Farm list */
+
+.fieldCard{
+background:#3a4048;
+padding:10px;
+margin:6px 0;
+border-radius:8px;
 }
 
 </style>
@@ -124,56 +132,57 @@ right:10px;
 
 <body>
 
-<div class="overlay">
+<div class="app">
 
-<header>
-<h1 id="title">LS25 Helper</h1>
-</header>
+<div class="sidebar">
 
-<div class="tabs">
+<h2>LS25 Helper</h2>
 
-<button class="tabBtn" onclick="openTab('profit')">Profit</button>
-<button class="tabBtn" onclick="openTab('best')">Best Crop</button>
-<button class="tabBtn" onclick="openTab('work')">Worktime</button>
-<button class="tabBtn" onclick="openTab('bale')">Bales</button>
-<button class="tabBtn" onclick="openTab('animals')">Animals</button>
-<button class="tabBtn" onclick="openTab('production')">Production</button>
-<button class="tabBtn" onclick="openTab('todo')">To-Do</button>
-<button class="tabBtn" onclick="openTab('planner')">Crop Planner</button>
+<button class="navBtn" onclick="openSection('profit')">Profit Rechner</button>
+<button class="navBtn" onclick="openSection('best')">Beste Frucht</button>
+<button class="navBtn" onclick="openSection('work')">Arbeitszeit</button>
+<button class="navBtn" onclick="openSection('bales')">Ballen Rechner</button>
+<button class="navBtn" onclick="openSection('animals')">Tier Futter</button>
+<button class="navBtn" onclick="openSection('production')">Produktionen</button>
+<button class="navBtn" onclick="openSection('todo')">Farm To-Do</button>
+<button class="navBtn" onclick="openSection('planner')">Crop Planner</button>
+<button class="navBtn" onclick="openSection('farm')">Farm Planner</button>
 
 </div>
 
+<div class="content">
+
 <!-- PROFIT -->
 
-<div id="profit" class="container active">
+<div id="profit" class="section active">
 
-<h2 id="profitTitle">Profit Calculator</h2>
+<h2>Profit Rechner</h2>
 
-<input id="fieldsize" type="number" placeholder="Field Size (ha)">
-<input id="yieldha" type="number" placeholder="Yield per ha (L)">
-<input id="price" type="number" placeholder="Price per 1000L">
+<input id="fieldsize" placeholder="Feldgröße (ha)">
+<input id="yieldha" placeholder="Ertrag pro ha (L)">
+<input id="price" placeholder="Preis pro 1000L">
 
 <select id="fert">
-<option value="1">0%</option>
-<option value="1.25">50%</option>
-<option value="1.5">100%</option>
+<option value="1">Keine Düngung</option>
+<option value="1.25">1x Dünger</option>
+<option value="1.5">2x Dünger</option>
 </select>
 
-<button onclick="calculate()" id="calcBtn">Calculate</button>
+<button onclick="calculateProfit()">Berechnen</button>
 
-<div class="result" id="result"></div>
+<div class="result" id="profitResult"></div>
 
 </div>
 
 <!-- BEST CROP -->
 
-<div id="best" class="container">
+<div id="best" class="section">
 
-<h2>Best Crop Calculator</h2>
+<h2>Beste Frucht Rechner</h2>
 
-<input id="bestFieldSize" placeholder="Field Size (ha)">
+<input id="bestFieldSize" placeholder="Feldgröße (ha)">
 
-<button onclick="bestCrop()">Find Best Crop</button>
+<button onclick="bestCrop()">Berechnen</button>
 
 <div class="result" id="bestResult"></div>
 
@@ -181,15 +190,15 @@ right:10px;
 
 <!-- WORKTIME -->
 
-<div id="work" class="container">
+<div id="work" class="section">
 
-<h2>Worktime Calculator</h2>
+<h2>Arbeitszeit Rechner</h2>
 
-<input id="width" placeholder="Working Width (m)">
-<input id="speed" placeholder="Speed (km/h)">
-<input id="workField" placeholder="Field Size (ha)">
+<input id="width" placeholder="Arbeitsbreite (m)">
+<input id="speed" placeholder="Geschwindigkeit (km/h)">
+<input id="workField" placeholder="Feldgröße (ha)">
 
-<button onclick="calcWork()">Calculate</button>
+<button onclick="calcWork()">Berechnen</button>
 
 <div class="result" id="workResult"></div>
 
@@ -197,14 +206,14 @@ right:10px;
 
 <!-- BALES -->
 
-<div id="bale" class="container">
+<div id="bales" class="section">
 
-<h2>Bale Calculator</h2>
+<h2>Ballen Rechner</h2>
 
-<input id="baleSize" placeholder="Bale Size">
-<input id="baleCount" placeholder="Number of Bales">
+<input id="baleSize" placeholder="Ballengröße">
+<input id="baleCount" placeholder="Anzahl">
 
-<button onclick="calcBales()">Calculate</button>
+<button onclick="calcBales()">Berechnen</button>
 
 <div class="result" id="baleResult"></div>
 
@@ -212,14 +221,14 @@ right:10px;
 
 <!-- ANIMALS -->
 
-<div id="animals" class="container">
+<div id="animals" class="section">
 
-<h2>Animal Feed Calculator</h2>
+<h2>Tier Futter Rechner</h2>
 
-<input id="animalsCount" placeholder="Animals">
-<input id="foodPerDay" placeholder="Food per day">
+<input id="animalsCount" placeholder="Tiere">
+<input id="foodPerDay" placeholder="Futter pro Tag">
 
-<button onclick="calcAnimals()">Calculate</button>
+<button onclick="calcAnimals()">Berechnen</button>
 
 <div class="result" id="animalResult"></div>
 
@@ -227,14 +236,14 @@ right:10px;
 
 <!-- PRODUCTION -->
 
-<div id="production" class="container">
+<div id="production" class="section">
 
-<h2>Production Profit</h2>
+<h2>Produktions Gewinn</h2>
 
-<input id="prodInput" placeholder="Input Cost">
-<input id="prodOutput" placeholder="Output Value">
+<input id="prodInput" placeholder="Input Kosten">
+<input id="prodOutput" placeholder="Output Wert">
 
-<button onclick="calcProduction()">Calculate</button>
+<button onclick="calcProduction()">Berechnen</button>
 
 <div class="result" id="prodResult"></div>
 
@@ -242,12 +251,13 @@ right:10px;
 
 <!-- TODO -->
 
-<div id="todo" class="container">
+<div id="todo" class="section">
 
 <h2>Farm To-Do</h2>
 
-<input id="todoInput" placeholder="New Task">
-<button onclick="addTodo()">Add</button>
+<input id="todoInput" placeholder="Neue Aufgabe">
+
+<button onclick="addTodo()">Hinzufügen</button>
 
 <ul id="todoList"></ul>
 
@@ -255,71 +265,115 @@ right:10px;
 
 <!-- CROP PLANNER -->
 
-<div id="planner" class="container">
+<div id="planner" class="section">
 
 <h2>Crop Planner</h2>
 
-<h3 id="cropName">Wheat</h3>
+<div class="cropButtons">
+
+<button onclick="showCrop('wheat')">🌾 Weizen</button>
+<button onclick="showCrop('barley')">🌾 Gerste</button>
+<button onclick="showCrop('canola')">🌱 Raps</button>
+<button onclick="showCrop('corn')">🌽 Mais</button>
+<button onclick="showCrop('soybean')">🫘 Sojabohnen</button>
+<button onclick="showCrop('sunflower')">🌻 Sonnenblume</button>
+
+</div>
 
 <div id="timeline"></div>
 
-<h3>Recommended next crop</h3>
+<h3>Was kann ich jetzt säen?</h3>
 
-<div id="nextCrops" class="nextCrop"></div>
+<select id="monthSelect" onchange="showPlantOptions()">
+<option value="0">Jan</option>
+<option value="1">Feb</option>
+<option value="2">Mär</option>
+<option value="3">Apr</option>
+<option value="4">Mai</option>
+<option value="5">Jun</option>
+<option value="6">Jul</option>
+<option value="7">Aug</option>
+<option value="8">Sep</option>
+<option value="9">Okt</option>
+<option value="10">Nov</option>
+<option value="11">Dez</option>
+</select>
+
+<div id="plantOptions"></div>
 
 </div>
 
-<div class="language">
+<!-- FARM PLANNER -->
 
-<button onclick="setLang('en')">🇬🇧</button>
-<button onclick="setLang('de')">🇩🇪</button>
+<div id="farm" class="section">
+
+<h2>Farm Planung</h2>
+
+<input id="fieldName" placeholder="Feldname">
+<select id="fieldCrop">
+<option value="wheat">Weizen</option>
+<option value="barley">Gerste</option>
+<option value="canola">Raps</option>
+<option value="corn">Mais</option>
+<option value="soybean">Sojabohnen</option>
+</select>
+
+<input id="fieldSizeInput" placeholder="Größe (ha)">
+
+<select id="fieldFert">
+<option value="1">Keine</option>
+<option value="1.25">1x Dünger</option>
+<option value="1.5">2x Dünger</option>
+</select>
+
+<button onclick="addField()">Feld speichern</button>
+
+<div id="farmList"></div>
 
 </div>
 
+</div>
 </div>
 
 <script>
 
-/* TAB SYSTEM */
+/* Navigation */
 
-function openTab(tab){
+function openSection(id){
 
-document.querySelectorAll(".container").forEach(c=>{
-c.classList.remove("active")
-})
-
-document.getElementById(tab).classList.add("active")
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+document.getElementById(id).classList.add("active")
 
 }
 
-/* PROFIT */
+/* Profit */
 
-function calculate(){
+function calculateProfit(){
 
 let size=document.getElementById("fieldsize").value
 let yieldha=document.getElementById("yieldha").value
 let price=document.getElementById("price").value
 let fert=document.getElementById("fert").value
 
-let totalYield=size*yieldha*fert
-let totalProfit=(totalYield/1000)*price
+let yieldTotal=size*yieldha*fert
+let profit=(yieldTotal/1000)*price
 
-document.getElementById("result").innerHTML=
-"Yield: "+Math.round(totalYield)+" L<br>Profit: €"+Math.round(totalProfit)
+document.getElementById("profitResult").innerHTML=
+"Ertrag: "+Math.round(yieldTotal)+" L<br>Gewinn: "+Math.round(profit)+" €"
 
 }
 
-/* BEST CROP */
+/* Best Crop */
 
 function bestCrop(){
 
 let size=document.getElementById("bestFieldSize").value
 
 let crops=[
-{name:"Wheat",yield:8900,price:900},
-{name:"Barley",yield:9600,price:850},
-{name:"Canola",yield:5800,price:1200},
-{name:"Soybean",yield:5000,price:1500}
+{name:"Weizen",yield:8900,price:900},
+{name:"Gerste",yield:9600,price:850},
+{name:"Raps",yield:5800,price:1200},
+{name:"Sojabohnen",yield:5000,price:1500}
 ]
 
 let best=""
@@ -337,11 +391,11 @@ best=c.name
 })
 
 document.getElementById("bestResult").innerHTML=
-"Best Crop: "+best+" Profit: "+Math.round(bestProfit)
+"Beste Frucht: "+best+" Gewinn: "+Math.round(bestProfit)
 
 }
 
-/* WORKTIME */
+/* Worktime */
 
 function calcWork(){
 
@@ -353,11 +407,11 @@ let haHour=(width*speed)/10
 let time=size/haHour
 
 document.getElementById("workResult").innerHTML=
-"Worktime: "+time.toFixed(2)+" hours"
+"Arbeitszeit: "+time.toFixed(2)+" Stunden"
 
 }
 
-/* BALES */
+/* Bales */
 
 function calcBales(){
 
@@ -365,11 +419,11 @@ let size=document.getElementById("baleSize").value
 let count=document.getElementById("baleCount").value
 
 document.getElementById("baleResult").innerHTML=
-"Total: "+(size*count)
+"Total: "+size*count
 
 }
 
-/* ANIMALS */
+/* Animals */
 
 function calcAnimals(){
 
@@ -377,11 +431,11 @@ let animals=document.getElementById("animalsCount").value
 let food=document.getElementById("foodPerDay").value
 
 document.getElementById("animalResult").innerHTML=
-"Food per day: "+animals*food
+"Tagesbedarf: "+animals*food
 
 }
 
-/* PRODUCTION */
+/* Production */
 
 function calcProduction(){
 
@@ -389,11 +443,11 @@ let input=document.getElementById("prodInput").value
 let output=document.getElementById("prodOutput").value
 
 document.getElementById("prodResult").innerHTML=
-"Profit: "+(output-input)
+"Gewinn: "+(output-input)
 
 }
 
-/* TODO LIST */
+/* TODO */
 
 function loadTodos(){
 
@@ -426,8 +480,6 @@ todos.push({text:text,done:false})
 
 localStorage.setItem("todos",JSON.stringify(todos))
 
-document.getElementById("todoInput").value=""
-
 loadTodos()
 
 }
@@ -446,54 +498,61 @@ loadTodos()
 
 loadTodos()
 
-/* CROP PLANNER */
+/* Farm Planner */
 
-const cropsPlanner={
-wheat:{sow:[8,9],harvest:[6,7],next:["Canola","Soybean","Barley"]}
+function addField(){
+
+let name=document.getElementById("fieldName").value
+let crop=document.getElementById("fieldCrop").value
+let size=document.getElementById("fieldSizeInput").value
+let fert=document.getElementById("fieldFert").value
+
+let fields=JSON.parse(localStorage.getItem("fields"))||[]
+
+fields.push({name,crop,size,fert})
+
+localStorage.setItem("fields",JSON.stringify(fields))
+
+renderFields()
+
 }
 
-let currentCrop="wheat"
+function renderFields(){
 
-function renderPlanner(){
+let fields=JSON.parse(localStorage.getItem("fields"))||[]
 
-const crop=cropsPlanner[currentCrop]
+let html=""
 
-let html="<div class='timeline'>"
+fields.forEach((f,i)=>{
 
-const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+html+=`
+<div class="fieldCard">
+<b>${f.name}</b><br>
+Frucht: ${f.crop}<br>
+Größe: ${f.size} ha
+<button onclick="deleteField(${i})">Löschen</button>
+</div>
+`
 
-months.forEach(m=>{
-html+=`<div class="month">${m}</div>`
 })
 
-html+="</div><div class='timeline'>"
-
-for(let i=0;i<12;i++){
-
-let cls=""
-
-if(crop.sow.includes(i)) cls="bar sow"
-if(crop.harvest.includes(i)) cls="bar harvest"
-
-html+=`<div><div class="${cls}"></div></div>`
+document.getElementById("farmList").innerHTML=html
 
 }
 
-html+="</div>"
+function deleteField(i){
 
-document.getElementById("timeline").innerHTML=html
+let fields=JSON.parse(localStorage.getItem("fields"))
 
-let next=""
+fields.splice(i,1)
 
-crop.next.forEach(n=>{
-next+=`<button>${n}</button>`
-})
+localStorage.setItem("fields",JSON.stringify(fields))
 
-document.getElementById("nextCrops").innerHTML=next
+renderFields()
 
 }
 
-renderPlanner()
+renderFields()
 
 </script>
 
