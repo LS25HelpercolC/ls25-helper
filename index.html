@@ -9,99 +9,103 @@
 body{
 margin:0;
 font-family:Arial;
-background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover fixed;
 color:white;
+background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover fixed;
+}
+
+/* dunkles overlay */
+
+.overlay{
+background:rgba(0,0,0,0.65);
+min-height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
-height:100vh;
 }
+
+/* panel */
 
 .panel{
-
-width:700px;
-background:rgba(20,20,20,0.8);
-border-radius:15px;
+width:520px;
+background:rgba(30,30,30,0.85);
+border-radius:14px;
 padding:25px;
-box-shadow:0 0 30px rgba(0,0,0,0.8);
-
+box-shadow:0 0 25px rgba(0,0,0,0.7);
 }
+
+/* titel */
 
 h1{
 text-align:center;
 margin-bottom:20px;
 }
 
-.toprow{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
+/* inputs */
 
 select,input{
-
+width:100%;
 padding:10px;
-border:none;
+margin-top:8px;
+margin-bottom:10px;
 border-radius:6px;
-flex:1;
-
+border:none;
+font-size:14px;
 }
 
-.section{
-margin-top:15px;
-}
-
-.section h3{
-margin-bottom:8px;
-}
-
-label{
+.row{
 display:flex;
-align-items:center;
-gap:6px;
-margin:5px 0;
+gap:10px;
 }
+
+/* section */
+
+.sectionTitle{
+margin-top:15px;
+margin-bottom:5px;
+font-weight:bold;
+}
+
+/* checkboxes */
+
+.checkboxGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:6px;
+margin-top:6px;
+}
+
+/* button */
 
 button{
-
-margin-top:15px;
 width:100%;
 padding:12px;
+margin-top:18px;
 border:none;
 border-radius:8px;
-background:#4CAF50;
-font-size:16px;
+background:#4caf50;
 color:white;
+font-size:16px;
 cursor:pointer;
-
 }
 
 button:hover{
 background:#66bb6a;
 }
 
+/* result */
+
 .result{
-
+text-align:center;
 margin-top:15px;
-text-align:center;
 font-size:18px;
-
 }
 
-.cropBar{
+/* icon bar */
 
+.icons{
 margin-top:20px;
-display:grid;
-grid-template-columns:repeat(10,1fr);
-gap:6px;
-
-}
-
-.cropBar div{
-
-font-size:22px;
 text-align:center;
-
+font-size:26px;
 }
 
 </style>
@@ -109,20 +113,19 @@ text-align:center;
 
 <body>
 
+<div class="overlay">
+
 <div class="panel">
 
-<h1>Profit Rechner</h1>
-
-<div class="toprow">
+<h1>🚜 Profit Rechner</h1>
 
 <select id="crop">
-
 <option value="8900">🌾 Weizen</option>
 <option value="9600">🌾 Gerste</option>
 <option value="8800">🌾 Hafer</option>
 <option value="5800">🌱 Raps</option>
 <option value="9200">🌽 Mais (Korn)</option>
-<option value="45000">🌽 Mais (Silomais)</option>
+<option value="45000">🌽 Silomais</option>
 <option value="5000">🫘 Sojabohnen</option>
 <option value="7000">🌻 Sonnenblumen</option>
 <option value="42000">🥔 Kartoffeln</option>
@@ -137,111 +140,66 @@ text-align:center;
 <option value="15000">🌲 Pappel</option>
 <option value="4000">🌱 Ölrettich</option>
 <option value="20000">🌿 Gras</option>
-
 </select>
 
+<div class="row">
+<input id="size" type="number" placeholder="Feldgröße (ha)">
+<input id="price" type="number" placeholder="Preis pro 1000L">
 </div>
 
-<div class="toprow">
+<div class="sectionTitle">Düngestufe</div>
 
-<input id="fieldSize" placeholder="Feldgröße (ha)" type="number">
-<input id="price" placeholder="Preis pro 1000L" type="number">
+<label><input type="radio" name="fert" value="1" checked> Keine</label><br>
+<label><input type="radio" name="fert" value="1.25"> 1x Düngen (+25%)</label><br>
+<label><input type="radio" name="fert" value="1.5"> 2x Düngen (+50%)</label>
 
-</div>
+<div class="sectionTitle">Arbeitsschritte</div>
 
-<div class="section">
+<div class="checkboxGrid">
 
-<h3>Düngestufe</h3>
-
-<label><input type="radio" name="fert" value="0">Keine</label>
-<label><input type="radio" name="fert" value="0.25">1x Düngen (+25%)</label>
-<label><input type="radio" name="fert" value="0.5">2x Düngen (+50%)</label>
-
-</div>
-
-<div class="section">
-
-<h3>Arbeitsschritte</h3>
-
-<label><input type="checkbox" id="mulch">Mulchen (+2.5%)</label>
-<label><input type="checkbox" id="roll">Walzen (+2.5%)</label>
-<label><input type="checkbox" id="lime">Kalk (+15%)</label>
-<label><input type="checkbox" id="weed">Unkraut entfernt (+10%)</label>
-<label><input type="checkbox" id="pf">Precision Farming (+5%)</label>
+<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label>
+<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label>
+<label><input type="checkbox" id="lime"> Kalk (+15%)</label>
+<label><input type="checkbox" id="weed"> Unkraut entfernt (+10%)</label>
+<label><input type="checkbox" id="pf"> Precision Farming (+5%)</label>
 
 </div>
 
 <button onclick="calc()">Berechnen</button>
 
-<div class="result" id="result">
+<div class="result" id="result"></div>
 
-Ertrag: XXXX L<br>
-Gewinn: XXXX €
-
+<div class="icons">
+🌾 🌾 🌾 🌱 🌽 🌽 🫘 🌻 🥔 🟥 🫛 🥕 🥔 🍇 🫒 🌿 🌿 🌲 🌱 🌿
 </div>
 
-<div class="cropBar">
-
-<div>🌾</div>
-<div>🌾</div>
-<div>🌾</div>
-<div>🌱</div>
-<div>🌽</div>
-<div>🌽</div>
-<div>🫘</div>
-<div>🌻</div>
-<div>🥔</div>
-<div>🟥</div>
-
-<div>🫛</div>
-<div>🥕</div>
-<div>🥔</div>
-<div>🍇</div>
-<div>🫒</div>
-<div>🌿</div>
-<div>🌿</div>
-<div>🌲</div>
-<div>🌱</div>
-<div>🌿</div>
-
 </div>
-
 </div>
 
 <script>
 
 function calc(){
 
-let base=parseFloat(document.getElementById("crop").value)
-let size=parseFloat(document.getElementById("fieldSize").value)
-let price=parseFloat(document.getElementById("price").value)
+let yieldHa=document.getElementById("crop").value
+let size=document.getElementById("size").value
+let price=document.getElementById("price").value
 
-if(!size||!price){
-alert("Bitte Feldgröße und Preis eingeben")
-return
-}
+let fert=document.querySelector('input[name="fert"]:checked').value
 
-let bonus=0
+let bonus=1
 
-let fert=document.querySelector('input[name="fert"]:checked')
+if(document.getElementById("mulch").checked) bonus+=0.025
+if(document.getElementById("roll").checked) bonus+=0.025
+if(document.getElementById("lime").checked) bonus+=0.15
+if(document.getElementById("weed").checked) bonus+=0.10
+if(document.getElementById("pf").checked) bonus+=0.05
 
-if(fert) bonus+=parseFloat(fert.value)
+let totalYield=yieldHa*size*fert*bonus
 
-if(mulch.checked) bonus+=0.025
-if(roll.checked) bonus+=0.025
-if(lime.checked) bonus+=0.15
-if(weed.checked) bonus+=0.10
-if(pf.checked) bonus+=0.05
-
-let yieldHa=base*(1+bonus)
-
-let total=yieldHa*size
-
-let profit=(total/1000)*price
+let profit=(totalYield/1000)*price
 
 document.getElementById("result").innerHTML=
-
-"Ertrag: "+Math.round(total)+" L<br>Gewinn: "+Math.round(profit)+" €"
+"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
 
 }
 
