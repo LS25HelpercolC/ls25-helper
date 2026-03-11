@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <title>LS25 Helper</title>
@@ -7,401 +7,355 @@
 <style>
 
 body{
-margin:0;
 font-family:Arial;
+margin:0;
+background:url('farm.jpg') center/cover no-repeat fixed;
 color:white;
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
 }
 
-/* Layout */
-
-.wrapper{
+.app{
 display:flex;
-min-height:100vh;
+height:100vh;
+backdrop-filter:blur(6px);
 }
-
-/* Sidebar */
 
 .sidebar{
 width:220px;
-background:#1e2329;
+background:#1e2a33;
 padding:20px;
 }
 
 .sidebar h2{
-font-size:20px;
-margin-bottom:20px;
+margin-top:0;
 }
 
-.navBtn{
-display:block;
+.sidebar button{
 width:100%;
+margin:6px 0;
 padding:10px;
-margin-bottom:10px;
-background:#2c323a;
+background:#2e3d47;
 border:none;
 color:white;
-text-align:left;
-cursor:pointer;
 border-radius:6px;
+cursor:pointer;
 }
 
-.navBtn:hover{
-background:#3c444d;
-}
-
-/* Content */
-
-.content{
+.main{
 flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
+padding:30px;
+overflow:auto;
 }
 
-/* Panel */
-
-.panel{
-width:600px;
-background:rgba(20,20,20,0.85);
-border-radius:14px;
+.card{
+background:rgba(0,0,0,0.55);
 padding:25px;
-box-shadow:0 0 25px rgba(0,0,0,0.7);
+border-radius:14px;
+max-width:900px;
+margin:auto;
 }
 
-/* Inputs */
+h1{
+margin-top:0;
+}
 
 select,input{
-width:100%;
-padding:10px;
-margin-top:8px;
-margin-bottom:10px;
+padding:8px;
+margin:6px;
 border-radius:6px;
 border:none;
 }
 
-.row{
-display:flex;
-gap:10px;
-}
-
-/* Sections */
-
-.section{
-display:none;
-}
-
-.section.active{
-display:block;
-}
-
-/* Button */
-
-button.calc{
-width:100%;
-padding:12px;
-margin-top:18px;
+button.action{
+background:#4CAF50;
+color:white;
+padding:10px 20px;
 border:none;
 border-radius:8px;
-background:#4caf50;
-color:white;
-font-size:16px;
 cursor:pointer;
 }
 
-button.calc:hover{
-background:#66bb6a;
+.timeline{
+margin-top:30px;
 }
 
-/* Result */
-
-.result{
-text-align:center;
-margin-top:15px;
-font-size:18px;
+.year{
+margin:20px 0;
 }
 
-/* Icons */
-
-.icons{
-margin-top:20px;
-text-align:center;
-font-size:26px;
+.months{
+display:flex;
+justify-content:space-between;
+font-size:12px;
+margin-bottom:6px;
 }
 
-/* Arbeitsschritte */
+.bar{
+height:12px;
+border-radius:20px;
+background:#555;
+position:relative;
+overflow:hidden;
+}
 
-.workGrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+.fill{
+height:100%;
+background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
+}
+
+.fieldButtons button{
+margin:4px;
+padding:6px 12px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+}
+
+.cropList{
 margin-top:10px;
 }
 
-.workBtn{
+.cropList span{
+margin-right:10px;
+}
+
+.sowBox{
+margin-top:20px;
+background:#222;
 padding:10px;
-background:#3a3a3a;
-border-radius:6px;
-cursor:pointer;
-text-align:center;
-transition:0.2s;
-}
-
-.workBtn:hover{
-background:#555;
-}
-
-.workBtn.active{
-background:#4CAF50;
-}
-
-/* Düngestufe */
-
-.fertBtn{
-padding:10px;
-background:#3a3a3a;
-border-radius:6px;
-cursor:pointer;
-text-align:center;
-transition:0.2s;
-}
-
-.fertBtn.active{
-background:#4CAF50;
+border-radius:8px;
 }
 
 </style>
 </head>
 
-<body id="body">
+<body>
 
-<div class="wrapper">
-
-<!-- SIDEBAR -->
+<div class="app">
 
 <div class="sidebar">
-
 <h2>🚜 LS25 Helper</h2>
 
-<button class="navBtn" onclick="openTab('profit','profit.jpg')">Profit Rechner</button>
-<button class="navBtn" onclick="openTab('fields','fields.jpg')">Feldplanung</button>
-<button class="navBtn" onclick="openTab('work','work.png')">Arbeitszeit</button>
-<button class="navBtn" onclick="openTab('animals','animals.jpg')">Tierfutter</button>
-<button class="navBtn" onclick="openTab('todo','farm.jpg')">Farm To-Do</button>
-<button class="navBtn" onclick="openTab('dev','farm.jpg')">In Entwicklung</button>
+<button>Profit Rechner</button>
+<button>Feldplanung</button>
+<button>Arbeitszeit</button>
+<button>Tierfutter</button>
+<button>Farm To-Do</button>
+<button>In Entwicklung</button>
 
 </div>
 
-<!-- CONTENT -->
+<div class="main">
 
-<div class="content">
+<div class="card">
 
-<!-- PROFIT -->
+<h1>Feldplanung</h1>
 
-<div id="profit" class="section active">
+<div>
+Feldname:
+<input id="fieldName">
 
-<div class="panel">
+Größe (ha):
+<input id="fieldSize">
 
-<h1>🚜 Profit Rechner</h1>
+<button class="action" onclick="addField()">Feld speichern</button>
+</div>
 
-<select id="crop">
-<option value="8900">🌾 Weizen</option>
-<option value="9600">🌾 Gerste</option>
-<option value="8800">🌾 Hafer</option>
-<option value="5800">🌱 Raps</option>
-<option value="9200">🌽 Mais (Korn)</option>
-<option value="45000">🌽 Silomais</option>
-<option value="5000">🫘 Sojabohnen</option>
-<option value="7000">🌻 Sonnenblumen</option>
-<option value="42000">🥔 Kartoffeln</option>
-<option value="60000">🟥 Zuckerrüben</option>
-<option value="6500">🫛 Erbsen</option>
-<option value="30000">🥕 Karotten</option>
-<option value="28000">🥔 Pastinaken</option>
-<option value="12000">🍇 Trauben</option>
-<option value="10000">🫒 Oliven</option>
-<option value="7000">🌿 Reis</option>
-<option value="8500">🌿 Sorghum</option>
-<option value="15000">🌲 Pappel</option>
-<option value="4000">🌱 Ölrettich</option>
-<option value="20000">🌿 Gras</option>
+<div class="fieldButtons" id="fieldButtons"></div>
+
+<hr>
+
+<h3>Fruchtfolge</h3>
+
+<select id="cropSelect">
+<option>Weizen</option>
+<option>Raps</option>
+<option>Gerste</option>
+<option>Mais</option>
+<option>Sojabohnen</option>
+<option>Sonnenblumen</option>
 </select>
 
-<div class="row">
-<input id="size" type="number" placeholder="Feldgröße (ha)">
-<input id="price" type="number" placeholder="Preis pro 1000L">
-</div>
+<button class="action" onclick="addCrop()">+ Frucht</button>
 
-<h3>Düngestufe</h3>
+<div class="cropList" id="cropList"></div>
 
-<div class="workGrid">
+<hr>
 
-<div class="fertBtn active" data-value="1" onclick="selectFert(this)">
-Keine
-</div>
+<h3>Planungsdauer</h3>
 
-<div class="fertBtn" data-value="1.25" onclick="selectFert(this)">
-1x Düngen (+25%)
-</div>
+<select id="yearsSelect">
+<option value="2">2 Jahre</option>
+<option value="3" selected>3 Jahre</option>
+<option value="4">4 Jahre</option>
+<option value="5">5 Jahre</option>
+</select>
 
-<div class="fertBtn" data-value="1.5" onclick="selectFert(this)">
-2x Düngen (+50%)
-</div>
+<button class="action" onclick="generateTimeline()">Timeline erstellen</button>
 
-</div>
+<div class="timeline" id="timeline"></div>
 
-<h3>Arbeitsschritte</h3>
+<div class="sowBox">
 
-<div class="workGrid">
+<h3>🌱 Was kann ich diesen Monat säen?</h3>
 
-<div class="workBtn" id="mulch" onclick="toggleWork(this)">
-Mulchen (+2.5%)
-</div>
+<select id="monthSelect">
+<option value="1">Jan</option>
+<option value="2">Feb</option>
+<option value="3">Mär</option>
+<option value="4">Apr</option>
+<option value="5">Mai</option>
+<option value="6">Jun</option>
+<option value="7">Jul</option>
+<option value="8">Aug</option>
+<option value="9">Sep</option>
+<option value="10">Okt</option>
+<option value="11">Nov</option>
+<option value="12">Dez</option>
+</select>
 
-<div class="workBtn" id="roll" onclick="toggleWork(this)">
-Walzen (+2.5%)
-</div>
+<button onclick="whatToSow()">anzeigen</button>
 
-<div class="workBtn" id="lime" onclick="toggleWork(this)">
-Kalk (+15%)
-</div>
+<div id="sowResult"></div>
 
-<div class="workBtn" id="weed" onclick="toggleWork(this)">
-Unkraut entfernt (+10%)
-</div>
-
-<div class="workBtn" id="pf" onclick="toggleWork(this)">
-Precision Farming (+5%)
-</div>
-
-</div>
-
-<button class="calc" onclick="calc()">Berechnen</button>
-
-<div class="result" id="result"></div>
-
-<div class="icons">
-🌾 🌾 🌾 🌱 🌽 🌽 🫘 🌻 🥔 🟥 🫛 🥕 🥔 🍇 🫒 🌿 🌿 🌲 🌱 🌿
 </div>
 
 </div>
 
 </div>
 
-<!-- FELDPLANUNG -->
-
-<div id="fields" class="section">
-<div class="panel">
-<h2>Feldplanung</h2>
-<p>Diese Funktion wird später erweitert.</p>
-</div>
-</div>
-
-<!-- ARBEITSZEIT -->
-
-<div id="work" class="section">
-<div class="panel">
-<h2>Arbeitszeit Rechner</h2>
-<p>Maschinen-Arbeitszeit wird hier später berechnet.</p>
-</div>
-</div>
-
-<!-- TIERE -->
-
-<div id="animals" class="section">
-<div class="panel">
-<h2>Tierfutter Rechner</h2>
-<p>Tierfutter Berechnung folgt.</p>
-</div>
-</div>
-
-<!-- TODO -->
-
-<div id="todo" class="section">
-<div class="panel">
-<h2>Farm To-Do</h2>
-<p>Notizen für deine Farm.</p>
-</div>
-</div>
-
-<!-- DEV -->
-
-<div id="dev" class="section">
-<div class="panel">
-<h2>In Entwicklung</h2>
-<p>Weitere Tools folgen.</p>
-</div>
-</div>
-
-</div>
 </div>
 
 <script>
 
-/* TAB WECHSEL */
+let fields = JSON.parse(localStorage.getItem("fields")) || []
+let currentField = null
+let crops = []
 
-function openTab(tab,bg){
+function addField(){
 
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active")
+let name = document.getElementById("fieldName").value
+let size = document.getElementById("fieldSize").value
+
+if(!name)return
+
+fields.push({name,size})
+
+localStorage.setItem("fields",JSON.stringify(fields))
+
+renderFields()
+
+}
+
+function renderFields(){
+
+let box = document.getElementById("fieldButtons")
+box.innerHTML=""
+
+fields.forEach((f,i)=>{
+
+let btn=document.createElement("button")
+btn.innerText=f.name+" ("+f.size+"ha)"
+btn.onclick=()=>selectField(i)
+
+box.appendChild(btn)
+
 })
 
-document.getElementById(tab).classList.add("active")
+}
 
-document.body.style.backgroundImage="url('"+bg+"')"
+function selectField(i){
+
+currentField=i
+crops=[]
+
+document.getElementById("cropList").innerHTML=""
 
 }
 
-/* ARBEITSSCHRITTE */
+function addCrop(){
 
-function toggleWork(el){
-el.classList.toggle("active")
+let crop=document.getElementById("cropSelect").value
+
+crops.push(crop)
+
+renderCrops()
+
 }
 
-/* DÜNGESTUFE */
+function renderCrops(){
 
-function selectFert(el){
+let box=document.getElementById("cropList")
 
-document.querySelectorAll(".fertBtn").forEach(btn=>{
-btn.classList.remove("active")
+box.innerHTML=""
+
+crops.forEach(c=>{
+
+let span=document.createElement("span")
+span.innerText=c+" → "
+
+box.appendChild(span)
+
 })
 
-el.classList.add("active")
+}
+
+function generateTimeline(){
+
+let years=document.getElementById("yearsSelect").value
+
+let container=document.getElementById("timeline")
+
+container.innerHTML=""
+
+for(let y=1;y<=years;y++){
+
+let year=document.createElement("div")
+year.className="year"
+
+let months=document.createElement("div")
+months.className="months"
+
+let monthNames=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
+
+monthNames.forEach(m=>{
+let span=document.createElement("span")
+span.innerText=m
+months.appendChild(span)
+})
+
+let bar=document.createElement("div")
+bar.className="bar"
+
+let fill=document.createElement("div")
+fill.className="fill"
+
+fill.style.width=Math.random()*100+"%"
+
+bar.appendChild(fill)
+
+year.appendChild(months)
+year.appendChild(bar)
+
+container.appendChild(year)
 
 }
 
-/* PROFIT BERECHNUNG */
+}
 
-function calc(){
+function whatToSow(){
 
-let yieldHa=document.getElementById("crop").value
-let size=document.getElementById("size").value
-let price=document.getElementById("price").value
+let m=document.getElementById("monthSelect").value
 
-let fert=document.querySelector(".fertBtn.active").dataset.value
+let result=[]
 
-let bonus=1
+if(m>=3 && m<=5) result=["Mais","Sojabohnen","Sonnenblumen"]
+if(m>=9 && m<=10) result=["Weizen","Gerste","Raps"]
 
-if(document.getElementById("mulch").classList.contains("active")) bonus+=0.025
-if(document.getElementById("roll").classList.contains("active")) bonus+=0.025
-if(document.getElementById("lime").classList.contains("active")) bonus+=0.15
-if(document.getElementById("weed").classList.contains("active")) bonus+=0.10
-if(document.getElementById("pf").classList.contains("active")) bonus+=0.05
-
-let totalYield=yieldHa*size*fert*bonus
-
-let profit=(totalYield/1000)*price
-
-document.getElementById("result").innerHTML=
-"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
+document.getElementById("sowResult").innerText=result.join(", ")
 
 }
 
-/* Start Hintergrund */
-
-document.body.style.backgroundImage="url('profit.jpg')"
+renderFields()
 
 </script>
 
