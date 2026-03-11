@@ -12,7 +12,7 @@ margin:0;
 color:white;
 text-align:center;
 
-background:url("https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg");
+background:url("https://images.unsplash.com/photo-1598514982443-7b2b2f70b6a6");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
@@ -78,7 +78,7 @@ margin:5px 0;
 
 .note{
 font-size:12px;
-opacity:0.8;
+opacity:0.85;
 margin-top:10px;
 }
 
@@ -94,7 +94,7 @@ padding:0;
 
 <header>
 
-<h1>🚜 LS25 Helper</h1>
+<h1 id="title">🚜 LS25 Helper</h1>
 
 <button onclick="setLang('en')">🇬🇧 English</button>
 <button onclick="setLang('de')">🇩🇪 Deutsch</button>
@@ -108,13 +108,15 @@ padding:0;
 <input id="fieldsize" type="number" placeholder="Field Size (ha)">
 
 <select id="crop">
-<option value="8900" id="wheat">Wheat</option>
-<option value="9600" id="barley">Barley</option>
-<option value="5800" id="canola">Canola</option>
-<option value="9200" id="corn">Corn</option>
-<option value="4500" id="soybeans">Soybeans</option>
-<option value="41300" id="potatoes">Potatoes</option>
-<option value="57800" id="sugarbeet">Sugar Beet</option>
+
+<option value="8900">Wheat</option>
+<option value="9600">Barley</option>
+<option value="5800">Canola</option>
+<option value="9200">Corn</option>
+<option value="4500">Soybeans</option>
+<option value="41300">Potatoes</option>
+<option value="57800">Sugar Beet</option>
+
 </select>
 
 <input id="price" type="number" placeholder="Price per 1000L">
@@ -123,19 +125,13 @@ padding:0;
 
 <div class="conditions">
 
-<label>
-
-<span id="fertLabel">Fertilizer</span>
+<label id="fertLabel">Fertilizer</label>
 
 <select id="fertilizer">
-
-<option value="1" id="fert0">None</option>
-<option value="1.225" id="fert1">1x Fertilized</option>
-<option value="1.45" id="fert2">2x Fertilized</option>
-
+<option value="1">None</option>
+<option value="1.225">1x Fertilized</option>
+<option value="1.45">2x Fertilized</option>
 </select>
-
-</label>
 
 <label>
 <input type="checkbox" id="weed">
@@ -193,12 +189,10 @@ padding:0;
 <input id="fieldname" placeholder="Field Name">
 
 <select id="rotation">
-
 <option>Wheat → Canola → Barley</option>
 <option>Corn → Wheat → Soybeans</option>
 <option>Potatoes → Wheat → Corn</option>
 <option>Sugar Beet → Barley → Canola</option>
-
 </select>
 
 <button onclick="addField()" id="addBtn">Add Field</button>
@@ -215,7 +209,11 @@ function setLang(l){
 
 lang=l
 
+const crops=document.getElementById("crop")
+
 if(lang==="de"){
+
+title.innerText="🚜 LS25 Helfer"
 
 profitTitle.innerText="Gewinn Rechner"
 bestCropTitle.innerText="Beste Frucht Rechner"
@@ -223,19 +221,17 @@ plannerTitle.innerText="Feldplanung"
 
 conditionsTitle.innerText="Feldbedingungen"
 
-wheat.innerText="Weizen"
-barley.innerText="Gerste"
-canola.innerText="Raps"
-corn.innerText="Mais"
-soybeans.innerText="Sojabohnen"
-potatoes.innerText="Kartoffeln"
-sugarbeet.innerText="Zuckerrüben"
-
 fertLabel.innerText="Düngung"
 
-fert0.innerText="Keine"
-fert1.innerText="1x Gedüngt"
-fert2.innerText="2x Gedüngt"
+crops.innerHTML=`
+<option value="8900">Weizen</option>
+<option value="9600">Gerste</option>
+<option value="5800">Raps</option>
+<option value="9200">Mais</option>
+<option value="4500">Sojabohnen</option>
+<option value="41300">Kartoffeln</option>
+<option value="57800">Zuckerrüben</option>
+`
 
 weedText.innerText="Unkraut entfernt (+15%)"
 limeText.innerText="Gekalkt (+15%)"
@@ -257,25 +253,25 @@ noteText.innerText="⚠️ Werte basieren auf LS25 Standard Maps. Mod Maps könn
 
 else{
 
+title.innerText="🚜 LS25 Helper"
+
 profitTitle.innerText="Profit Calculator"
 bestCropTitle.innerText="Best Crop Calculator"
 plannerTitle.innerText="Field Planner"
 
 conditionsTitle.innerText="Field Conditions"
 
-wheat.innerText="Wheat"
-barley.innerText="Barley"
-canola.innerText="Canola"
-corn.innerText="Corn"
-soybeans.innerText="Soybeans"
-potatoes.innerText="Potatoes"
-sugarbeet.innerText="Sugar Beet"
-
 fertLabel.innerText="Fertilizer"
 
-fert0.innerText="None"
-fert1.innerText="1x Fertilized"
-fert2.innerText="2x Fertilized"
+crops.innerHTML=`
+<option value="8900">Wheat</option>
+<option value="9600">Barley</option>
+<option value="5800">Canola</option>
+<option value="9200">Corn</option>
+<option value="4500">Soybeans</option>
+<option value="41300">Potatoes</option>
+<option value="57800">Sugar Beet</option>
+`
 
 weedText.innerText="Weeds Removed (+15%)"
 limeText.innerText="Limed (+15%)"
