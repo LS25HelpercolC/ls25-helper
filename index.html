@@ -34,16 +34,41 @@ background:rgba(0,0,0,0.7);
 padding:15px;
 }
 
+.tabs{
+margin-top:10px;
+}
+
+.tabBtn{
+width:auto;
+padding:8px 14px;
+margin:3px;
+border:none;
+border-radius:6px;
+background:#4caf50;
+color:white;
+cursor:pointer;
+}
+
+.tabBtn:hover{
+background:#66bb6a;
+}
+
 .container{
+display:none;
+
 background:rgba(0,0,0,0.65);
 padding:20px;
 margin:20px auto;
 width:90%;
-max-width:500px;
+max-width:600px;
 border-radius:12px;
 }
 
-input,select,button{
+.active{
+display:block;
+}
+
+input,select{
 padding:10px;
 margin:6px;
 width:90%;
@@ -51,15 +76,13 @@ border:none;
 border-radius:6px;
 }
 
-button{
+button.calc{
 background:#4caf50;
 color:white;
 font-weight:bold;
 cursor:pointer;
-}
-
-button:hover{
-background:#66bb6a;
+padding:10px;
+width:90%;
 }
 
 .result{
@@ -68,23 +91,22 @@ font-size:18px;
 }
 
 .conditions{
+background:rgba(0,0,0,0.35);
+padding:10px;
+border-radius:8px;
 text-align:left;
-}
-
-.conditions label{
-display:block;
-margin:5px 0;
-}
-
-.note{
-font-size:12px;
-opacity:0.85;
 margin-top:10px;
 }
 
-ul{
-list-style:none;
-padding:0;
+.conditions label{
+display:flex;
+align-items:center;
+gap:8px;
+margin:3px 0;
+}
+
+.conditions input{
+width:auto;
 }
 
 </style>
@@ -94,16 +116,27 @@ padding:0;
 
 <header>
 
-<h1 id="title">🚜 LS25 Helper</h1>
+<h1>🚜 LS25 Helper</h1>
 
-<button onclick="setLang('en')">🇬🇧 English</button>
-<button onclick="setLang('de')">🇩🇪 Deutsch</button>
+<button class="tabBtn" onclick="setLang('en')">🇬🇧 English</button>
+<button class="tabBtn" onclick="setLang('de')">🇩🇪 Deutsch</button>
+
+<div class="tabs">
+
+<button class="tabBtn" onclick="openTab('profit')">Profit</button>
+<button class="tabBtn" onclick="openTab('best')">Best Crop</button>
+<button class="tabBtn" onclick="openTab('planner')">Planner</button>
+<button class="tabBtn" onclick="openTab('work')">Worktime</button>
+
+</div>
 
 </header>
 
-<div class="container">
+<!-- PROFIT -->
 
-<h2 id="profitTitle">Profit Calculator</h2>
+<div id="profit" class="container active">
+
+<h2>Profit Calculator</h2>
 
 <input id="fieldsize" type="number" placeholder="Field Size (ha)">
 
@@ -114,182 +147,97 @@ padding:0;
 <option value="5800">Canola</option>
 <option value="9200">Corn</option>
 <option value="4500">Soybeans</option>
-<option value="41300">Potatoes</option>
-<option value="57800">Sugar Beet</option>
 
 </select>
 
 <input id="price" type="number" placeholder="Price per 1000L">
 
-<h3 id="conditionsTitle">Field Conditions</h3>
-
 <div class="conditions">
 
-<label id="fertLabel">Fertilizer</label>
+<h3>Field Conditions</h3>
+
+<label>Fertilizer</label>
 
 <select id="fertilizer">
 <option value="1">None</option>
-<option value="1.225">1x Fertilized</option>
-<option value="1.45">2x Fertilized</option>
+<option value="1.225">1x</option>
+<option value="1.45">2x</option>
 </select>
 
-<label>
-<input type="checkbox" id="weed">
-<span id="weedText">Weeds Removed (+15%)</span>
-</label>
-
-<label>
-<input type="checkbox" id="lime">
-<span id="limeText">Limed (+15%)</span>
-</label>
-
-<label>
-<input type="checkbox" id="mulch">
-<span id="mulchText">Mulched (+2.5%)</span>
-</label>
-
-<label>
-<input type="checkbox" id="roll">
-<span id="rollText">Rolled (+2.5%)</span>
-</label>
-
-<label>
-<input type="checkbox" id="pf">
-<span id="pfText">Precision Farming (+20%)</span>
-</label>
+<label><input type="checkbox" id="lime"> Lime</label>
+<label><input type="checkbox" id="weed"> Weeds removed</label>
+<label><input type="checkbox" id="mulch"> Mulch</label>
+<label><input type="checkbox" id="roll"> Roll</label>
+<label><input type="checkbox" id="pf"> Precision Farming</label>
 
 </div>
 
-<button onclick="calculate()" id="calcBtn">Calculate Profit</button>
+<button class="calc" onclick="calculate()">Calculate Profit</button>
 
 <div class="result" id="result"></div>
 
-<p class="note" id="noteText">
-⚠️ Based on LS25 vanilla values. Mod maps may differ.
-</p>
-
 </div>
 
-<div class="container">
+<!-- BEST CROP -->
 
-<h2 id="bestCropTitle">Best Crop Calculator</h2>
+<div id="best" class="container">
+
+<h2>Best Crop</h2>
 
 <input id="bestFieldSize" type="number" placeholder="Field Size (ha)">
 
-<button onclick="bestCrop()" id="bestBtn">Find Best Crop</button>
+<button class="calc" onclick="bestCrop()">Find Best Crop</button>
 
 <div class="result" id="bestResult"></div>
 
 </div>
 
-<div class="container">
+<!-- FIELD PLANNER -->
 
-<h2 id="plannerTitle">Field Planner</h2>
+<div id="planner" class="container">
+
+<h2>Field Planner</h2>
 
 <input id="fieldname" placeholder="Field Name">
 
 <select id="rotation">
+
 <option>Wheat → Canola → Barley</option>
 <option>Corn → Wheat → Soybeans</option>
-<option>Potatoes → Wheat → Corn</option>
-<option>Sugar Beet → Barley → Canola</option>
+
 </select>
 
-<button onclick="addField()" id="addBtn">Add Field</button>
+<button class="calc" onclick="addField()">Add Field</button>
 
 <ul id="fields"></ul>
 
 </div>
 
+<!-- WORKTIME -->
+
+<div id="work" class="container">
+
+<h2>Worktime Calculator</h2>
+
+<input id="width" type="number" placeholder="Working Width (m)">
+<input id="speed" type="number" placeholder="Speed (km/h)">
+<input id="fieldsizeWork" type="number" placeholder="Field Size (ha)">
+
+<button class="calc" onclick="calcWork()">Calculate Time</button>
+
+<div class="result" id="workResult"></div>
+
+</div>
+
 <script>
 
-let lang="en"
+function openTab(tab){
 
-function setLang(l){
+document.querySelectorAll(".container").forEach(c=>{
+c.classList.remove("active")
+})
 
-lang=l
-
-const crops=document.getElementById("crop")
-
-if(lang==="de"){
-
-title.innerText="🚜 LS25 Helfer"
-
-profitTitle.innerText="Gewinn Rechner"
-bestCropTitle.innerText="Beste Frucht Rechner"
-plannerTitle.innerText="Feldplanung"
-
-conditionsTitle.innerText="Feldbedingungen"
-
-fertLabel.innerText="Düngung"
-
-crops.innerHTML=`
-<option value="8900">Weizen</option>
-<option value="9600">Gerste</option>
-<option value="5800">Raps</option>
-<option value="9200">Mais</option>
-<option value="4500">Sojabohnen</option>
-<option value="41300">Kartoffeln</option>
-<option value="57800">Zuckerrüben</option>
-`
-
-weedText.innerText="Unkraut entfernt (+15%)"
-limeText.innerText="Gekalkt (+15%)"
-mulchText.innerText="Gemulcht (+2.5%)"
-rollText.innerText="Gewalzt (+2.5%)"
-pfText.innerText="Precision Farming (+20%)"
-
-calcBtn.innerText="Gewinn berechnen"
-bestBtn.innerText="Beste Frucht finden"
-addBtn.innerText="Feld hinzufügen"
-
-fieldsize.placeholder="Feldgröße (ha)"
-price.placeholder="Preis pro 1000L"
-fieldname.placeholder="Feld Name"
-
-noteText.innerText="⚠️ Werte basieren auf LS25 Standard Maps. Mod Maps können abweichen."
-
-}
-
-else{
-
-title.innerText="🚜 LS25 Helper"
-
-profitTitle.innerText="Profit Calculator"
-bestCropTitle.innerText="Best Crop Calculator"
-plannerTitle.innerText="Field Planner"
-
-conditionsTitle.innerText="Field Conditions"
-
-fertLabel.innerText="Fertilizer"
-
-crops.innerHTML=`
-<option value="8900">Wheat</option>
-<option value="9600">Barley</option>
-<option value="5800">Canola</option>
-<option value="9200">Corn</option>
-<option value="4500">Soybeans</option>
-<option value="41300">Potatoes</option>
-<option value="57800">Sugar Beet</option>
-`
-
-weedText.innerText="Weeds Removed (+15%)"
-limeText.innerText="Limed (+15%)"
-mulchText.innerText="Mulched (+2.5%)"
-rollText.innerText="Rolled (+2.5%)"
-pfText.innerText="Precision Farming (+20%)"
-
-calcBtn.innerText="Calculate Profit"
-bestBtn.innerText="Find Best Crop"
-addBtn.innerText="Add Field"
-
-fieldsize.placeholder="Field Size (ha)"
-price.placeholder="Price per 1000L"
-fieldname.placeholder="Field Name"
-
-noteText.innerText="⚠️ Based on LS25 vanilla values. Mod maps may differ."
-
-}
+document.getElementById(tab).classList.add("active")
 
 }
 
@@ -355,6 +303,19 @@ let li=document.createElement("li")
 li.innerText=name+" – "+rotation
 
 fields.appendChild(li)
+
+}
+
+function calcWork(){
+
+let width=document.getElementById("width").value
+let speed=document.getElementById("speed").value
+let size=document.getElementById("fieldsizeWork").value
+
+let haPerHour=(width*speed)/10
+let time=size/haPerHour
+
+workResult.innerHTML="Worktime: "+time.toFixed(2)+" hours"
 
 }
 
