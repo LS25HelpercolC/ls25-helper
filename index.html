@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.42</title>
+<title>LS25 Helper v1.43</title>
 
 <style>
 
@@ -19,7 +19,7 @@ height:100vh;
 
 .sidebar{
 width:240px;
-background:#1b1f24;
+background:#1e2329;
 padding:15px;
 }
 
@@ -60,7 +60,7 @@ background-position:center;
 
 .section{
 display:none;
-background:rgba(0,0,0,0.65);
+background:rgba(0,0,0,0.55);
 padding:20px;
 border-radius:10px;
 max-width:900px;
@@ -90,13 +90,9 @@ font-size:18px;
 }
 
 .animalBtn{
-font-size:30px;
+font-size:32px;
 margin:10px;
 cursor:pointer;
-}
-
-.todoItem{
-margin:5px 0;
 }
 
 </style>
@@ -118,9 +114,9 @@ margin:5px 0;
 
 <div class="devTitle">──────── In Entwicklung ────────</div>
 
-<button class="navBtn" onclick="openSection('dev')">Beste Frucht (in Arbeit)</button>
-<button class="navBtn" onclick="openSection('dev')">Ballen Rechner (in Planung)</button>
-<button class="navBtn" onclick="openSection('dev')">Farmplanung (in Entwicklung)</button>
+<button class="navBtn" onclick="openSection('dev')">Beste Frucht</button>
+<button class="navBtn" onclick="openSection('dev')">Ballen Rechner</button>
+<button class="navBtn" onclick="openSection('dev')">Farmplanung</button>
 
 </div>
 
@@ -136,9 +132,24 @@ margin:5px 0;
 
 <option value="8900">🌾 Weizen</option>
 <option value="9600">🌾 Gerste</option>
+<option value="8800">🌾 Hafer</option>
 <option value="5800">🌱 Raps</option>
 <option value="9200">🌽 Mais</option>
 <option value="5000">🫘 Sojabohnen</option>
+<option value="7000">🌻 Sonnenblumen</option>
+<option value="42000">🥔 Kartoffeln</option>
+<option value="60000">🟥 Zuckerrüben</option>
+<option value="7000">🌿 Reis</option>
+<option value="8500">🌾 Sorghum</option>
+<option value="30000">🥕 Karotten</option>
+<option value="28000">🥔 Pastinaken</option>
+<option value="6000">🫘 Bohnen</option>
+<option value="6500">🫛 Erbsen</option>
+<option value="12000">🍇 Trauben</option>
+<option value="10000">🫒 Oliven</option>
+<option value="15000">🌲 Pappel</option>
+<option value="20000">🌿 Gras</option>
+<option value="4000">🌱 Ölrettich</option>
 
 </select>
 
@@ -177,9 +188,7 @@ margin:5px 0;
 
 <h2>Feldplanung</h2>
 
-<p>Die Feldplanung wird in einer kommenden Version erweitert.</p>
-
-<p>Geplant sind:</p>
+<p>Diese Funktion wird in einer kommenden Version erweitert.</p>
 
 <ul>
 <li>Frucht-Timeline</li>
@@ -213,11 +222,12 @@ margin:5px 0;
 
 <div>
 
-<span class="animalBtn" onclick="selectAnimal('cow',45)">🐄</span>
-<span class="animalBtn" onclick="selectAnimal('pig',8)">🐖</span>
-<span class="animalBtn" onclick="selectAnimal('sheep',5)">🐑</span>
-<span class="animalBtn" onclick="selectAnimal('chicken',0.1)">🐔</span>
-<span class="animalBtn" onclick="selectAnimal('horse',10)">🐎</span>
+<span class="animalBtn" onclick="selectAnimal('Kuh',45)">🐄</span>
+<span class="animalBtn" onclick="selectAnimal('Schwein',8)">🐖</span>
+<span class="animalBtn" onclick="selectAnimal('Schaf',5)">🐑</span>
+<span class="animalBtn" onclick="selectAnimal('Huhn',0.1)">🐔</span>
+<span class="animalBtn" onclick="selectAnimal('Pferd',10)">🐎</span>
+<span class="animalBtn" onclick="selectAnimal('Ziege',6)">🐐</span>
 
 </div>
 
@@ -251,7 +261,7 @@ margin:5px 0;
 
 <h2>In Entwicklung</h2>
 
-<p>Diese Funktionen sind geplant, aber noch nicht implementiert.</p>
+<p>Diese Funktionen sind geplant:</p>
 
 <ul>
 <li>Beste Frucht Rechner</li>
@@ -267,7 +277,7 @@ margin:5px 0;
 <script>
 
 const backgrounds={
-field:"https://images.unsplash.com/photo-1500382017468-9049fed747ef",
+field:"https://images.unsplash.com/photo-1560493676-04071c5f467b",
 tractor:"https://images.unsplash.com/photo-1592982537447-7440770cbfc9",
 animals:"https://images.unsplash.com/photo-1500595046743-cd271d694d30",
 office:"https://images.unsplash.com/photo-1519389950473-47ba0277781c",
@@ -342,7 +352,7 @@ function selectAnimal(name,food){
 animalFood=food
 
 document.getElementById("animalInfo").innerText=
-"Futter pro Tier / Tag: "+food+" L"
+name+" benötigt "+food+" L Futter pro Tag"
 
 }
 
@@ -370,7 +380,7 @@ let html=""
 todos.forEach((t,i)=>{
 
 html+=`
-<div class="todoItem">
+<div>
 <input type="checkbox" ${t.done?'checked':''}
 onchange="toggleTodo(${i})"> ${t.text}
 </div>
