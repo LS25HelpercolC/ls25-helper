@@ -29,6 +29,8 @@ background:rgba(0,0,0,0.55);
 z-index:-1;
 }
 
+/* HEADER */
+
 header{
 background:rgba(0,0,0,0.7);
 padding:15px;
@@ -53,6 +55,8 @@ cursor:pointer;
 background:#66bb6a;
 }
 
+/* TOOL BOX */
+
 .container{
 display:none;
 
@@ -60,7 +64,7 @@ background:rgba(0,0,0,0.65);
 padding:20px;
 margin:20px auto;
 width:90%;
-max-width:600px;
+max-width:650px;
 border-radius:12px;
 }
 
@@ -85,14 +89,22 @@ padding:10px;
 width:90%;
 }
 
+button.calc:hover{
+background:#66bb6a;
+}
+
+/* RESULTS */
+
 .result{
 margin-top:10px;
 font-size:18px;
 }
 
+/* FIELD CONDITIONS */
+
 .conditions{
 background:rgba(0,0,0,0.35);
-padding:10px;
+padding:12px;
 border-radius:8px;
 text-align:left;
 margin-top:10px;
@@ -102,11 +114,34 @@ margin-top:10px;
 display:flex;
 align-items:center;
 gap:8px;
-margin:3px 0;
+margin:4px 0;
+font-size:14px;
 }
 
-.conditions input{
+.conditions input[type="checkbox"]{
+width:16px;
+height:16px;
+transform:translateY(1px);
+}
+
+/* LANGUAGE BUTTON */
+
+.language-switch{
+
+position:fixed;
+bottom:15px;
+right:15px;
+
+background:rgba(0,0,0,0.7);
+padding:8px;
+border-radius:10px;
+
+}
+
+.language-switch button{
 width:auto;
+margin:2px;
+padding:6px 10px;
 }
 
 </style>
@@ -117,9 +152,6 @@ width:auto;
 <header>
 
 <h1>🚜 LS25 Helper</h1>
-
-<button class="tabBtn" onclick="setLang('en')">🇬🇧 English</button>
-<button class="tabBtn" onclick="setLang('de')">🇩🇪 Deutsch</button>
 
 <div class="tabs">
 
@@ -164,11 +196,11 @@ width:auto;
 <option value="1.45">2x</option>
 </select>
 
-<label><input type="checkbox" id="lime"> Lime</label>
-<label><input type="checkbox" id="weed"> Weeds removed</label>
-<label><input type="checkbox" id="mulch"> Mulch</label>
-<label><input type="checkbox" id="roll"> Roll</label>
-<label><input type="checkbox" id="pf"> Precision Farming</label>
+<label><input type="checkbox" id="lime"> Lime (+15%)</label>
+<label><input type="checkbox" id="weed"> Weeds removed (+15%)</label>
+<label><input type="checkbox" id="mulch"> Mulch (+2.5%)</label>
+<label><input type="checkbox" id="roll"> Roll (+2.5%)</label>
+<label><input type="checkbox" id="pf"> Precision Farming (+20%)</label>
 
 </div>
 
@@ -192,7 +224,7 @@ width:auto;
 
 </div>
 
-<!-- FIELD PLANNER -->
+<!-- PLANNER -->
 
 <div id="planner" class="container">
 
@@ -229,7 +261,18 @@ width:auto;
 
 </div>
 
+<!-- LANGUAGE -->
+
+<div class="language-switch">
+
+<button onclick="setLang('en')">🇬🇧</button>
+<button onclick="setLang('de')">🇩🇪</button>
+
+</div>
+
 <script>
+
+/* TAB SYSTEM */
 
 function openTab(tab){
 
@@ -240,6 +283,8 @@ c.classList.remove("active")
 document.getElementById(tab).classList.add("active")
 
 }
+
+/* PROFIT */
 
 function calculate(){
 
@@ -262,16 +307,20 @@ result.innerHTML="Yield: "+Math.round(totalYield)+" L<br>Profit: €"+totalProfi
 
 }
 
+/* BEST CROP */
+
 function bestCrop(){
 
 let size=bestFieldSize.value
 
 let crops=[
+
 {name:"Wheat",yield:8900,price:900},
 {name:"Barley",yield:9600,price:850},
 {name:"Canola",yield:5800,price:1200},
 {name:"Corn",yield:9200,price:800},
 {name:"Soybeans",yield:4500,price:1500}
+
 ]
 
 let best=""
@@ -294,6 +343,8 @@ bestResult.innerHTML="Best Crop: "+best+"<br>Profit: €"+bestProfit.toFixed(0)
 
 }
 
+/* FIELD PLANNER */
+
 function addField(){
 
 let name=fieldname.value
@@ -305,6 +356,8 @@ li.innerText=name+" – "+rotation
 fields.appendChild(li)
 
 }
+
+/* WORKTIME */
 
 function calcWork(){
 
