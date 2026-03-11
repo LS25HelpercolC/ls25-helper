@@ -2,25 +2,23 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.41</title>
+<title>LS25 Helper v1.42</title>
 
 <style>
 
 body{
-font-family:Arial;
 margin:0;
-background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover fixed;
+font-family:Arial;
 color:white;
 }
 
 .app{
 display:flex;
 height:100vh;
-background:rgba(0,0,0,0.75);
 }
 
 .sidebar{
-width:220px;
+width:240px;
 background:#1b1f24;
 padding:15px;
 }
@@ -46,15 +44,23 @@ text-align:left;
 background:#66bb6a;
 }
 
+.devTitle{
+margin-top:15px;
+font-size:14px;
+opacity:0.7;
+}
+
 .content{
 flex:1;
 padding:20px;
 overflow:auto;
+background-size:cover;
+background-position:center;
 }
 
 .section{
 display:none;
-background:#2b2f36;
+background:rgba(0,0,0,0.65);
 padding:20px;
 border-radius:10px;
 max-width:900px;
@@ -83,16 +89,14 @@ margin-top:10px;
 font-size:18px;
 }
 
-.checkbox{
-display:block;
-margin:4px 0;
+.animalBtn{
+font-size:30px;
+margin:10px;
+cursor:pointer;
 }
 
-.fieldCard{
-background:#3a4048;
-padding:10px;
-margin:6px 0;
-border-radius:8px;
+.todoItem{
+margin:5px 0;
 }
 
 </style>
@@ -106,18 +110,21 @@ border-radius:8px;
 
 <h2>LS25 Helper</h2>
 
-<button class="navBtn" onclick="openSection('profit')">Profit Rechner</button>
-<button class="navBtn" onclick="openSection('best')">Beste Frucht</button>
-<button class="navBtn" onclick="openSection('work')">Arbeitszeit</button>
-<button class="navBtn" onclick="openSection('bales')">Ballen Rechner</button>
-<button class="navBtn" onclick="openSection('animals')">Tier Futter</button>
-<button class="navBtn" onclick="openSection('planner')">Feldplanung</button>
-<button class="navBtn" onclick="openSection('farm')">Farm Planung</button>
-<button class="navBtn" onclick="openSection('todo')">Farm To-Do</button>
+<button class="navBtn" onclick="openSection('profit','field')">Profit Rechner</button>
+<button class="navBtn" onclick="openSection('planner','map')">Feldplanung</button>
+<button class="navBtn" onclick="openSection('work','tractor')">Arbeitszeit</button>
+<button class="navBtn" onclick="openSection('animals','animals')">Tierfutter</button>
+<button class="navBtn" onclick="openSection('todo','office')">Farm To-Do</button>
+
+<div class="devTitle">──────── In Entwicklung ────────</div>
+
+<button class="navBtn" onclick="openSection('dev')">Beste Frucht (in Arbeit)</button>
+<button class="navBtn" onclick="openSection('dev')">Ballen Rechner (in Planung)</button>
+<button class="navBtn" onclick="openSection('dev')">Farmplanung (in Entwicklung)</button>
 
 </div>
 
-<div class="content">
+<div class="content" id="contentArea">
 
 <!-- PROFIT -->
 
@@ -126,11 +133,13 @@ border-radius:8px;
 <h2>Profit Rechner</h2>
 
 <select id="cropSelect" onchange="setYield()">
+
 <option value="8900">🌾 Weizen</option>
 <option value="9600">🌾 Gerste</option>
 <option value="5800">🌱 Raps</option>
 <option value="9200">🌽 Mais</option>
 <option value="5000">🫘 Sojabohnen</option>
+
 </select>
 
 <input id="yieldha" readonly>
@@ -141,24 +150,20 @@ border-radius:8px;
 <h3>Düngung</h3>
 
 <select id="fert">
+
 <option value="1">Keine</option>
 <option value="1.25">1x Dünger</option>
 <option value="1.5">2x Dünger</option>
+
 </select>
 
 <h3>Additive</h3>
 
-<label class="checkbox">
-<input type="checkbox" id="mulch"> Mulchen (+2.5%)
-</label>
+<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label><br>
+<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label><br>
+<label><input type="checkbox" id="stones"> Steine entfernt (+2%)</label>
 
-<label class="checkbox">
-<input type="checkbox" id="roll"> Walzen (+2.5%)
-</label>
-
-<label class="checkbox">
-<input type="checkbox" id="stones"> Steine entfernt (+2%)
-</label>
+<br><br>
 
 <button onclick="calculateProfit()">Berechnen</button>
 
@@ -166,17 +171,21 @@ border-radius:8px;
 
 </div>
 
-<!-- BEST -->
+<!-- FELDPLANUNG -->
 
-<div id="best" class="section">
+<div id="planner" class="section">
 
-<h2>Beste Frucht Rechner</h2>
+<h2>Feldplanung</h2>
 
-<input id="bestFieldSize" placeholder="Feldgröße (ha)">
+<p>Die Feldplanung wird in einer kommenden Version erweitert.</p>
 
-<button onclick="bestCrop()">Berechnen</button>
+<p>Geplant sind:</p>
 
-<div class="result" id="bestResult"></div>
+<ul>
+<li>Frucht-Timeline</li>
+<li>Fruchtfolge Empfehlung</li>
+<li>„Was kann ich jetzt säen?“</li>
+</ul>
 
 </div>
 
@@ -196,67 +205,29 @@ border-radius:8px;
 
 </div>
 
-<!-- BALES -->
-
-<div id="bales" class="section">
-
-<h2>Ballen Rechner</h2>
-
-<input id="baleSize" placeholder="Ballengröße">
-<input id="baleCount" placeholder="Anzahl">
-
-<button onclick="calcBales()">Berechnen</button>
-
-<div class="result" id="baleResult"></div>
-
-</div>
-
 <!-- ANIMALS -->
 
 <div id="animals" class="section">
 
-<h2>Tier Futter Rechner</h2>
+<h2>Tierfutter Rechner</h2>
 
-<input id="animalsCount" placeholder="Tiere">
-<input id="foodPerDay" placeholder="Futter pro Tier">
+<div>
 
-<button onclick="calcAnimals()">Berechnen</button>
+<span class="animalBtn" onclick="selectAnimal('cow',45)">🐄</span>
+<span class="animalBtn" onclick="selectAnimal('pig',8)">🐖</span>
+<span class="animalBtn" onclick="selectAnimal('sheep',5)">🐑</span>
+<span class="animalBtn" onclick="selectAnimal('chicken',0.1)">🐔</span>
+<span class="animalBtn" onclick="selectAnimal('horse',10)">🐎</span>
+
+</div>
+
+<p id="animalInfo"></p>
+
+<input id="animalCount" placeholder="Anzahl Tiere">
+
+<button onclick="calcAnimalFood()">Berechnen</button>
 
 <div class="result" id="animalResult"></div>
-
-</div>
-
-<!-- PLANNER -->
-
-<div id="planner" class="section">
-
-<h2>Feldplanung</h2>
-
-<p>Hier kommt in späteren Versionen die vollständige Fruchtplanung.</p>
-
-</div>
-
-<!-- FARM -->
-
-<div id="farm" class="section">
-
-<h2>Farm Planung</h2>
-
-<input id="fieldName" placeholder="Feldname">
-
-<select id="fieldCrop">
-<option>Weizen</option>
-<option>Gerste</option>
-<option>Raps</option>
-<option>Mais</option>
-<option>Sojabohnen</option>
-</select>
-
-<input id="fieldSizeInput" placeholder="Größe (ha)">
-
-<button onclick="addField()">Speichern</button>
-
-<div id="farmList"></div>
 
 </div>
 
@@ -270,7 +241,23 @@ border-radius:8px;
 
 <button onclick="addTodo()">Hinzufügen</button>
 
-<ul id="todoList"></ul>
+<div id="todoList"></div>
+
+</div>
+
+<!-- DEV -->
+
+<div id="dev" class="section">
+
+<h2>In Entwicklung</h2>
+
+<p>Diese Funktionen sind geplant, aber noch nicht implementiert.</p>
+
+<ul>
+<li>Beste Frucht Rechner</li>
+<li>Ballen Rechner</li>
+<li>Farmplanung</li>
+</ul>
 
 </div>
 
@@ -279,10 +266,22 @@ border-radius:8px;
 
 <script>
 
-function openSection(id){
+const backgrounds={
+field:"https://images.unsplash.com/photo-1500382017468-9049fed747ef",
+tractor:"https://images.unsplash.com/photo-1592982537447-7440770cbfc9",
+animals:"https://images.unsplash.com/photo-1500595046743-cd271d694d30",
+office:"https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+map:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+}
+
+function openSection(id,bg){
 
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
 document.getElementById(id).classList.add("active")
+
+if(bg){
+document.getElementById("contentArea").style.backgroundImage="url("+backgrounds[bg]+")"
+}
 
 }
 
@@ -318,38 +317,6 @@ document.getElementById("profitResult").innerHTML=
 
 }
 
-/* BEST */
-
-function bestCrop(){
-
-let size=parseFloat(document.getElementById("bestFieldSize").value)
-
-let crops=[
-{name:"Weizen",yield:8900,price:900},
-{name:"Gerste",yield:9600,price:850},
-{name:"Raps",yield:5800,price:1200},
-{name:"Sojabohnen",yield:5000,price:1500}
-]
-
-let best=""
-let bestProfit=0
-
-crops.forEach(c=>{
-
-let profit=(size*c.yield/1000)*c.price
-
-if(profit>bestProfit){
-bestProfit=profit
-best=c.name
-}
-
-})
-
-document.getElementById("bestResult").innerHTML=
-"Beste Frucht: "+best+" Gewinn: "+Math.round(bestProfit)
-
-}
-
 /* WORKTIME */
 
 function calcWork(){
@@ -366,27 +333,29 @@ document.getElementById("workResult").innerHTML=
 
 }
 
-/* BALES */
+/* ANIMALS */
 
-function calcBales(){
+let animalFood=0
 
-let size=parseFloat(document.getElementById("baleSize").value)
-let count=parseFloat(document.getElementById("baleCount").value)
+function selectAnimal(name,food){
 
-document.getElementById("baleResult").innerHTML=
-"Total: "+(size*count)
+animalFood=food
+
+document.getElementById("animalInfo").innerText=
+"Futter pro Tier / Tag: "+food+" L"
 
 }
 
-/* ANIMALS */
+function calcAnimalFood(){
 
-function calcAnimals(){
+let count=parseFloat(document.getElementById("animalCount").value)
 
-let animals=parseFloat(document.getElementById("animalsCount").value)
-let food=parseFloat(document.getElementById("foodPerDay").value)
+let day=count*animalFood
+let month=day*30
+let year=day*365
 
 document.getElementById("animalResult").innerHTML=
-"Gesamt Futter pro Tag: "+animals*food
+"Tag: "+day+" L<br>Monat: "+month+" L<br>Jahr: "+year+" L"
 
 }
 
@@ -396,20 +365,20 @@ function loadTodos(){
 
 let todos=JSON.parse(localStorage.getItem("todos"))||[]
 
-let list=document.getElementById("todoList")
-list.innerHTML=""
+let html=""
 
 todos.forEach((t,i)=>{
 
-let li=document.createElement("li")
-
-li.innerHTML=
-'<input type="checkbox" '+(t.done?'checked':'')+
-' onchange="toggleTodo('+i+')"> '+t.text
-
-list.appendChild(li)
+html+=`
+<div class="todoItem">
+<input type="checkbox" ${t.done?'checked':''}
+onchange="toggleTodo(${i})"> ${t.text}
+</div>
+`
 
 })
+
+document.getElementById("todoList").innerHTML=html
 
 }
 
@@ -422,6 +391,8 @@ let todos=JSON.parse(localStorage.getItem("todos"))||[]
 todos.push({text:text,done:false})
 
 localStorage.setItem("todos",JSON.stringify(todos))
+
+document.getElementById("todoInput").value=""
 
 loadTodos()
 
@@ -440,61 +411,6 @@ loadTodos()
 }
 
 loadTodos()
-
-/* FARM */
-
-function addField(){
-
-let name=document.getElementById("fieldName").value
-let crop=document.getElementById("fieldCrop").value
-let size=document.getElementById("fieldSizeInput").value
-
-let fields=JSON.parse(localStorage.getItem("fields"))||[]
-
-fields.push({name,crop,size})
-
-localStorage.setItem("fields",JSON.stringify(fields))
-
-renderFields()
-
-}
-
-function renderFields(){
-
-let fields=JSON.parse(localStorage.getItem("fields"))||[]
-
-let html=""
-
-fields.forEach((f,i)=>{
-
-html+=`
-<div class="fieldCard">
-<b>${f.name}</b><br>
-Frucht: ${f.crop}<br>
-Größe: ${f.size} ha
-<button onclick="deleteField(${i})">Löschen</button>
-</div>
-`
-
-})
-
-document.getElementById("farmList").innerHTML=html
-
-}
-
-function deleteField(i){
-
-let fields=JSON.parse(localStorage.getItem("fields"))
-
-fields.splice(i,1)
-
-localStorage.setItem("fields",JSON.stringify(fields))
-
-renderFields()
-
-}
-
-renderFields()
 
 </script>
 
