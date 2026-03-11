@@ -9,54 +9,101 @@
 body{
 font-family:Arial;
 margin:0;
-background:#2e7d32;
 color:white;
 text-align:center;
+
+background-image:
+linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
+url("https://images.unsplash.com/photo-1500382017468-9049fed747ef");
+
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
 }
 
 header{
-background:#1b5e20;
+background:rgba(0,0,0,0.6);
 padding:15px;
+backdrop-filter:blur(6px);
 }
 
 .container{
-background:#1b5e20;
+
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(6px);
+
 padding:20px;
 margin:20px auto;
 width:90%;
-max-width:450px;
-border-radius:10px;
+max-width:500px;
+
+border-radius:12px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.4);
+
 }
 
 input,select,button{
+
 padding:10px;
 margin:6px;
 width:90%;
 border:none;
-border-radius:5px;
+border-radius:6px;
+
 }
 
 button{
+
 background:#4caf50;
 color:white;
 font-weight:bold;
 cursor:pointer;
+transition:0.2s;
+
+}
+
+button:hover{
+
+background:#66bb6a;
+transform:scale(1.03);
+
 }
 
 .result{
+
 margin-top:10px;
 font-size:18px;
+
 }
 
-ul{
-list-style:none;
-padding:0;
+.conditions{
+
+text-align:left;
+margin-top:10px;
+
+}
+
+.conditions label{
+
+display:block;
+margin:4px 0;
+
 }
 
 .note{
+
 font-size:12px;
 opacity:0.8;
 margin-top:10px;
+
+}
+
+ul{
+
+list-style:none;
+padding:0;
+
 }
 
 </style>
@@ -72,6 +119,8 @@ margin-top:10px;
 <button onclick="setLang('de')">🇩🇪 Deutsch</button>
 
 </header>
+
+<!-- PROFIT CALCULATOR -->
 
 <div class="container">
 
@@ -93,38 +142,59 @@ margin-top:10px;
 
 <input id="price" type="number" placeholder="Price per 1000L">
 
-<label>Field Conditions</label>
+<h3>Field Conditions</h3>
+
+<div class="conditions">
+
+<label>
+
+Fertilizer
 
 <select id="fertilizer">
-<option value="1">No Fertilizer</option>
+
+<option value="1">None</option>
 <option value="1.225">1x Fertilized</option>
 <option value="1.45">2x Fertilized</option>
+
 </select>
 
-<select id="weed">
-<option value="1">Weeds Present</option>
-<option value="1.15">Weeds Removed</option>
-</select>
+</label>
 
-<select id="mulch">
-<option value="1">Not Mulched</option>
-<option value="1.025">Mulched</option>
-</select>
+<label>
+<input type="checkbox" id="weed"> Weeds Removed (+15%)
+</label>
 
-<select id="roll">
-<option value="1">Not Rolled</option>
-<option value="1.025">Rolled</option>
-</select>
+<label>
+<input type="checkbox" id="lime"> Limed (+15%)
+</label>
+
+<label>
+<input type="checkbox" id="mulch"> Mulched (+2.5%)
+</label>
+
+<label>
+<input type="checkbox" id="roll"> Rolled (+2.5%)
+</label>
+
+<label>
+<input type="checkbox" id="pf"> Precision Farming (+20%)
+</label>
+
+</div>
 
 <button onclick="calculate()" id="calcBtn">Calculate Profit</button>
 
 <div class="result" id="result"></div>
 
 <p class="note">
+
 ⚠️ Values based on LS25 vanilla maps. Mod maps may differ.
+
 </p>
 
 </div>
+
+<!-- BEST CROP -->
 
 <div class="container">
 
@@ -137,6 +207,8 @@ margin-top:10px;
 <div class="result" id="bestResult"></div>
 
 </div>
+
+<!-- FIELD PLANNER -->
 
 <div class="container">
 
@@ -207,29 +279,19 @@ let size=document.getElementById("fieldsize").value
 let yieldPerHa=document.getElementById("crop").value
 let price=document.getElementById("price").value
 
-let fertilizer=document.getElementById("fertilizer").value
-let weed=document.getElementById("weed").value
-let mulch=document.getElementById("mulch").value
-let roll=document.getElementById("roll").value
+let modifier=parseFloat(document.getElementById("fertilizer").value)
 
-let modifier=fertilizer*weed*mulch*roll
+if(document.getElementById("weed").checked) modifier*=1.15
+if(document.getElementById("lime").checked) modifier*=1.15
+if(document.getElementById("mulch").checked) modifier*=1.025
+if(document.getElementById("roll").checked) modifier*=1.025
+if(document.getElementById("pf").checked) modifier*=1.20
 
 let totalYield=size*yieldPerHa*modifier
 let totalProfit=(totalYield/1000)*price
 
-if(lang==="de"){
-
-document.getElementById("result").innerHTML=
-"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: €"+totalProfit.toFixed(0)
-
-}
-
-else{
-
 document.getElementById("result").innerHTML=
 "Yield: "+Math.round(totalYield)+" L<br>Profit: €"+totalProfit.toFixed(0)
-
-}
 
 }
 
@@ -238,11 +300,13 @@ function bestCrop(){
 let size=document.getElementById("bestFieldSize").value
 
 let crops=[
+
 {name:"Wheat",yield:8900,price:900},
 {name:"Barley",yield:9600,price:850},
 {name:"Canola",yield:5800,price:1200},
 {name:"Corn",yield:9200,price:800},
 {name:"Soybeans",yield:4500,price:1500}
+
 ]
 
 let best=""
