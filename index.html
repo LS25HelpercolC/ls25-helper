@@ -10,37 +10,69 @@ body{
 margin:0;
 font-family:Arial;
 color:white;
-background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover fixed;
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
 }
 
-/* dunkles overlay */
+/* Layout */
 
-.overlay{
-background:rgba(0,0,0,0.65);
+.wrapper{
+display:flex;
 min-height:100vh;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:220px;
+background:#1e2329;
+padding:20px;
+}
+
+.sidebar h2{
+font-size:20px;
+margin-bottom:20px;
+}
+
+.navBtn{
+display:block;
+width:100%;
+padding:10px;
+margin-bottom:10px;
+background:#2c323a;
+border:none;
+color:white;
+text-align:left;
+cursor:pointer;
+border-radius:6px;
+}
+
+.navBtn:hover{
+background:#3c444d;
+}
+
+/* Content */
+
+.content{
+flex:1;
 display:flex;
 align-items:center;
 justify-content:center;
+background:rgba(0,0,0,0.6);
 }
 
-/* panel */
+/* Panel */
 
 .panel{
 width:520px;
-background:rgba(30,30,30,0.85);
+background:rgba(30,30,30,0.9);
 border-radius:14px;
 padding:25px;
 box-shadow:0 0 25px rgba(0,0,0,0.7);
 }
 
-/* titel */
-
-h1{
-text-align:center;
-margin-bottom:20px;
-}
-
-/* inputs */
+/* Inputs */
 
 select,input{
 width:100%;
@@ -49,7 +81,6 @@ margin-top:8px;
 margin-bottom:10px;
 border-radius:6px;
 border:none;
-font-size:14px;
 }
 
 .row{
@@ -57,26 +88,19 @@ display:flex;
 gap:10px;
 }
 
-/* section */
+/* Sections */
 
-.sectionTitle{
-margin-top:15px;
-margin-bottom:5px;
-font-weight:bold;
+.section{
+display:none;
 }
 
-/* checkboxes */
-
-.checkboxGrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:6px;
-margin-top:6px;
+.section.active{
+display:block;
 }
 
-/* button */
+/* Button */
 
-button{
+button.calc{
 width:100%;
 padding:12px;
 margin-top:18px;
@@ -88,11 +112,11 @@ font-size:16px;
 cursor:pointer;
 }
 
-button:hover{
+button.calc:hover{
 background:#66bb6a;
 }
 
-/* result */
+/* Result */
 
 .result{
 text-align:center;
@@ -100,7 +124,7 @@ margin-top:15px;
 font-size:18px;
 }
 
-/* icon bar */
+/* Icon bar */
 
 .icons{
 margin-top:20px;
@@ -111,9 +135,32 @@ font-size:26px;
 </style>
 </head>
 
-<body>
+<body id="body">
 
-<div class="overlay">
+<div class="wrapper">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2>🚜 LS25 Helper</h2>
+
+<button class="navBtn" onclick="openTab('profit','profit.jpg')">Profit Rechner</button>
+<button class="navBtn" onclick="openTab('fields','fields.jpg')">Feldplanung</button>
+<button class="navBtn" onclick="openTab('work','work.png')">Arbeitszeit</button>
+<button class="navBtn" onclick="openTab('animals','animals.jpg')">Tierfutter</button>
+<button class="navBtn" onclick="openTab('todo','farm.jpg')">Farm To-Do</button>
+<button class="navBtn" onclick="openTab('dev','farm.jpg')">In Entwicklung</button>
+
+</div>
+
+<!-- CONTENT -->
+
+<div class="content">
+
+<!-- PROFIT -->
+
+<div id="profit" class="section active">
 
 <div class="panel">
 
@@ -147,25 +194,21 @@ font-size:26px;
 <input id="price" type="number" placeholder="Preis pro 1000L">
 </div>
 
-<div class="sectionTitle">Düngestufe</div>
+<h3>Düngestufe</h3>
 
 <label><input type="radio" name="fert" value="1" checked> Keine</label><br>
 <label><input type="radio" name="fert" value="1.25"> 1x Düngen (+25%)</label><br>
 <label><input type="radio" name="fert" value="1.5"> 2x Düngen (+50%)</label>
 
-<div class="sectionTitle">Arbeitsschritte</div>
+<h3>Arbeitsschritte</h3>
 
-<div class="checkboxGrid">
-
-<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label>
-<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label>
-<label><input type="checkbox" id="lime"> Kalk (+15%)</label>
-<label><input type="checkbox" id="weed"> Unkraut entfernt (+10%)</label>
+<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label><br>
+<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label><br>
+<label><input type="checkbox" id="lime"> Kalk (+15%)</label><br>
+<label><input type="checkbox" id="weed"> Unkraut entfernt (+10%)</label><br>
 <label><input type="checkbox" id="pf"> Precision Farming (+5%)</label>
 
-</div>
-
-<button onclick="calc()">Berechnen</button>
+<button class="calc" onclick="calc()">Berechnen</button>
 
 <div class="result" id="result"></div>
 
@@ -174,9 +217,74 @@ font-size:26px;
 </div>
 
 </div>
+
+</div>
+
+<!-- FELDPLANUNG -->
+
+<div id="fields" class="section">
+<div class="panel">
+<h2>Feldplanung</h2>
+<p>Diese Funktion wird später erweitert.</p>
+</div>
+</div>
+
+<!-- ARBEITSZEIT -->
+
+<div id="work" class="section">
+<div class="panel">
+<h2>Arbeitszeit Rechner</h2>
+<p>Maschinen-Arbeitszeit wird hier später berechnet.</p>
+</div>
+</div>
+
+<!-- TIERE -->
+
+<div id="animals" class="section">
+<div class="panel">
+<h2>Tierfutter Rechner</h2>
+<p>Tierfutter Berechnung folgt.</p>
+</div>
+</div>
+
+<!-- TODO -->
+
+<div id="todo" class="section">
+<div class="panel">
+<h2>Farm To-Do</h2>
+<p>Notizen für deine Farm.</p>
+</div>
+</div>
+
+<!-- DEV -->
+
+<div id="dev" class="section">
+<div class="panel">
+<h2>In Entwicklung</h2>
+<p>Weitere Tools folgen.</p>
+</div>
+</div>
+
+</div>
 </div>
 
 <script>
+
+/* Tabs */
+
+function openTab(tab,bg){
+
+document.querySelectorAll(".section").forEach(s=>{
+s.classList.remove("active")
+})
+
+document.getElementById(tab).classList.add("active")
+
+document.body.style.backgroundImage="url('"+bg+"')"
+
+}
+
+/* Profit Rechner */
 
 function calc(){
 
@@ -202,6 +310,10 @@ document.getElementById("result").innerHTML=
 "Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
 
 }
+
+/* Start Hintergrund */
+
+document.body.style.backgroundImage="url('profit.jpg')"
 
 </script>
 
