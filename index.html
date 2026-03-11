@@ -2,13 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.5</title>
+<title>LS25 Helper v1.60</title>
 
 <style>
 
 body{
 margin:0;
 font-family:Arial;
+background:#1e2329;
 color:white;
 }
 
@@ -17,52 +18,59 @@ display:flex;
 height:100vh;
 }
 
+/* SIDEBAR */
+
 .sidebar{
-width:240px;
-background:#1e2329;
-padding:15px;
+width:260px;
+background:#111417;
+padding:20px;
+box-shadow:2px 0 10px rgba(0,0,0,0.5);
 }
 
 .sidebar h2{
 margin-top:0;
+color:#4caf50;
 }
 
 .navBtn{
-display:block;
 width:100%;
-margin:6px 0;
 padding:12px;
+margin:6px 0;
 border:none;
 border-radius:6px;
-background:#4caf50;
+background:#2e7d32;
 color:white;
 cursor:pointer;
-text-align:left;
 font-size:15px;
+text-align:left;
 }
 
 .navBtn:hover{
-background:#66bb6a;
+background:#4caf50;
 }
 
 .devTitle{
-margin-top:15px;
-font-size:14px;
+margin-top:20px;
+font-size:13px;
 opacity:0.7;
 }
 
+/* CONTENT */
+
 .content{
 flex:1;
-padding:20px;
+padding:25px;
 overflow:auto;
 background-size:cover;
 background-position:center;
 }
 
+/* BOXES */
+
 .section{
 display:none;
-background:rgba(0,0,0,0.55);
-padding:20px;
+background:rgba(0,0,0,0.65);
+padding:25px;
 border-radius:10px;
 max-width:900px;
 }
@@ -71,29 +79,44 @@ max-width:900px;
 display:block;
 }
 
+h2{
+margin-top:0;
+}
+
 input,select{
-padding:8px;
-margin:5px;
+padding:10px;
+margin:6px;
 border:none;
 border-radius:6px;
+width:200px;
 }
 
 button{
-padding:8px 12px;
+padding:10px 14px;
 border:none;
 border-radius:6px;
 cursor:pointer;
+background:#4caf50;
+color:white;
+}
+
+button:hover{
+background:#66bb6a;
 }
 
 .result{
-margin-top:10px;
+margin-top:15px;
 font-size:18px;
 }
 
 .animalBtn{
-font-size:32px;
+font-size:40px;
 margin:10px;
 cursor:pointer;
+}
+
+.todoItem{
+margin:5px 0;
 }
 
 </style>
@@ -109,11 +132,11 @@ cursor:pointer;
 
 <button class="navBtn" onclick="openSection('profit','field')">Profit Rechner</button>
 <button class="navBtn" onclick="openSection('planner','map')">Feldplanung</button>
-<button class="navBtn" onclick="openSection('work','tractor')">Arbeitszeit</button>
-<button class="navBtn" onclick="openSection('animals','animals')">Tierfutter</button>
+<button class="navBtn" onclick="openSection('work','tractor')">Arbeitszeit Rechner</button>
+<button class="navBtn" onclick="openSection('animals','animals')">Tierfutter Rechner</button>
 <button class="navBtn" onclick="openSection('todo','office')">Farm To-Do</button>
 
-<div class="devTitle">──────── In Entwicklung ────────</div>
+<div class="devTitle">──── In Entwicklung ────</div>
 
 <button class="navBtn" onclick="openSection('dev')">Beste Frucht</button>
 <button class="navBtn" onclick="openSection('dev')">Ballen Rechner</button>
@@ -140,11 +163,15 @@ cursor:pointer;
 <option value="5000">🫘 Sojabohnen</option>
 <option value="7000">🌻 Sonnenblumen</option>
 <option value="42000">🥔 Kartoffeln</option>
-<option value="60000">🌱 Zuckerrüben</option>
+<option value="60000">🟥 Zuckerrüben</option>
 
 </select>
 
-<input id="yieldha" readonly>
+<br>
+
+<input id="yieldha" placeholder="Ertrag / ha" readonly>
+
+<br>
 
 <input id="fieldsize" placeholder="Feldgröße (ha)">
 <input id="price" placeholder="Preis pro 1000L">
@@ -157,13 +184,7 @@ cursor:pointer;
 <option value="1.5">2x Dünger</option>
 </select>
 
-<h3>Additive</h3>
-
-<label><input type="checkbox" id="mulch"> Mulchen</label><br>
-<label><input type="checkbox" id="roll"> Walzen</label><br>
-<label><input type="checkbox" id="stones"> Steine entfernt</label>
-
-<br><br>
+<br>
 
 <button onclick="calculateProfit()">Berechnen</button>
 
@@ -179,7 +200,7 @@ cursor:pointer;
 
 <h3>Was kann ich diesen Monat säen?</h3>
 
-<select id="monthSelect" onchange="showCrops()">
+<select id="monthSelect" onchange="showCrops();showSeason();">
 
 <option value="1">Januar</option>
 <option value="2">Februar</option>
@@ -196,11 +217,11 @@ cursor:pointer;
 
 </select>
 
-<div id="cropResult"></div>
+<div class="result" id="cropResult"></div>
 
 <h3>Saison Hinweise</h3>
 
-<div id="seasonInfo"></div>
+<div class="result" id="seasonInfo"></div>
 
 </div>
 
@@ -211,8 +232,10 @@ cursor:pointer;
 <h2>Arbeitszeit Rechner</h2>
 
 <input id="width" placeholder="Arbeitsbreite (m)">
-<input id="speed" placeholder="Geschwindigkeit (km/h)">
+<input id="speed" placeholder="Geschwindigkeit km/h">
 <input id="workField" placeholder="Feldgröße (ha)">
+
+<br>
 
 <button onclick="calcWork()">Berechnen</button>
 
@@ -301,6 +324,7 @@ window.onload=function(){
 openSection('profit','field')
 showCrops()
 showSeason()
+loadTodos()
 }
 
 function setYield(){
@@ -364,7 +388,7 @@ text="Frühling: Säen und düngen."
 }
 
 if(month>=6 && month<=8){
-text="Sommer: Pflege der Felder."
+text="Sommer: Feldpflege."
 }
 
 if(month>=9 && month<=10){
@@ -443,7 +467,10 @@ let todos=JSON.parse(localStorage.getItem("todos"))||[]
 let html=""
 
 todos.forEach((t,i)=>{
-html+=`<div><input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${i})"> ${t.text}</div>`
+html+=`<div class="todoItem">
+<input type="checkbox" ${t.done?'checked':''} onchange="toggleTodo(${i})">
+${t.text}
+</div>`
 })
 
 document.getElementById("todoList").innerHTML=html
@@ -475,8 +502,6 @@ localStorage.setItem("todos",JSON.stringify(todos))
 loadTodos()
 
 }
-
-loadTodos()
 
 </script>
 
