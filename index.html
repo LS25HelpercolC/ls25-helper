@@ -12,25 +12,31 @@ margin:0;
 color:white;
 text-align:center;
 
-background-image:
-linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
-url("https://images.unsplash.com/photo-1500382017468-9049fed747ef");
-
+background:url("https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
 }
 
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+z-index:-1;
+}
+
 header{
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,0.7);
 padding:15px;
-backdrop-filter:blur(6px);
 }
 
 .container{
 
-background:rgba(0,0,0,0.55);
-backdrop-filter:blur(6px);
+background:rgba(0,0,0,0.6);
 
 padding:20px;
 margin:20px auto;
@@ -38,8 +44,6 @@ width:90%;
 max-width:500px;
 
 border-radius:12px;
-
-box-shadow:0 8px 25px rgba(0,0,0,0.4);
 
 }
 
@@ -59,14 +63,12 @@ background:#4caf50;
 color:white;
 font-weight:bold;
 cursor:pointer;
-transition:0.2s;
 
 }
 
 button:hover{
 
 background:#66bb6a;
-transform:scale(1.03);
 
 }
 
@@ -80,14 +82,13 @@ font-size:18px;
 .conditions{
 
 text-align:left;
-margin-top:10px;
 
 }
 
 .conditions label{
 
 display:block;
-margin:4px 0;
+margin:5px 0;
 
 }
 
@@ -142,42 +143,47 @@ padding:0;
 
 <input id="price" type="number" placeholder="Price per 1000L">
 
-<h3>Field Conditions</h3>
+<h3 id="conditionsTitle">Field Conditions</h3>
 
 <div class="conditions">
 
 <label>
 
-Fertilizer
+<span id="fertLabel">Fertilizer</span>
 
 <select id="fertilizer">
 
-<option value="1">None</option>
-<option value="1.225">1x Fertilized</option>
-<option value="1.45">2x Fertilized</option>
+<option value="1" id="fert0">None</option>
+<option value="1.225" id="fert1">1x Fertilized</option>
+<option value="1.45" id="fert2">2x Fertilized</option>
 
 </select>
 
 </label>
 
 <label>
-<input type="checkbox" id="weed"> Weeds Removed (+15%)
+<input type="checkbox" id="weed">
+<span id="weedText">Weeds Removed (+15%)</span>
 </label>
 
 <label>
-<input type="checkbox" id="lime"> Limed (+15%)
+<input type="checkbox" id="lime">
+<span id="limeText">Limed (+15%)</span>
 </label>
 
 <label>
-<input type="checkbox" id="mulch"> Mulched (+2.5%)
+<input type="checkbox" id="mulch">
+<span id="mulchText">Mulched (+2.5%)</span>
 </label>
 
 <label>
-<input type="checkbox" id="roll"> Rolled (+2.5%)
+<input type="checkbox" id="roll">
+<span id="rollText">Rolled (+2.5%)</span>
 </label>
 
 <label>
-<input type="checkbox" id="pf"> Precision Farming (+20%)
+<input type="checkbox" id="pf">
+<span id="pfText">Precision Farming (+20%)</span>
 </label>
 
 </div>
@@ -186,9 +192,9 @@ Fertilizer
 
 <div class="result" id="result"></div>
 
-<p class="note">
+<p class="note" id="noteText">
 
-⚠️ Values based on LS25 vanilla maps. Mod maps may differ.
+⚠️ Based on LS25 vanilla values. Mod maps may differ.
 
 </p>
 
@@ -241,33 +247,65 @@ lang=l
 
 if(lang==="de"){
 
-document.getElementById("profitTitle").innerText="Gewinn Rechner"
-document.getElementById("plannerTitle").innerText="Feldplanung"
-document.getElementById("bestCropTitle").innerText="Beste Frucht Rechner"
+profitTitle.innerText="Gewinn Rechner"
+bestCropTitle.innerText="Beste Frucht Rechner"
+plannerTitle.innerText="Feldplanung"
 
-document.getElementById("calcBtn").innerText="Gewinn berechnen"
-document.getElementById("bestBtn").innerText="Beste Frucht finden"
-document.getElementById("addBtn").innerText="Feld hinzufügen"
+conditionsTitle.innerText="Feldbedingungen"
 
-document.getElementById("fieldsize").placeholder="Feldgröße (ha)"
-document.getElementById("price").placeholder="Preis pro 1000L"
-document.getElementById("fieldname").placeholder="Feld Name"
+fertLabel.innerText="Düngung"
+
+fert0.innerText="Keine"
+fert1.innerText="1x Gedüngt"
+fert2.innerText="2x Gedüngt"
+
+weedText.innerText="Unkraut entfernt (+15%)"
+limeText.innerText="Gekalkt (+15%)"
+mulchText.innerText="Gemulcht (+2.5%)"
+rollText.innerText="Gewalzt (+2.5%)"
+pfText.innerText="Precision Farming (+20%)"
+
+calcBtn.innerText="Gewinn berechnen"
+bestBtn.innerText="Beste Frucht finden"
+addBtn.innerText="Feld hinzufügen"
+
+fieldsize.placeholder="Feldgröße (ha)"
+price.placeholder="Preis pro 1000L"
+fieldname.placeholder="Feld Name"
+
+noteText.innerText="⚠️ Werte basieren auf LS25 Standard Maps. Mod Maps können abweichen."
 
 }
 
 else{
 
-document.getElementById("profitTitle").innerText="Profit Calculator"
-document.getElementById("plannerTitle").innerText="Field Planner"
-document.getElementById("bestCropTitle").innerText="Best Crop Calculator"
+profitTitle.innerText="Profit Calculator"
+bestCropTitle.innerText="Best Crop Calculator"
+plannerTitle.innerText="Field Planner"
 
-document.getElementById("calcBtn").innerText="Calculate Profit"
-document.getElementById("bestBtn").innerText="Find Best Crop"
-document.getElementById("addBtn").innerText="Add Field"
+conditionsTitle.innerText="Field Conditions"
 
-document.getElementById("fieldsize").placeholder="Field Size (ha)"
-document.getElementById("price").placeholder="Price per 1000L"
-document.getElementById("fieldname").placeholder="Field Name"
+fertLabel.innerText="Fertilizer"
+
+fert0.innerText="None"
+fert1.innerText="1x Fertilized"
+fert2.innerText="2x Fertilized"
+
+weedText.innerText="Weeds Removed (+15%)"
+limeText.innerText="Limed (+15%)"
+mulchText.innerText="Mulched (+2.5%)"
+rollText.innerText="Rolled (+2.5%)"
+pfText.innerText="Precision Farming (+20%)"
+
+calcBtn.innerText="Calculate Profit"
+bestBtn.innerText="Find Best Crop"
+addBtn.innerText="Add Field"
+
+fieldsize.placeholder="Field Size (ha)"
+price.placeholder="Price per 1000L"
+fieldname.placeholder="Field Name"
+
+noteText.innerText="⚠️ Based on LS25 vanilla values. Mod maps may differ."
 
 }
 
@@ -275,29 +313,28 @@ document.getElementById("fieldname").placeholder="Field Name"
 
 function calculate(){
 
-let size=document.getElementById("fieldsize").value
-let yieldPerHa=document.getElementById("crop").value
+let size=fieldsize.value
+let yieldPerHa=crop.value
 let price=document.getElementById("price").value
 
-let modifier=parseFloat(document.getElementById("fertilizer").value)
+let modifier=parseFloat(fertilizer.value)
 
-if(document.getElementById("weed").checked) modifier*=1.15
-if(document.getElementById("lime").checked) modifier*=1.15
-if(document.getElementById("mulch").checked) modifier*=1.025
-if(document.getElementById("roll").checked) modifier*=1.025
-if(document.getElementById("pf").checked) modifier*=1.20
+if(weed.checked) modifier*=1.15
+if(lime.checked) modifier*=1.15
+if(mulch.checked) modifier*=1.025
+if(roll.checked) modifier*=1.025
+if(pf.checked) modifier*=1.20
 
 let totalYield=size*yieldPerHa*modifier
 let totalProfit=(totalYield/1000)*price
 
-document.getElementById("result").innerHTML=
-"Yield: "+Math.round(totalYield)+" L<br>Profit: €"+totalProfit.toFixed(0)
+result.innerHTML="Yield: "+Math.round(totalYield)+" L<br>Profit: €"+totalProfit.toFixed(0)
 
 }
 
 function bestCrop(){
 
-let size=document.getElementById("bestFieldSize").value
+let size=bestFieldSize.value
 
 let crops=[
 
@@ -325,20 +362,19 @@ best=c.name
 
 })
 
-document.getElementById("bestResult").innerHTML=
-"Best Crop: "+best+"<br>Profit: €"+bestProfit.toFixed(0)
+bestResult.innerHTML="Best Crop: "+best+"<br>Profit: €"+bestProfit.toFixed(0)
 
 }
 
 function addField(){
 
-let name=document.getElementById("fieldname").value
+let name=fieldname.value
 let rotation=document.getElementById("rotation").value
 
 let li=document.createElement("li")
 li.innerText=name+" – "+rotation
 
-document.getElementById("fields").appendChild(li)
+fields.appendChild(li)
 
 }
 
