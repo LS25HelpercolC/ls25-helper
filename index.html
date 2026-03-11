@@ -9,13 +9,13 @@
 body{
 font-family:Arial;
 margin:0;
-background:#1e1e1e;
+background:#1f1f1f;
 color:white;
 text-align:center;
 }
 
 header{
-background:#1b5e20;
+background:#2e7d32;
 padding:15px;
 }
 
@@ -105,13 +105,13 @@ color:white;
 
 <div class="tabs">
 
-<button class="tabBtn" onclick="openTab('profit')">Profit</button>
-<button class="tabBtn" onclick="openTab('best')">Best Crop</button>
-<button class="tabBtn" onclick="openTab('work')">Worktime</button>
-<button class="tabBtn" onclick="openTab('bale')">Bales</button>
-<button class="tabBtn" onclick="openTab('animals')">Animals</button>
-<button class="tabBtn" onclick="openTab('production')">Production</button>
-<button class="tabBtn" onclick="openTab('todo')">To-Do</button>
+<button id="tabProfit" class="tabBtn" onclick="openTab('profit')">Profit</button>
+<button id="tabBest" class="tabBtn" onclick="openTab('best')">Best Crop</button>
+<button id="tabWork" class="tabBtn" onclick="openTab('work')">Worktime</button>
+<button id="tabBale" class="tabBtn" onclick="openTab('bale')">Bales</button>
+<button id="tabAnimals" class="tabBtn" onclick="openTab('animals')">Animals</button>
+<button id="tabProd" class="tabBtn" onclick="openTab('production')">Production</button>
+<button id="tabTodo" class="tabBtn" onclick="openTab('todo')">To-Do</button>
 
 </div>
 
@@ -127,7 +127,7 @@ color:white;
 <input id="yieldha" placeholder="Yield per ha (L)">
 <input id="price" placeholder="Price per 1000L">
 
-<button class="calc" onclick="calculate()">Calculate</button>
+<button class="calc" onclick="calculate()" id="calcBtn">Calculate</button>
 
 <div class="result" id="result"></div>
 
@@ -141,13 +141,13 @@ color:white;
 
 <input id="bestFieldSize" placeholder="Field Size (ha)">
 
-<button class="calc" onclick="bestCrop()">Find</button>
+<button class="calc" onclick="bestCrop()" id="bestBtn">Find</button>
 
 <div class="result" id="bestResult"></div>
 
 </div>
 
-<!-- WORK -->
+<!-- WORKTIME -->
 
 <div id="work" class="container">
 
@@ -157,7 +157,7 @@ color:white;
 <input id="speed" placeholder="Speed (km/h)">
 <input id="workField" placeholder="Field Size (ha)">
 
-<button class="calc" onclick="calcWork()">Calculate</button>
+<button class="calc" onclick="calcWork()" id="workBtn">Calculate</button>
 
 <div class="result" id="workResult"></div>
 
@@ -172,7 +172,7 @@ color:white;
 <input id="baleSize" placeholder="Bale Size">
 <input id="baleCount" placeholder="Number of Bales">
 
-<button class="calc" onclick="calcBales()">Calculate</button>
+<button class="calc" onclick="calcBales()" id="baleBtn">Calculate</button>
 
 <div class="result" id="baleResult"></div>
 
@@ -187,7 +187,7 @@ color:white;
 <input id="animalsCount" placeholder="Animals">
 <input id="foodPerDay" placeholder="Food per day">
 
-<button class="calc" onclick="calcAnimals()">Calculate</button>
+<button class="calc" onclick="calcAnimals()" id="animalBtn">Calculate</button>
 
 <div class="result" id="animalResult"></div>
 
@@ -202,7 +202,7 @@ color:white;
 <input id="prodInput" placeholder="Input Cost">
 <input id="prodOutput" placeholder="Output Value">
 
-<button class="calc" onclick="calcProduction()">Calculate</button>
+<button class="calc" onclick="calcProduction()" id="prodBtn">Calculate</button>
 
 <div class="result" id="prodResult"></div>
 
@@ -215,7 +215,7 @@ color:white;
 <h2 id="todoTitle">Farm To-Do</h2>
 
 <input id="todoInput" placeholder="New Task">
-<button class="calc" onclick="addTodo()">Add</button>
+<button class="calc" onclick="addTodo()" id="todoBtn">Add</button>
 
 <ul id="todoList"></ul>
 
@@ -230,7 +230,7 @@ color:white;
 
 <script>
 
-/* TAB */
+/* TABS */
 
 function openTab(tab){
 
@@ -242,7 +242,7 @@ document.getElementById(tab).classList.add("active")
 
 }
 
-/* PROFIT */
+/* CALCULATORS */
 
 function calculate(){
 
@@ -254,11 +254,11 @@ let total=size*yieldha
 let profit=(total/1000)*price
 
 document.getElementById("result").innerHTML=
-"Yield: "+total+" L<br>Profit: €"+profit
+(currentLang==="de"
+? "Ertrag: "+total+" L<br>Gewinn: "+profit
+: "Yield: "+total+" L<br>Profit: "+profit)
 
 }
-
-/* BEST */
 
 function bestCrop(){
 
@@ -278,20 +278,18 @@ crops.forEach(c=>{
 let profit=(size*c.yield/1000)*c.price
 
 if(profit>bestProfit){
-
 bestProfit=profit
 best=c.name
-
 }
 
 })
 
 document.getElementById("bestResult").innerHTML=
-best+" Profit: "+bestProfit
+(currentLang==="de"
+? "Beste Frucht: "+best+" Gewinn: "+bestProfit
+: "Best Crop: "+best+" Profit: "+bestProfit)
 
 }
-
-/* WORKTIME */
 
 function calcWork(){
 
@@ -303,11 +301,11 @@ let haHour=(width*speed)/10
 let time=size/haHour
 
 document.getElementById("workResult").innerHTML=
-time.toFixed(2)+" hours"
+(currentLang==="de"
+? "Arbeitszeit: "+time.toFixed(2)+" Stunden"
+: "Worktime: "+time.toFixed(2)+" hours")
 
 }
-
-/* BALES */
 
 function calcBales(){
 
@@ -315,11 +313,11 @@ let size=document.getElementById("baleSize").value
 let count=document.getElementById("baleCount").value
 
 document.getElementById("baleResult").innerHTML=
-"Total: "+(size*count)
+(currentLang==="de"
+? "Gesamt: "+(size*count)
+: "Total: "+(size*count))
 
 }
-
-/* ANIMALS */
 
 function calcAnimals(){
 
@@ -327,11 +325,11 @@ let animals=document.getElementById("animalsCount").value
 let food=document.getElementById("foodPerDay").value
 
 document.getElementById("animalResult").innerHTML=
-animals*food+" food per day"
+(currentLang==="de"
+? "Futter pro Tag: "+animals*food
+: "Food per day: "+animals*food)
 
 }
-
-/* PRODUCTION */
 
 function calcProduction(){
 
@@ -339,7 +337,9 @@ let input=document.getElementById("prodInput").value
 let output=document.getElementById("prodOutput").value
 
 document.getElementById("prodResult").innerHTML=
-"Profit: "+(output-input)
+(currentLang==="de"
+? "Gewinn: "+(output-input)
+: "Profit: "+(output-input))
 
 }
 
@@ -398,18 +398,30 @@ loadTodos()
 
 /* LANGUAGE */
 
+let currentLang="en"
+
 function setLang(lang){
+
+currentLang=lang
 
 if(lang==="de"){
 
 document.getElementById("title").innerText="🚜 LS25 Helfer"
+
+document.getElementById("tabProfit").innerText="Gewinn"
+document.getElementById("tabBest").innerText="Beste Frucht"
+document.getElementById("tabWork").innerText="Arbeitszeit"
+document.getElementById("tabBale").innerText="Ballen"
+document.getElementById("tabAnimals").innerText="Tiere"
+document.getElementById("tabProd").innerText="Produktion"
+document.getElementById("tabTodo").innerText="Aufgaben"
 
 document.getElementById("profitTitle").innerText="Gewinn Rechner"
 document.getElementById("bestTitle").innerText="Beste Frucht"
 document.getElementById("workTitle").innerText="Arbeitszeit Rechner"
 document.getElementById("baleTitle").innerText="Ballen Rechner"
 document.getElementById("animalTitle").innerText="Tier Futter"
-document.getElementById("prodTitle").innerText="Produktion Gewinn"
+document.getElementById("prodTitle").innerText="Produktions Gewinn"
 document.getElementById("todoTitle").innerText="Farm Aufgaben"
 
 }
@@ -418,13 +430,13 @@ else{
 
 document.getElementById("title").innerText="🚜 LS25 Helper"
 
-document.getElementById("profitTitle").innerText="Profit Calculator"
-document.getElementById("bestTitle").innerText="Best Crop"
-document.getElementById("workTitle").innerText="Worktime Calculator"
-document.getElementById("baleTitle").innerText="Bale Calculator"
-document.getElementById("animalTitle").innerText="Animal Feed"
-document.getElementById("prodTitle").innerText="Production Profit"
-document.getElementById("todoTitle").innerText="Farm To-Do"
+document.getElementById("tabProfit").innerText="Profit"
+document.getElementById("tabBest").innerText="Best Crop"
+document.getElementById("tabWork").innerText="Worktime"
+document.getElementById("tabBale").innerText="Bales"
+document.getElementById("tabAnimals").innerText="Animals"
+document.getElementById("tabProd").innerText="Production"
+document.getElementById("tabTodo").innerText="To-Do"
 
 }
 
