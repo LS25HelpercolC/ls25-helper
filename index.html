@@ -59,14 +59,13 @@ flex:1;
 display:flex;
 align-items:center;
 justify-content:center;
-background:rgba(0,0,0,0.6);
 }
 
 /* Panel */
 
 .panel{
-width:520px;
-background:rgba(30,30,30,0.9);
+width:600px;
+background:rgba(20,20,20,0.85);
 border-radius:14px;
 padding:25px;
 box-shadow:0 0 25px rgba(0,0,0,0.7);
@@ -124,12 +123,38 @@ margin-top:15px;
 font-size:18px;
 }
 
-/* Icon bar */
+/* Icons */
 
 .icons{
 margin-top:20px;
 text-align:center;
 font-size:26px;
+}
+
+/* Arbeitsschritte Buttons */
+
+.workGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+}
+
+.workBtn{
+padding:10px;
+background:#3a3a3a;
+border-radius:6px;
+cursor:pointer;
+text-align:center;
+transition:0.2s;
+}
+
+.workBtn:hover{
+background:#555;
+}
+
+.workBtn.active{
+background:#4CAF50;
 }
 
 </style>
@@ -158,7 +183,7 @@ font-size:26px;
 
 <div class="content">
 
-<!-- PROFIT -->
+<!-- PROFIT RECHNER -->
 
 <div id="profit" class="section active">
 
@@ -202,11 +227,19 @@ font-size:26px;
 
 <h3>Arbeitsschritte</h3>
 
-<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label><br>
-<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label><br>
-<label><input type="checkbox" id="lime"> Kalk (+15%)</label><br>
-<label><input type="checkbox" id="weed"> Unkraut entfernt (+10%)</label><br>
-<label><input type="checkbox" id="pf"> Precision Farming (+5%)</label>
+<div class="workGrid">
+
+<div class="workBtn" id="mulch" onclick="toggleWork(this)">Mulchen (+2.5%)</div>
+
+<div class="workBtn" id="roll" onclick="toggleWork(this)">Walzen (+2.5%)</div>
+
+<div class="workBtn" id="lime" onclick="toggleWork(this)">Kalk (+15%)</div>
+
+<div class="workBtn" id="weed" onclick="toggleWork(this)">Unkraut entfernt (+10%)</div>
+
+<div class="workBtn" id="pf" onclick="toggleWork(this)">Precision Farming (+5%)</div>
+
+</div>
 
 <button class="calc" onclick="calc()">Berechnen</button>
 
@@ -270,7 +303,7 @@ font-size:26px;
 
 <script>
 
-/* Tabs */
+/* TAB WECHSEL */
 
 function openTab(tab,bg){
 
@@ -284,7 +317,13 @@ document.body.style.backgroundImage="url('"+bg+"')"
 
 }
 
-/* Profit Rechner */
+/* ARBEITSSCHRITTE TOGGLE */
+
+function toggleWork(el){
+el.classList.toggle("active")
+}
+
+/* PROFIT BERECHNUNG */
 
 function calc(){
 
@@ -296,11 +335,11 @@ let fert=document.querySelector('input[name="fert"]:checked').value
 
 let bonus=1
 
-if(document.getElementById("mulch").checked) bonus+=0.025
-if(document.getElementById("roll").checked) bonus+=0.025
-if(document.getElementById("lime").checked) bonus+=0.15
-if(document.getElementById("weed").checked) bonus+=0.10
-if(document.getElementById("pf").checked) bonus+=0.05
+if(document.getElementById("mulch").classList.contains("active")) bonus+=0.025
+if(document.getElementById("roll").classList.contains("active")) bonus+=0.025
+if(document.getElementById("lime").classList.contains("active")) bonus+=0.15
+if(document.getElementById("weed").classList.contains("active")) bonus+=0.10
+if(document.getElementById("pf").classList.contains("active")) bonus+=0.05
 
 let totalYield=yieldHa*size*fert*bonus
 
@@ -311,7 +350,7 @@ document.getElementById("result").innerHTML=
 
 }
 
-/* Start Hintergrund */
+/* START HINTERGRUND */
 
 document.body.style.backgroundImage="url('profit.jpg')"
 
