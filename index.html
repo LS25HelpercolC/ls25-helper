@@ -2,30 +2,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LS25 Helper v1.62</title>
+<title>LS25 Helper</title>
 
 <style>
 
 body{
-font-family:Arial;
 margin:0;
-background:url("https://images.unsplash.com/photo-1592982537447-7440770cbfc9") center/cover fixed;
+font-family:Arial;
+background:url("https://images.unsplash.com/photo-1500382017468-9049fed747ef") center/cover fixed;
 color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
 }
 
-.overlay{
-background:rgba(0,0,0,0.7);
-min-height:100vh;
-padding:30px;
-}
+.panel{
 
-.container{
-max-width:650px;
-margin:auto;
-background:#1e2329;
+width:700px;
+background:rgba(20,20,20,0.8);
+border-radius:15px;
 padding:25px;
-border-radius:12px;
-box-shadow:0 0 15px rgba(0,0,0,0.6);
+box-shadow:0 0 30px rgba(0,0,0,0.8);
+
 }
 
 h1{
@@ -33,45 +32,48 @@ text-align:center;
 margin-bottom:20px;
 }
 
-select,input{
-width:100%;
-padding:10px;
-margin:8px 0;
-border:none;
-border-radius:6px;
-font-size:15px;
-}
-
-.row{
+.toprow{
 display:flex;
 gap:10px;
+margin-bottom:15px;
 }
 
-.row input{
+select,input{
+
+padding:10px;
+border:none;
+border-radius:6px;
 flex:1;
+
 }
 
 .section{
-margin-top:20px;
+margin-top:15px;
+}
+
+.section h3{
+margin-bottom:8px;
 }
 
 label{
 display:flex;
 align-items:center;
-gap:8px;
-margin:6px 0;
+gap:6px;
+margin:5px 0;
 }
 
 button{
+
 margin-top:15px;
 width:100%;
 padding:12px;
-background:#4CAF50;
 border:none;
 border-radius:8px;
+background:#4CAF50;
 font-size:16px;
 color:white;
 cursor:pointer;
+
 }
 
 button:hover{
@@ -79,9 +81,27 @@ background:#66bb6a;
 }
 
 .result{
-margin-top:20px;
-font-size:18px;
+
+margin-top:15px;
 text-align:center;
+font-size:18px;
+
+}
+
+.cropBar{
+
+margin-top:20px;
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:6px;
+
+}
+
+.cropBar div{
+
+font-size:22px;
+text-align:center;
+
 }
 
 </style>
@@ -89,115 +109,100 @@ text-align:center;
 
 <body>
 
-<div class="overlay">
+<div class="panel">
 
-<div class="container">
+<h1>Profit Rechner</h1>
 
-<h1>🚜 LS25 Feldberechnung</h1>
-
-<!-- Frucht auswählen -->
+<div class="toprow">
 
 <select id="crop">
 
-<option value="8900">Weizen</option>
-<option value="9600">Gerste</option>
-<option value="8800">Hafer</option>
-<option value="5800">Raps</option>
-
-<option value="9200">Mais (Korn)</option>
-<option value="45000">Mais (Silomais)</option>
-
-<option value="5000">Sojabohnen</option>
-<option value="7000">Sonnenblumen</option>
-
-<option value="42000">Kartoffeln</option>
-<option value="60000">Zuckerrüben</option>
-
-<option value="6500">Erbsen</option>
-<option value="30000">Karotten</option>
-<option value="28000">Pastinaken</option>
-
-<option value="12000">Trauben</option>
-<option value="10000">Oliven</option>
-
-<option value="7000">Reis</option>
-<option value="8500">Sorghum</option>
-
-<option value="15000">Pappel</option>
-<option value="4000">Ölrettich</option>
-<option value="20000">Gras</option>
+<option value="8900">🌾 Weizen</option>
+<option value="9600">🌾 Gerste</option>
+<option value="8800">🌾 Hafer</option>
+<option value="5800">🌱 Raps</option>
+<option value="9200">🌽 Mais (Korn)</option>
+<option value="45000">🌽 Mais (Silomais)</option>
+<option value="5000">🫘 Sojabohnen</option>
+<option value="7000">🌻 Sonnenblumen</option>
+<option value="42000">🥔 Kartoffeln</option>
+<option value="60000">🟥 Zuckerrüben</option>
+<option value="6500">🫛 Erbsen</option>
+<option value="30000">🥕 Karotten</option>
+<option value="28000">🥔 Pastinaken</option>
+<option value="12000">🍇 Trauben</option>
+<option value="10000">🫒 Oliven</option>
+<option value="7000">🌿 Reis</option>
+<option value="8500">🌿 Sorghum</option>
+<option value="15000">🌲 Pappel</option>
+<option value="4000">🌱 Ölrettich</option>
+<option value="20000">🌿 Gras</option>
 
 </select>
 
-<!-- Feldgröße + Preis -->
-
-<div class="row">
-
-<input id="fieldsize" type="number" placeholder="Feldgröße (ha)">
-
-<input id="price" type="number" placeholder="Preis pro 1000L">
-
 </div>
 
-<!-- Düngung -->
+<div class="toprow">
+
+<input id="fieldSize" placeholder="Feldgröße (ha)" type="number">
+<input id="price" placeholder="Preis pro 1000L" type="number">
+
+</div>
 
 <div class="section">
 
 <h3>Düngestufe</h3>
 
-<label>
-<input type="radio" name="fert" value="0">
-Keine
-</label>
-
-<label>
-<input type="radio" name="fert" value="0.25">
-1x Düngen (+25%)
-</label>
-
-<label>
-<input type="radio" name="fert" value="0.5">
-2x Düngen (+50%)
-</label>
+<label><input type="radio" name="fert" value="0">Keine</label>
+<label><input type="radio" name="fert" value="0.25">1x Düngen (+25%)</label>
+<label><input type="radio" name="fert" value="0.5">2x Düngen (+50%)</label>
 
 </div>
-
-<!-- Arbeitsschritte -->
 
 <div class="section">
 
 <h3>Arbeitsschritte</h3>
 
-<label>
-<input type="checkbox" id="mulch">
-Mulchen (+2.5%)
-</label>
-
-<label>
-<input type="checkbox" id="roll">
-Walzen (+2.5%)
-</label>
-
-<label>
-<input type="checkbox" id="lime">
-Kalk (+15%)
-</label>
-
-<label>
-<input type="checkbox" id="weed">
-Unkraut entfernt (+10%)
-</label>
-
-<label>
-<input type="checkbox" id="pf">
-Precision Farming (+5%)
-</label>
+<label><input type="checkbox" id="mulch">Mulchen (+2.5%)</label>
+<label><input type="checkbox" id="roll">Walzen (+2.5%)</label>
+<label><input type="checkbox" id="lime">Kalk (+15%)</label>
+<label><input type="checkbox" id="weed">Unkraut entfernt (+10%)</label>
+<label><input type="checkbox" id="pf">Precision Farming (+5%)</label>
 
 </div>
 
-<button onclick="calculate()">Berechnen</button>
+<button onclick="calc()">Berechnen</button>
 
-<div class="result" id="result"></div>
+<div class="result" id="result">
+
+Ertrag: XXXX L<br>
+Gewinn: XXXX €
+
+</div>
+
+<div class="cropBar">
+
+<div>🌾</div>
+<div>🌾</div>
+<div>🌾</div>
+<div>🌱</div>
+<div>🌽</div>
+<div>🌽</div>
+<div>🫘</div>
+<div>🌻</div>
+<div>🥔</div>
+<div>🟥</div>
+
+<div>🫛</div>
+<div>🥕</div>
+<div>🥔</div>
+<div>🍇</div>
+<div>🫒</div>
+<div>🌿</div>
+<div>🌿</div>
+<div>🌲</div>
+<div>🌱</div>
+<div>🌿</div>
 
 </div>
 
@@ -205,59 +210,38 @@ Precision Farming (+5%)
 
 <script>
 
-/* ===================================== */
-/* PROFIT / FELDBERECHNUNG FINAL */
-/* NICHT MEHR ÄNDERN */
-/* ===================================== */
-
-function calculate(){
+function calc(){
 
 let base=parseFloat(document.getElementById("crop").value)
-let size=parseFloat(document.getElementById("fieldsize").value)
+let size=parseFloat(document.getElementById("fieldSize").value)
 let price=parseFloat(document.getElementById("price").value)
 
-if(!size || !price){
+if(!size||!price){
 alert("Bitte Feldgröße und Preis eingeben")
 return
 }
 
-let fert=document.querySelector('input[name="fert"]:checked')
-
 let bonus=0
 
-if(fert){
-bonus+=parseFloat(fert.value)
-}
+let fert=document.querySelector('input[name="fert"]:checked')
 
-if(document.getElementById("mulch").checked){
-bonus+=0.025
-}
+if(fert) bonus+=parseFloat(fert.value)
 
-if(document.getElementById("roll").checked){
-bonus+=0.025
-}
+if(mulch.checked) bonus+=0.025
+if(roll.checked) bonus+=0.025
+if(lime.checked) bonus+=0.15
+if(weed.checked) bonus+=0.10
+if(pf.checked) bonus+=0.05
 
-if(document.getElementById("lime").checked){
-bonus+=0.15
-}
+let yieldHa=base*(1+bonus)
 
-if(document.getElementById("weed").checked){
-bonus+=0.10
-}
+let total=yieldHa*size
 
-if(document.getElementById("pf").checked){
-bonus+=0.05
-}
-
-let yieldPerHa=base*(1+bonus)
-
-let totalYield=yieldPerHa*size
-
-let profit=(totalYield/1000)*price
+let profit=(total/1000)*price
 
 document.getElementById("result").innerHTML=
 
-"Ertrag: "+Math.round(totalYield)+" L<br><br>Gewinn: "+Math.round(profit)+" €"
+"Ertrag: "+Math.round(total)+" L<br>Gewinn: "+Math.round(profit)+" €"
 
 }
 
