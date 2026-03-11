@@ -14,7 +14,7 @@ color:white;
 }
 
 .overlay{
-background:rgba(0,0,0,0.7);
+background:rgba(0,0,0,0.75);
 min-height:100vh;
 padding:20px;
 }
@@ -30,8 +30,8 @@ margin-bottom:20px;
 }
 
 .tabBtn{
-padding:10px 16px;
-margin:5px;
+padding:10px 14px;
+margin:4px;
 border:none;
 border-radius:8px;
 background:#4caf50;
@@ -56,6 +56,32 @@ border-radius:12px;
 display:block;
 }
 
+input,select{
+padding:8px;
+margin:5px;
+border-radius:6px;
+border:none;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.result{
+margin-top:10px;
+font-size:18px;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+/* Crop Planner */
+
 .timeline{
 display:grid;
 grid-template-columns:repeat(12,1fr);
@@ -69,7 +95,7 @@ font-size:12px;
 
 .bar{
 height:20px;
-border-radius:6px;
+border-radius:5px;
 margin:2px;
 }
 
@@ -77,26 +103,8 @@ margin:2px;
 background:#3498db;
 }
 
-.grow{
-background:#2ecc71;
-}
-
 .harvest{
 background:#f39c12;
-}
-
-.cropCard{
-margin-top:20px;
-padding:20px;
-background:#3a4048;
-border-radius:10px;
-}
-
-button{
-padding:8px 12px;
-border:none;
-border-radius:6px;
-cursor:pointer;
 }
 
 .nextCrop button{
@@ -105,14 +113,13 @@ background:#4caf50;
 color:white;
 }
 
-.lang{
+.language{
 position:fixed;
 bottom:10px;
 right:10px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -120,46 +127,31 @@ right:10px;
 <div class="overlay">
 
 <header>
-
-<h1 id="title"></h1>
-
+<h1 id="title">LS25 Helper</h1>
 </header>
 
 <div class="tabs">
 
-<button class="tabBtn" onclick="openTab('calendar')" id="tabCalendar"></button>
-<button class="tabBtn" onclick="openTab('profit')" id="tabProfit"></button>
+<button class="tabBtn" onclick="openTab('profit')">Profit</button>
+<button class="tabBtn" onclick="openTab('best')">Best Crop</button>
+<button class="tabBtn" onclick="openTab('work')">Worktime</button>
+<button class="tabBtn" onclick="openTab('bale')">Bales</button>
+<button class="tabBtn" onclick="openTab('animals')">Animals</button>
+<button class="tabBtn" onclick="openTab('production')">Production</button>
+<button class="tabBtn" onclick="openTab('todo')">To-Do</button>
+<button class="tabBtn" onclick="openTab('planner')">Crop Planner</button>
 
 </div>
 
-<div id="calendar" class="container active">
+<!-- PROFIT -->
 
-<h2 id="calendarTitle"></h2>
+<div id="profit" class="container active">
 
-<div class="cropCard">
+<h2 id="profitTitle">Profit Calculator</h2>
 
-<h3 id="cropName"></h3>
-
-<div id="timeline"></div>
-
-<h3 id="nextTitle"></h3>
-
-<div id="nextCrops" class="nextCrop"></div>
-
-</div>
-
-</div>
-
-<div id="profit" class="container">
-
-<h2 id="profitTitle"></h2>
-
-<label id="fieldLabel"></label>
-<input id="fieldSize" type="number" value="2">
-
-<br><br>
-
-<label id="fertLabel"></label>
+<input id="fieldsize" type="number" placeholder="Field Size (ha)">
+<input id="yieldha" type="number" placeholder="Yield per ha (L)">
+<input id="price" type="number" placeholder="Price per 1000L">
 
 <select id="fert">
 <option value="1">0%</option>
@@ -167,19 +159,120 @@ right:10px;
 <option value="1.5">100%</option>
 </select>
 
-<br><br>
+<button onclick="calculate()" id="calcBtn">Calculate</button>
 
-<button onclick="calculate()" id="calcBtn"></button>
-
-<p id="yield"></p>
-<p id="profitResult"></p>
+<div class="result" id="result"></div>
 
 </div>
 
-<div class="lang">
+<!-- BEST CROP -->
 
-<button onclick="setLang('de')">🇩🇪</button>
+<div id="best" class="container">
+
+<h2>Best Crop Calculator</h2>
+
+<input id="bestFieldSize" placeholder="Field Size (ha)">
+
+<button onclick="bestCrop()">Find Best Crop</button>
+
+<div class="result" id="bestResult"></div>
+
+</div>
+
+<!-- WORKTIME -->
+
+<div id="work" class="container">
+
+<h2>Worktime Calculator</h2>
+
+<input id="width" placeholder="Working Width (m)">
+<input id="speed" placeholder="Speed (km/h)">
+<input id="workField" placeholder="Field Size (ha)">
+
+<button onclick="calcWork()">Calculate</button>
+
+<div class="result" id="workResult"></div>
+
+</div>
+
+<!-- BALES -->
+
+<div id="bale" class="container">
+
+<h2>Bale Calculator</h2>
+
+<input id="baleSize" placeholder="Bale Size">
+<input id="baleCount" placeholder="Number of Bales">
+
+<button onclick="calcBales()">Calculate</button>
+
+<div class="result" id="baleResult"></div>
+
+</div>
+
+<!-- ANIMALS -->
+
+<div id="animals" class="container">
+
+<h2>Animal Feed Calculator</h2>
+
+<input id="animalsCount" placeholder="Animals">
+<input id="foodPerDay" placeholder="Food per day">
+
+<button onclick="calcAnimals()">Calculate</button>
+
+<div class="result" id="animalResult"></div>
+
+</div>
+
+<!-- PRODUCTION -->
+
+<div id="production" class="container">
+
+<h2>Production Profit</h2>
+
+<input id="prodInput" placeholder="Input Cost">
+<input id="prodOutput" placeholder="Output Value">
+
+<button onclick="calcProduction()">Calculate</button>
+
+<div class="result" id="prodResult"></div>
+
+</div>
+
+<!-- TODO -->
+
+<div id="todo" class="container">
+
+<h2>Farm To-Do</h2>
+
+<input id="todoInput" placeholder="New Task">
+<button onclick="addTodo()">Add</button>
+
+<ul id="todoList"></ul>
+
+</div>
+
+<!-- CROP PLANNER -->
+
+<div id="planner" class="container">
+
+<h2>Crop Planner</h2>
+
+<h3 id="cropName">Wheat</h3>
+
+<div id="timeline"></div>
+
+<h3>Recommended next crop</h3>
+
+<div id="nextCrops" class="nextCrop"></div>
+
+</div>
+
+<div class="language">
+
 <button onclick="setLang('en')">🇬🇧</button>
+<button onclick="setLang('de')">🇩🇪</button>
 
 </div>
 
@@ -187,182 +280,7 @@ right:10px;
 
 <script>
 
-let lang="de"
-let currentCrop="wheat"
-
-const translations={
-
-de:{
-title:"LS25 Farm Helfer",
-calendar:"Frucht Kalender",
-profit:"Gewinn Rechner",
-calendarTitle:"Frucht Timeline",
-profitTitle:"Ertrags Rechner",
-field:"Feldgröße (ha)",
-fert:"Düngung",
-calculate:"Berechnen",
-yield:"Ertrag",
-profitLabel:"Gewinn",
-next:"Empfohlene nächste Frucht",
-months:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
-},
-
-en:{
-title:"LS25 Farm Helper",
-calendar:"Crop Calendar",
-profit:"Profit Calculator",
-calendarTitle:"Crop Timeline",
-profitTitle:"Yield Calculator",
-field:"Field size (ha)",
-fert:"Fertilization",
-calculate:"Calculate",
-yield:"Yield",
-profitLabel:"Profit",
-next:"Recommended next crop",
-months:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-}
-
-}
-
-const crops={
-
-wheat:{
-name:{de:"Weizen",en:"Wheat"},
-yield:0.89,
-sow:[8,9],
-harvest:[6,7],
-next:["canola","soybean","barley"]
-},
-
-canola:{
-name:{de:"Raps",en:"Canola"},
-yield:0.58
-},
-
-soybean:{
-name:{de:"Sojabohnen",en:"Soybeans"},
-yield:0.45
-},
-
-barley:{
-name:{de:"Gerste",en:"Barley"},
-yield:0.88
-}
-
-}
-
-function setLang(l){
-
-lang=l
-render()
-
-}
-
-function render(){
-
-const t=translations[lang]
-
-document.getElementById("title").innerText=t.title
-document.getElementById("tabCalendar").innerText=t.calendar
-document.getElementById("tabProfit").innerText=t.profit
-document.getElementById("calendarTitle").innerText=t.calendarTitle
-document.getElementById("profitTitle").innerText=t.profitTitle
-
-document.getElementById("fieldLabel").innerText=t.field
-document.getElementById("fertLabel").innerText=t.fert
-document.getElementById("calcBtn").innerText=t.calculate
-
-document.getElementById("cropName").innerText=crops[currentCrop].name[lang]
-
-document.getElementById("nextTitle").innerText=t.next
-
-renderTimeline()
-renderNext()
-
-}
-
-function renderTimeline(){
-
-const t=translations[lang]
-const crop=crops[currentCrop]
-
-let html="<div class='timeline'>"
-
-for(let i=0;i<12;i++){
-
-html+=`<div class="month">${t.months[i]}</div>`
-
-}
-
-html+="</div>"
-
-html+="<div class='timeline'>"
-
-for(let i=0;i<12;i++){
-
-let cls=""
-
-if(crop.sow && crop.sow.includes(i)) cls="bar sow"
-if(crop.harvest && crop.harvest.includes(i)) cls="bar harvest"
-
-html+=`<div><div class="${cls}"></div></div>`
-
-}
-
-html+="</div>"
-
-document.getElementById("timeline").innerHTML=html
-
-}
-
-function renderNext(){
-
-const crop=crops[currentCrop]
-
-let html=""
-
-if(crop.next){
-
-crop.next.forEach(c=>{
-
-html+=`<button onclick="selectCrop('${c}')">${crops[c].name[lang]}</button>`
-
-})
-
-}
-
-document.getElementById("nextCrops").innerHTML=html
-
-}
-
-function selectCrop(c){
-
-currentCrop=c
-render()
-
-}
-
-function calculate(){
-
-const size=document.getElementById("fieldSize").value
-const fert=document.getElementById("fert").value
-
-const crop=crops[currentCrop]
-
-const baseYield=crop.yield*10000*size
-const totalYield=baseYield*fert
-
-const price=1.6
-
-const profit=totalYield*price
-
-document.getElementById("yield").innerText=
-translations[lang].yield+": "+Math.round(totalYield)+" L"
-
-document.getElementById("profitResult").innerText=
-translations[lang].profitLabel+": "+Math.round(profit)+" €"
-
-}
+/* TAB SYSTEM */
 
 function openTab(tab){
 
@@ -374,7 +292,208 @@ document.getElementById(tab).classList.add("active")
 
 }
 
-render()
+/* PROFIT */
+
+function calculate(){
+
+let size=document.getElementById("fieldsize").value
+let yieldha=document.getElementById("yieldha").value
+let price=document.getElementById("price").value
+let fert=document.getElementById("fert").value
+
+let totalYield=size*yieldha*fert
+let totalProfit=(totalYield/1000)*price
+
+document.getElementById("result").innerHTML=
+"Yield: "+Math.round(totalYield)+" L<br>Profit: €"+Math.round(totalProfit)
+
+}
+
+/* BEST CROP */
+
+function bestCrop(){
+
+let size=document.getElementById("bestFieldSize").value
+
+let crops=[
+{name:"Wheat",yield:8900,price:900},
+{name:"Barley",yield:9600,price:850},
+{name:"Canola",yield:5800,price:1200},
+{name:"Soybean",yield:5000,price:1500}
+]
+
+let best=""
+let bestProfit=0
+
+crops.forEach(c=>{
+
+let profit=(size*c.yield/1000)*c.price
+
+if(profit>bestProfit){
+bestProfit=profit
+best=c.name
+}
+
+})
+
+document.getElementById("bestResult").innerHTML=
+"Best Crop: "+best+" Profit: "+Math.round(bestProfit)
+
+}
+
+/* WORKTIME */
+
+function calcWork(){
+
+let width=document.getElementById("width").value
+let speed=document.getElementById("speed").value
+let size=document.getElementById("workField").value
+
+let haHour=(width*speed)/10
+let time=size/haHour
+
+document.getElementById("workResult").innerHTML=
+"Worktime: "+time.toFixed(2)+" hours"
+
+}
+
+/* BALES */
+
+function calcBales(){
+
+let size=document.getElementById("baleSize").value
+let count=document.getElementById("baleCount").value
+
+document.getElementById("baleResult").innerHTML=
+"Total: "+(size*count)
+
+}
+
+/* ANIMALS */
+
+function calcAnimals(){
+
+let animals=document.getElementById("animalsCount").value
+let food=document.getElementById("foodPerDay").value
+
+document.getElementById("animalResult").innerHTML=
+"Food per day: "+animals*food
+
+}
+
+/* PRODUCTION */
+
+function calcProduction(){
+
+let input=document.getElementById("prodInput").value
+let output=document.getElementById("prodOutput").value
+
+document.getElementById("prodResult").innerHTML=
+"Profit: "+(output-input)
+
+}
+
+/* TODO LIST */
+
+function loadTodos(){
+
+let todos=JSON.parse(localStorage.getItem("todos"))||[]
+
+let list=document.getElementById("todoList")
+list.innerHTML=""
+
+todos.forEach((t,i)=>{
+
+let li=document.createElement("li")
+
+li.innerHTML=
+'<input type="checkbox" '+(t.done?'checked':'')+
+' onchange="toggleTodo('+i+')"> '+t.text
+
+list.appendChild(li)
+
+})
+
+}
+
+function addTodo(){
+
+let text=document.getElementById("todoInput").value
+
+let todos=JSON.parse(localStorage.getItem("todos"))||[]
+
+todos.push({text:text,done:false})
+
+localStorage.setItem("todos",JSON.stringify(todos))
+
+document.getElementById("todoInput").value=""
+
+loadTodos()
+
+}
+
+function toggleTodo(i){
+
+let todos=JSON.parse(localStorage.getItem("todos"))
+
+todos[i].done=!todos[i].done
+
+localStorage.setItem("todos",JSON.stringify(todos))
+
+loadTodos()
+
+}
+
+loadTodos()
+
+/* CROP PLANNER */
+
+const cropsPlanner={
+wheat:{sow:[8,9],harvest:[6,7],next:["Canola","Soybean","Barley"]}
+}
+
+let currentCrop="wheat"
+
+function renderPlanner(){
+
+const crop=cropsPlanner[currentCrop]
+
+let html="<div class='timeline'>"
+
+const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+
+months.forEach(m=>{
+html+=`<div class="month">${m}</div>`
+})
+
+html+="</div><div class='timeline'>"
+
+for(let i=0;i<12;i++){
+
+let cls=""
+
+if(crop.sow.includes(i)) cls="bar sow"
+if(crop.harvest.includes(i)) cls="bar harvest"
+
+html+=`<div><div class="${cls}"></div></div>`
+
+}
+
+html+="</div>"
+
+document.getElementById("timeline").innerHTML=html
+
+let next=""
+
+crop.next.forEach(n=>{
+next+=`<button>${n}</button>`
+})
+
+document.getElementById("nextCrops").innerHTML=next
+
+}
+
+renderPlanner()
 
 </script>
 
