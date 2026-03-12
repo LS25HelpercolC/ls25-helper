@@ -1,27 +1,111 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
 <meta charset="UTF-8">
 <title>LS25 Helper – Feldplanung</title>
 
-<link rel="stylesheet" href="../assets/css/style.css">
+<style>
 
+body{
+margin:0;
+font-family:Arial;
+background:#1b242b;
+color:white;
+}
+
+.layout{
+display:flex;
+gap:20px;
+padding:20px;
+}
+
+.timelinePanel{
+flex:1;
+background:#24313a;
+border-radius:12px;
+padding:20px;
+}
+
+.calendar{
+width:300px;
+background:#24313a;
+border-radius:12px;
+padding:20px;
+}
+
+h1{
+margin-top:0;
+}
+
+.monthBar{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:4px;
+margin-bottom:10px;
+}
+
+.month{
+background:#2f3f49;
+text-align:center;
+padding:6px;
+border-radius:4px;
+cursor:pointer;
+}
+
+.month:hover{
+background:#4CAF50;
+}
+
+.timelineRow{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+margin-bottom:4px;
+font-family:monospace;
+}
+
+.cell{
+text-align:center;
+}
+
+.cropBox{
+margin-top:15px;
+}
+
+.cropBox button{
+margin:3px;
+padding:6px 10px;
+cursor:pointer;
+}
+
+.calendarHeader{
+display:grid;
+grid-template-columns:1fr 80px 80px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.calendarItem{
+display:grid;
+grid-template-columns:1fr 80px 80px;
+margin-bottom:4px;
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="layout">
 
-<div class="panel">
+<div class="timelinePanel">
 
 <h1>Feldplanung</h1>
 
-<div id="timelineMonths" class="timelineMonths"></div>
+<div id="monthBar" class="monthBar"></div>
 
-<div id="timelineRows" class="timelineRows"></div>
+<div id="timeline"></div>
 
-<div id="cropSelectBox" class="cropSelectBox"></div>
+<div id="cropBox" class="cropBox"></div>
 
 </div>
 
@@ -31,7 +115,7 @@
 
 <div class="calendarHeader">
 <span>Pflanze</span>
-<span>Aussaat</span>
+<span>Saat</span>
 <span>Ernte</span>
 </div>
 
@@ -41,7 +125,165 @@
 
 </div>
 
-<script src="../assets/js/feldplanung.js"></script>
+<script>
+
+const months=[
+"Jan","Feb","Mär","Apr","Mai","Jun",
+"Jul","Aug","Sep","Okt","Nov","Dez"
+]
+
+let crops={
+"Weizen":{sow:["Sep","Okt"],harvest:["Jul","Aug"]},
+"Gerste":{sow:["Sep","Okt"],harvest:["Jun","Jul"]},
+"Hafer":{sow:["Sep","Okt"],harvest:["Jul","Aug"]},
+"Raps":{sow:["Aug"],harvest:["Jul"]},
+"Mais":{sow:["Apr","Mai"],harvest:["Okt","Nov"]},
+"Sojabohnen":{sow:["Apr","Mai"],harvest:["Okt"]},
+"Sonnenblumen":{sow:["Apr","Mai"],harvest:["Sep","Okt"]},
+"Kartoffeln":{sow:["Apr"],harvest:["Sep"]},
+"Zuckerrüben":{sow:["Apr"],harvest:["Okt","Nov"]},
+"Erbsen":{sow:["Mär","Apr"],harvest:["Jul","Aug"]},
+"Karotten":{sow:["Apr"],harvest:["Okt"]},
+"Pastinaken":{sow:["Apr"],harvest:["Okt"]},
+"Reis":{sow:["Apr","Mai"],harvest:["Sep"]},
+"Sorghum":{sow:["Apr","Mai"],harvest:["Okt"]},
+"Trauben":{sow:["Mär","Apr","Mai"],harvest:["Sep","Okt"]},
+"Oliven":{sow:["Mär","Apr","Mai"],harvest:["Sep","Okt"]},
+"Pappel":{sow:["Mär","Apr"],harvest:["Dez"]},
+"Ölrettich":{sow:["Aug","Sep","Okt"],harvest:["Nov"]},
+"Gras":{sow:["Mär","Apr"],harvest:["Aug"]}
+}
+
+let timeline=[]
+
+function buildCalendar(){
+
+const box=document.getElementById("calendar")
+
+Object.keys(crops).forEach(crop=>{
+
+const row=document.createElement("div")
+row.className="calendarItem"
+
+row.innerHTML=
+"<span>"+crop+"</span>"+
+"<span>"+crops[crop].sow.join("-")+"</span>"+
+"<span>"+crops[crop].harvest.join("-")+"</span>"
+
+box.appendChild(row)
+
+})
+
+}
+
+function buildMonths(){
+
+const bar=document.getElementById("monthBar")
+
+months.forEach((m,i)=>{
+
+const d=document.createElement("div")
+d.className="month"
+d.innerText=m
+d.onclick=()=>monthClick(i)
+
+bar.appendChild(d)
+
+})
+
+}
+
+function monthClick(month){
+
+const list=[]
+
+Object.keys(crops).forEach(c=>{
+
+if(crops[c].sow.includes(months[month])){
+list.push(c)
+}
+
+})
+
+showCropOptions(month,list)
+
+}
+
+function showCropOptions(month,cropList){
+
+const box=document.getElementById("cropBox")
+box.innerHTML=""
+
+cropList.forEach(c=>{
+
+const b=document.createElement("button")
+b.innerText=c
+
+b.onclick=()=>addCrop(month,c)
+
+box.appendChild(b)
+
+})
+
+}
+
+function addCrop(month,crop){
+
+const sowMonths=crops[crop].sow
+const harvestMonths=crops[crop].harvest
+
+const firstSow=months.indexOf(sowMonths[0])
+const firstHarvest=months.indexOf(harvestMonths[0])
+
+let growth=firstHarvest-firstSow
+if(growth<0)growth+=12
+
+const harvest=month+growth
+
+timeline.push({
+crop:crop,
+sow:month,
+harvest:harvest
+})
+
+drawTimeline()
+
+}
+
+function drawTimeline(){
+
+const box=document.getElementById("timeline")
+box.innerHTML=""
+
+timeline.forEach(t=>{
+
+const row=document.createElement("div")
+row.className="timelineRow"
+
+for(let i=0;i<12;i++){
+
+const c=document.createElement("div")
+c.className="cell"
+
+if(i===t.sow%12)c.innerText="A"
+else if(i===t.harvest%12)c.innerText="E"
+else if(i>t.sow%12&&i<t.harvest%12)c.innerText="█"
+else c.innerText="."
+
+row.appendChild(c)
+
+}
+
+box.appendChild(row)
+
+})
+
+}
+
+buildCalendar()
+buildMonths()
+
+</script>
 
 </body>
 </html>
