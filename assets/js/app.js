@@ -2,7 +2,7 @@ let cropsData = {}
 
 async function loadCrops(){
 
- const response = await fetch("../assets/data/crops.json")
+ const response = await fetch("../data/crops.json")
  cropsData = await response.json()
 
  buildCalendar()
