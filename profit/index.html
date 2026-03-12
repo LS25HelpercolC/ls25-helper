@@ -2,20 +2,95 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<title>LS25 Helper – Profit Rechner</title>
 
 <link rel="stylesheet" href="../assets/css/style.css">
 
 <style>
-body{
-font-family:Arial;
-color:white;
-margin:20px;
-}
-</style>
 
+body{
+margin:0;
+font-family:Arial;
+background:url("../assets/images/profit-bg.jpg") center/cover no-repeat fixed;
+color:white;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:30px;
+background:rgba(0,0,0,0.55);
+border-radius:14px;
+backdrop-filter:blur(8px);
+}
+
+.row{
+display:flex;
+gap:10px;
+}
+
+select,input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:6px;
+border:none;
+}
+
+.calc{
+width:100%;
+padding:12px;
+background:#4CAF50;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
+margin-top:20px;
+}
+
+.result{
+text-align:center;
+margin-top:20px;
+font-size:18px;
+}
+
+.workGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+}
+
+.workBtn{
+padding:10px;
+background:#3a3a3a;
+border-radius:6px;
+cursor:pointer;
+text-align:center;
+}
+
+.workBtn.active{
+background:#4CAF50;
+}
+
+.fertBtn{
+padding:10px;
+background:#3a3a3a;
+border-radius:6px;
+cursor:pointer;
+text-align:center;
+}
+
+.fertBtn.active{
+background:#4CAF50;
+}
+
+</style>
 </head>
 
 <body>
+
+<div class="container">
 
 <h1>🚜 Profit Rechner</h1>
 
@@ -26,7 +101,7 @@ margin:20px;
 <option value="8800">🌾 Hafer</option>
 <option value="5800">🌱 Raps</option>
 <option value="9200">🌽 Mais (Korn)</option>
-<option value="45000">🌽 Silomais</option>
+<option value="45000">🌽 Mais (Silomais)</option>
 <option value="5000">🫘 Sojabohnen</option>
 <option value="7000">🌻 Sonnenblumen</option>
 <option value="42000">🥔 Kartoffeln</option>
@@ -51,7 +126,6 @@ margin:20px;
 
 </div>
 
-
 <h3>Düngestufe</h3>
 
 <div class="workGrid">
@@ -69,7 +143,6 @@ Keine
 </div>
 
 </div>
-
 
 <h3>Arbeitsschritte</h3>
 
@@ -97,13 +170,53 @@ Precision Farming (+5%)
 
 </div>
 
-
 <button class="calc" onclick="calc()">Berechnen</button>
 
 <div class="result" id="result"></div>
 
+</div>
 
-<script src="../assets/js/app.js"></script>
+<script>
+
+function toggleWork(el){
+el.classList.toggle("active")
+}
+
+function selectFert(el){
+
+document.querySelectorAll(".fertBtn").forEach(btn=>{
+btn.classList.remove("active")
+})
+
+el.classList.add("active")
+
+}
+
+function calc(){
+
+let yieldHa=document.getElementById("crop").value
+let size=document.getElementById("size").value
+let price=document.getElementById("price").value
+
+let fert=document.querySelector(".fertBtn.active").dataset.value
+
+let bonus=1
+
+if(document.getElementById("mulch").classList.contains("active")) bonus+=0.025
+if(document.getElementById("roll").classList.contains("active")) bonus+=0.025
+if(document.getElementById("lime").classList.contains("active")) bonus+=0.15
+if(document.getElementById("weed").classList.contains("active")) bonus+=0.10
+if(document.getElementById("pf").classList.contains("active")) bonus+=0.05
+
+let totalYield=yieldHa*size*fert*bonus
+let profit=(totalYield/1000)*price
+
+document.getElementById("result").innerHTML =
+"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
+
+}
+
+</script>
 
 </body>
 </html>
