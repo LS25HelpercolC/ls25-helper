@@ -1,32 +1,101 @@
 {
- "Weizen": {"sow":["Sep","Okt"],"harvest":["Jul","Aug"]},
- "Gerste": {"sow":["Sep","Okt"],"harvest":["Jun","Jul"]},
- "Hafer": {"sow":["Sep","Okt"],"harvest":["Jul","Aug"]},
+ "Weizen": {
+  "sow": ["Sep","Okt"],
+  "harvest": ["Jul","Aug"]
+ },
 
- "Raps": {"sow":["Aug"],"harvest":["Jul"]},
+ "Gerste": {
+  "sow": ["Sep","Okt"],
+  "harvest": ["Jun","Jul"]
+ },
 
- "Mais (Korn)": {"sow":["Apr","Mai"],"harvest":["Okt","Nov"]},
- "Mais (Silage)": {"sow":["Apr","Mai"],"harvest":["Sep","Okt"]},
+ "Hafer": {
+  "sow": ["Sep","Okt"],
+  "harvest": ["Jul","Aug"]
+ },
 
- "Sojabohnen": {"sow":["Apr","Mai"],"harvest":["Okt"]},
- "Sonnenblumen": {"sow":["Apr","Mai"],"harvest":["Sep","Okt"]},
+ "Raps": {
+  "sow": ["Aug"],
+  "harvest": ["Jul"]
+ },
 
- "Kartoffeln": {"sow":["Apr"],"harvest":["Sep"]},
- "Zuckerrüben": {"sow":["Apr"],"harvest":["Okt","Nov"]},
+ "Mais (Korn)": {
+  "sow": ["Apr","Mai"],
+  "harvest": ["Okt","Nov"]
+ },
 
- "Erbsen": {"sow":["Mär","Apr"],"harvest":["Jul","Aug"]},
- "Karotten": {"sow":["Apr"],"harvest":["Okt"]},
- "Pastinaken": {"sow":["Apr"],"harvest":["Okt"]},
+ "Mais (Silomais)": {
+  "sow": ["Apr","Mai"],
+  "harvest": ["Sep","Okt"]
+ },
 
- "Reis": {"sow":["Apr","Mai"],"harvest":["Sep"]},
- "Sorghum": {"sow":["Apr","Mai"],"harvest":["Okt"]},
+ "Sojabohnen": {
+  "sow": ["Apr","Mai"],
+  "harvest": ["Okt"]
+ },
 
- "Trauben": {"sow":[],"harvest":["Sep","Okt"]},
- "Oliven": {"sow":[],"harvest":["Sep","Okt"]},
+ "Sonnenblumen": {
+  "sow": ["Apr","Mai"],
+  "harvest": ["Sep","Okt"]
+ },
 
- "Pappel": {"sow":["Mär","Apr"],"harvest":["Ganzjährig"]},
+ "Kartoffeln": {
+  "sow": ["Apr"],
+  "harvest": ["Sep"]
+ },
 
- "Ölrettich": {"sow":["Aug","Sep"],"harvest":[]},
+ "Zuckerrüben": {
+  "sow": ["Apr"],
+  "harvest": ["Okt","Nov"]
+ },
 
- "Gras": {"sow":["Mär","Apr"],"harvest":["Mehrfach"]}
+ "Erbsen": {
+  "sow": ["Mär","Apr"],
+  "harvest": ["Jul","Aug"]
+ },
+
+ "Karotten": {
+  "sow": ["Apr"],
+  "harvest": ["Okt"]
+ },
+
+ "Pastinaken": {
+  "sow": ["Apr"],
+  "harvest": ["Okt"]
+ },
+
+ "Trauben": {
+  "sow": [],
+  "harvest": ["Sep","Okt"]
+ },
+
+ "Oliven": {
+  "sow": [],
+  "harvest": ["Sep","Okt"]
+ },
+
+ "Reis": {
+  "sow": ["Apr","Mai"],
+  "harvest": ["Sep"]
+ },
+
+ "Sorghum": {
+  "sow": ["Apr","Mai"],
+  "harvest": ["Okt"]
+ },
+
+ "Pappel": {
+  "sow": ["Mär","Apr"],
+  "harvest": ["Ganzjährig"]
+ },
+
+ "Ölrettich": {
+  "sow": ["Aug","Sep"],
+  "harvest": []
+ },
+
+ "Gras": {
+  "sow": ["Mär","Apr"],
+  "harvest": ["Mehrfach"]
+ }
 }
