@@ -3,73 +3,16 @@
 <head>
 <meta charset="UTF-8">
 
-<style>
+<link rel="stylesheet" href="../css/style.css">
 
+<style>
 body{
 font-family:Arial;
 color:white;
+margin:20px;
 }
-
-.row{
-display:flex;
-gap:10px;
-}
-
-select,input{
-width:100%;
-padding:10px;
-margin:6px 0;
-border-radius:6px;
-border:none;
-}
-
-.calc{
-width:100%;
-padding:12px;
-background:#4CAF50;
-border:none;
-color:white;
-border-radius:8px;
-cursor:pointer;
-}
-
-.result{
-text-align:center;
-margin-top:15px;
-font-size:18px;
-}
-
-.workGrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.workBtn{
-padding:10px;
-background:#3a3a3a;
-border-radius:6px;
-cursor:pointer;
-text-align:center;
-}
-
-.workBtn.active{
-background:#4CAF50;
-}
-
-.fertBtn{
-padding:10px;
-background:#3a3a3a;
-border-radius:6px;
-cursor:pointer;
-text-align:center;
-}
-
-.fertBtn.active{
-background:#4CAF50;
-}
-
 </style>
+
 </head>
 
 <body>
@@ -77,6 +20,7 @@ background:#4CAF50;
 <h1>🚜 Profit Rechner</h1>
 
 <select id="crop">
+
 <option value="8900">🌾 Weizen</option>
 <option value="9600">🌾 Gerste</option>
 <option value="8800">🌾 Hafer</option>
@@ -97,6 +41,7 @@ background:#4CAF50;
 <option value="15000">🌲 Pappel</option>
 <option value="4000">🌱 Ölrettich</option>
 <option value="20000">🌿 Gras</option>
+
 </select>
 
 <div class="row">
@@ -106,70 +51,59 @@ background:#4CAF50;
 
 </div>
 
+
 <h3>Düngestufe</h3>
 
 <div class="workGrid">
 
-<div class="fertBtn active" data-value="1" onclick="selectFert(this)">Keine</div>
-<div class="fertBtn" data-value="1.25" onclick="selectFert(this)">1x Düngen</div>
-<div class="fertBtn" data-value="1.5" onclick="selectFert(this)">2x Düngen</div>
+<div class="fertBtn active" data-value="1" onclick="selectFert(this)">
+Keine
+</div>
+
+<div class="fertBtn" data-value="1.25" onclick="selectFert(this)">
+1x Düngen (+25%)
+</div>
+
+<div class="fertBtn" data-value="1.5" onclick="selectFert(this)">
+2x Düngen (+50%)
+</div>
 
 </div>
+
 
 <h3>Arbeitsschritte</h3>
 
 <div class="workGrid">
 
-<div class="workBtn" id="mulch" onclick="toggleWork(this)">Mulchen</div>
-<div class="workBtn" id="roll" onclick="toggleWork(this)">Walzen</div>
-<div class="workBtn" id="lime" onclick="toggleWork(this)">Kalk</div>
-<div class="workBtn" id="weed" onclick="toggleWork(this)">Unkraut entfernt</div>
-<div class="workBtn" id="pf" onclick="toggleWork(this)">Precision Farming</div>
+<div class="workBtn" id="mulch" onclick="toggleWork(this)">
+Mulchen (+2.5%)
+</div>
+
+<div class="workBtn" id="roll" onclick="toggleWork(this)">
+Walzen (+2.5%)
+</div>
+
+<div class="workBtn" id="lime" onclick="toggleWork(this)">
+Kalk (+15%)
+</div>
+
+<div class="workBtn" id="weed" onclick="toggleWork(this)">
+Unkraut entfernt (+10%)
+</div>
+
+<div class="workBtn" id="pf" onclick="toggleWork(this)">
+Precision Farming (+5%)
+</div>
 
 </div>
+
 
 <button class="calc" onclick="calc()">Berechnen</button>
 
 <div class="result" id="result"></div>
 
-<script>
 
-function toggleWork(el){
-el.classList.toggle("active")
-}
-
-function selectFert(el){
-
-document.querySelectorAll(".fertBtn").forEach(btn=>btn.classList.remove("active"))
-el.classList.add("active")
-
-}
-
-function calc(){
-
-let yieldHa=document.getElementById("crop").value
-let size=document.getElementById("size").value
-let price=document.getElementById("price").value
-
-let fert=document.querySelector(".fertBtn.active").dataset.value
-
-let bonus=1
-
-if(document.getElementById("mulch").classList.contains("active")) bonus+=0.025
-if(document.getElementById("roll").classList.contains("active")) bonus+=0.025
-if(document.getElementById("lime").classList.contains("active")) bonus+=0.15
-if(document.getElementById("weed").classList.contains("active")) bonus+=0.10
-if(document.getElementById("pf").classList.contains("active")) bonus+=0.05
-
-let totalYield=yieldHa*size*fert*bonus
-let profit=(totalYield/1000)*price
-
-document.getElementById("result").innerHTML=
-"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
-
-}
-
-</script>
+<script src="../js/app.js"></script>
 
 </body>
 </html>
