@@ -13,29 +13,6 @@ box-sizing:border-box;
 gap:20px;
 }
 
-/* Sidebar */
-
-.sidebar{
-width:220px;
-background:rgba(0,0,0,0.55);
-backdrop-filter:blur(10px);
-border-radius:12px;
-padding:20px;
-}
-
-.sidebar button{
-width:100%;
-padding:10px;
-margin-bottom:10px;
-border:none;
-border-radius:8px;
-background:#2e3d47;
-color:white;
-cursor:pointer;
-}
-
-/* Panel */
-
 .panel{
 flex:1;
 background:rgba(0,0,0,0.55);
@@ -44,43 +21,40 @@ border-radius:12px;
 padding:20px;
 }
 
-/* Timeline */
-
-.timeline{
-margin-top:20px;
-}
-
-.timelineRow{
-display:flex;
-align-items:center;
-margin-bottom:10px;
-}
-
-.timelineLabel{
-width:140px;
-}
-
-.timelineBar{
-flex:1;
-height:24px;
-border-radius:12px;
-background:linear-gradient(90deg,#3ea94c,#d4c43c,#e67e22);
-}
-
-/* Calendar */
+/* Pflanzenkalender FINAL */
 
 .calendar{
-width:260px;
+width:300px;
 background:rgba(0,0,0,0.55);
 backdrop-filter:blur(10px);
-border-radius:12px;
+border-radius:14px;
 padding:20px;
 }
 
+.calendar h3{
+margin-top:0;
+margin-bottom:15px;
+}
+
+.calendarHeader{
+display:grid;
+grid-template-columns:1fr 80px 80px;
+font-weight:bold;
+padding-bottom:6px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+margin-bottom:8px;
+}
+
 .calendarItem{
-display:flex;
-justify-content:space-between;
-border-bottom:1px solid rgba(255,255,255,0.1);
-padding:5px 0;
+display:grid;
+grid-template-columns:1fr 80px 80px;
+padding:6px 0;
+border-bottom:1px solid rgba(255,255,255,0.08);
 font-size:14px;
+}
+
+.calendarItem span:nth-child(2),
+.calendarItem span:nth-child(3){
+text-align:right;
+opacity:0.9;
 }
