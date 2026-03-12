@@ -1,2 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+
+<meta charset="UTF-8">
+<title>Tierfutter Rechner</title>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+
+<style>
+
+.animalBox{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.animal{
+background:#2e3d47;
+padding:10px 15px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.animal:hover{
+background:#4CAF50;
+}
+
+.inputRow{
+margin-bottom:20px;
+}
+
+.result{
+margin-top:20px;
+font-size:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="panel">
+
 <h1>Tierfutter Rechner</h1>
-<p>Kommt später.</p>
+
+<div class="animalBox">
+
+<div class="animal" onclick="selectAnimal('cow')">🐄 Kühe</div>
+<div class="animal" onclick="selectAnimal('sheep')">🐑 Schafe</div>
+<div class="animal" onclick="selectAnimal('pig')">🐖 Schweine</div>
+<div class="animal" onclick="selectAnimal('chicken')">🐔 Hühner</div>
+
+</div>
+
+<div class="inputRow">
+
+<label>Anzahl Tiere</label><br>
+<input type="number" id="animalCount" value="0">
+
+</div>
+
+<button onclick="calculateFeed()">Berechnen</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let selectedAnimal=null
+
+function selectAnimal(animal){
+
+selectedAnimal=animal
+
+}
+
+function calculateFeed(){
+
+const count=parseInt(document.getElementById("animalCount").value)
+
+if(!selectedAnimal){
+alert("Bitte Tier auswählen")
+return
+}
+
+let result=""
+
+if(selectedAnimal==="cow"){
+
+result=
+"Silage: "+(count*80)+" L / Tag<br>"+
+"Heu: "+(count*20)+" L / Tag<br>"+
+"Stroh: "+(count*10)+" L / Tag"
+
+}
+
+if(selectedAnimal==="sheep"){
+
+result=
+"Gras: "+(count*40)+" L / Tag"
+
+}
+
+if(selectedAnimal==="pig"){
+
+result=
+"Getreide: "+(count*30)+" L / Tag"
+
+}
+
+if(selectedAnimal==="chicken"){
+
+result=
+"Weizen: "+(count*5)+" L / Tag"
+
+}
+
+document.getElementById("result").innerHTML=result
+
+}
+
+</script>
+
+</body>
+</html>
