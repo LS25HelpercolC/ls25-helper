@@ -7,15 +7,18 @@
 <style>
 
 body{
-font-family:Arial;
 margin:0;
-background:#2c3e50;
+font-family:Arial;
+background:url('farm.jpg') center/cover no-repeat fixed;
 color:white;
 }
+
+/* Layout */
 
 .app{
 display:flex;
 height:100vh;
+backdrop-filter:blur(6px);
 }
 
 .sidebar{
@@ -28,7 +31,7 @@ padding:20px;
 margin-top:0;
 }
 
-.sidebar button{
+.navBtn{
 width:100%;
 margin:6px 0;
 padding:10px;
@@ -37,6 +40,7 @@ border:none;
 color:white;
 border-radius:6px;
 cursor:pointer;
+text-align:left;
 }
 
 .main{
@@ -46,37 +50,94 @@ overflow:auto;
 }
 
 .card{
-background:rgba(0,0,0,0.45);
-padding:20px;
-border-radius:12px;
-margin-bottom:20px;
+background:rgba(0,0,0,0.55);
+padding:25px;
+border-radius:14px;
+max-width:900px;
+margin:auto;
 }
 
-.hidden{
-display:none;
+.row{
+display:flex;
+gap:10px;
 }
 
-input,select{
-padding:6px;
-margin:4px;
-border-radius:4px;
+select,input{
+width:100%;
+padding:10px;
+margin-top:8px;
+margin-bottom:10px;
+border-radius:6px;
 border:none;
 }
 
-button.action{
-background:#4CAF50;
-padding:8px 14px;
+button.calc{
+width:100%;
+padding:12px;
+margin-top:18px;
+background:#4caf50;
 border:none;
 color:white;
-border-radius:6px;
+font-size:16px;
 cursor:pointer;
+border-radius:8px;
 }
 
-.cropItem{
+.result{
+text-align:center;
+margin-top:15px;
+font-size:18px;
+}
+
+.workGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:10px;
+}
+
+.workBtn{
+padding:10px;
+background:#3a3a3a;
+border-radius:6px;
+cursor:pointer;
+text-align:center;
+}
+
+.workBtn.active{
+background:#4CAF50;
+}
+
+.fertBtn{
+padding:10px;
+background:#3a3a3a;
+border-radius:6px;
+cursor:pointer;
+text-align:center;
+}
+
+.fertBtn.active{
+background:#4CAF50;
+}
+
+/* Feldplanung */
+
+.fieldLayout{
 display:flex;
-justify-content:space-between;
+gap:20px;
+}
+
+.fieldPlanner{
+flex:1;
+}
+
+.cropCalendar{
+width:260px;
+background:#222;
+padding:15px;
+border-radius:10px;
 font-size:13px;
-margin:4px 0;
+line-height:1.6;
 }
 
 </style>
@@ -90,58 +151,89 @@ margin:4px 0;
 
 <h2>🚜 LS25 Helper</h2>
 
-<button onclick="showTab('profit')">Profit Rechner</button>
-<button onclick="showTab('fields')">Feldplanung</button>
-<button onclick="showTab('calendar')">Pflanzenkalender</button>
+<button class="navBtn" onclick="openTab('profit')">Profit Rechner</button>
+<button class="navBtn" onclick="openTab('fields')">Feldplanung</button>
+<button class="navBtn" onclick="openTab('work')">Arbeitszeit</button>
+<button class="navBtn" onclick="openTab('animals')">Tierfutter</button>
+<button class="navBtn" onclick="openTab('todo')">Farm To-Do</button>
 
 </div>
 
-<div class="main">
 
+<div class="main">
 
 <!-- PROFIT RECHNER -->
 
-<div id="profit" class="card">
+<div id="profit" class="card section">
 
-<h1>Profit Rechner</h1>
+<h1>🚜 Profit Rechner</h1>
 
-Frucht
-<select id="cropProfit"></select>
+<select id="crop">
+<option value="8900">🌾 Weizen</option>
+<option value="9600">🌾 Gerste</option>
+<option value="8800">🌾 Hafer</option>
+<option value="5800">🌱 Raps</option>
+<option value="9200">🌽 Mais (Korn)</option>
+<option value="45000">🌽 Silomais</option>
+<option value="5000">🫘 Sojabohnen</option>
+<option value="7000">🌻 Sonnenblumen</option>
+<option value="42000">🥔 Kartoffeln</option>
+<option value="60000">🟥 Zuckerrüben</option>
+<option value="6500">🫛 Erbsen</option>
+<option value="30000">🥕 Karotten</option>
+<option value="28000">🥔 Pastinaken</option>
+<option value="12000">🍇 Trauben</option>
+<option value="10000">🫒 Oliven</option>
+<option value="7000">🌿 Reis</option>
+<option value="8500">🌿 Sorghum</option>
+<option value="15000">🌲 Pappel</option>
+<option value="4000">🌱 Ölrettich</option>
+<option value="20000">🌿 Gras</option>
+</select>
 
-<br>
+<div class="row">
+<input id="size" type="number" placeholder="Feldgröße (ha)">
+<input id="price" type="number" placeholder="Preis pro 1000L">
+</div>
 
-Feldgröße (ha)
-<input id="fieldSizeProfit" type="number">
+<h3>Düngestufe</h3>
 
-<br>
+<div class="workGrid">
 
-Preis (€ pro 1000l)
-<input id="priceProfit" type="number">
+<div class="fertBtn active" data-value="1" onclick="selectFert(this)">Keine</div>
+<div class="fertBtn" data-value="1.25" onclick="selectFert(this)">1x Düngen</div>
+<div class="fertBtn" data-value="1.5" onclick="selectFert(this)">2x Düngen</div>
 
-<h3>Additive</h3>
+</div>
 
-<label><input type="checkbox" id="fert1"> Düngen 1x (+25%)</label><br>
-<label><input type="checkbox" id="fert2"> Düngen 2x (+50%)</label><br>
-<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label><br>
-<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label><br>
-<label><input type="checkbox" id="lime"> Kalk (+15%)</label><br>
-<label><input type="checkbox" id="weed"> Unkraut entfernt (+10%)</label><br>
-<label><input type="checkbox" id="pf"> Precision Farming (+5%)</label>
+<h3>Arbeitsschritte</h3>
 
-<br><br>
+<div class="workGrid">
 
-<button class="action" onclick="calculateProfit()">Berechnen</button>
+<div class="workBtn" id="mulch" onclick="toggleWork(this)">Mulchen</div>
+<div class="workBtn" id="roll" onclick="toggleWork(this)">Walzen</div>
+<div class="workBtn" id="lime" onclick="toggleWork(this)">Kalk</div>
+<div class="workBtn" id="weed" onclick="toggleWork(this)">Unkraut entfernt</div>
+<div class="workBtn" id="pf" onclick="toggleWork(this)">Precision Farming</div>
 
-<h3 id="result"></h3>
+</div>
+
+<button class="calc" onclick="calc()">Berechnen</button>
+
+<div class="result" id="result"></div>
 
 </div>
 
 
 <!-- FELDPLANUNG -->
 
-<div id="fields" class="card hidden">
+<div id="fields" class="card section" style="display:none">
 
 <h1>Feldplanung</h1>
+
+<div class="fieldLayout">
+
+<div class="fieldPlanner">
 
 Feldname
 <input id="fieldName">
@@ -149,111 +241,119 @@ Feldname
 Größe (ha)
 <input id="fieldSize">
 
-<button class="action" onclick="addField()">Feld speichern</button>
+<button onclick="addField()">Feld speichern</button>
 
 <div id="fieldButtons"></div>
 
 <hr>
 
-<select id="cropSelect"></select>
-<button class="action" onclick="addCrop()">Frucht hinzufügen</button>
+<select id="cropSelect">
+
+<option>Weizen</option>
+<option>Gerste</option>
+<option>Raps</option>
+<option>Mais</option>
+<option>Sojabohnen</option>
+<option>Sonnenblumen</option>
+<option>Ölrettich (Zwischenfrucht)</option>
+<option>Brach</option>
+
+</select>
+
+<button onclick="addCrop()">Frucht hinzufügen</button>
 
 <div id="cropList"></div>
 
 </div>
 
 
-<!-- PFLANZENKALENDER -->
+<div class="cropCalendar">
 
-<div id="calendar" class="card hidden">
+<h3>🌱 Pflanzenkalender</h3>
 
-<h1>Pflanzenkalender</h1>
-
-<div id="calendarList"></div>
+Weizen — Sep–Okt → Jul<br>
+Gerste — Sep–Okt → Jun<br>
+Hafer — Sep–Okt → Jul<br>
+Raps — Aug → Jul<br>
+Mais — Apr–Mai → Okt<br>
+Sojabohnen — Apr–Mai → Sep<br>
+Sonnenblumen — Mär–Apr → Sep<br>
+Kartoffeln — Apr → Sep<br>
+Zuckerrüben — Mär–Apr → Okt<br>
+Erbsen — Mär–Apr → Jul<br>
+Karotten — Apr → Jul<br>
+Pastinaken — Apr → Jun<br>
+Trauben — Apr → Okt<br>
+Oliven — Apr → Okt<br>
+Reis — Apr → Okt<br>
+Sorghum — Apr → Okt<br>
+Pappel — Mär–Apr → Ganzjährig<br>
+Ölrettich — Aug–Sep → Nov<br>
+Gras — Mär–Okt → mehrfach
 
 </div>
 
-
-</div>
 </div>
 
+</div>
+
+</div>
+
+</div>
 
 <script>
 
-const cropData = {
+function openTab(tab){
 
-"Weizen":{yield:8000,sow:["Sep","Okt"],harvest:"Jul"},
-"Gerste":{yield:7800,sow:["Sep","Okt"],harvest:"Jun"},
-"Hafer":{yield:7000,sow:["Sep","Okt"],harvest:"Jul"},
-"Raps":{yield:6500,sow:["Aug"],harvest:"Jul"},
-"Mais (Korn)":{yield:9000,sow:["Apr","Mai"],harvest:"Okt"},
-"Mais (Silomais)":{yield:9000,sow:["Apr","Mai"],harvest:"Okt"},
-"Sojabohnen":{yield:4500,sow:["Apr","Mai"],harvest:"Sep"},
-"Sonnenblumen":{yield:4800,sow:["Mär","Apr"],harvest:"Sep"},
-"Kartoffeln":{yield:40000,sow:["Apr"],harvest:"Sep"},
-"Zuckerrüben":{yield:42000,sow:["Mär","Apr"],harvest:"Okt"},
-"Erbsen":{yield:4500,sow:["Mär","Apr"],harvest:"Jul"},
-"Karotten":{yield:38000,sow:["Apr"],harvest:"Jul"},
-"Pastinaken":{yield:35000,sow:["Apr"],harvest:"Jun"},
-"Trauben":{yield:12000,sow:["Apr"],harvest:"Okt"},
-"Oliven":{yield:10000,sow:["Apr"],harvest:"Okt"},
-"Reis":{yield:7000,sow:["Apr"],harvest:"Okt"},
-"Sorghum":{yield:7500,sow:["Apr"],harvest:"Okt"},
-"Pappel":{yield:12000,sow:["Mär","Apr"],harvest:"Ganzjährig"},
-"Ölrettich":{yield:0,sow:["Aug","Sep"],harvest:"Nov"},
-"Gras":{yield:15000,sow:["Mär","Apr"],harvest:"Mehrfach"}
+document.querySelectorAll(".section").forEach(s=>s.style.display="none")
+document.getElementById(tab).style.display="block"
 
 }
 
-let fields = JSON.parse(localStorage.getItem("fields")) || []
-let currentField = null
+function toggleWork(el){
+el.classList.toggle("active")
+}
 
-function showTab(tab){
+function selectFert(el){
 
-document.getElementById("profit").classList.add("hidden")
-document.getElementById("fields").classList.add("hidden")
-document.getElementById("calendar").classList.add("hidden")
-
-document.getElementById(tab).classList.remove("hidden")
+document.querySelectorAll(".fertBtn").forEach(btn=>btn.classList.remove("active"))
+el.classList.add("active")
 
 }
 
-function calculateProfit(){
+function calc(){
 
-let crop=document.getElementById("cropProfit").value
-let size=document.getElementById("fieldSizeProfit").value
-let price=document.getElementById("priceProfit").value
+let yieldHa=document.getElementById("crop").value
+let size=document.getElementById("size").value
+let price=document.getElementById("price").value
 
-let yieldBase=cropData[crop].yield
+let fert=document.querySelector(".fertBtn.active").dataset.value
 
 let bonus=1
 
-if(fert1.checked) bonus+=0.25
-if(fert2.checked) bonus+=0.50
-if(mulch.checked) bonus+=0.025
-if(roll.checked) bonus+=0.025
-if(lime.checked) bonus+=0.15
-if(weed.checked) bonus+=0.10
-if(pf.checked) bonus+=0.05
+if(document.getElementById("mulch").classList.contains("active")) bonus+=0.025
+if(document.getElementById("roll").classList.contains("active")) bonus+=0.025
+if(document.getElementById("lime").classList.contains("active")) bonus+=0.15
+if(document.getElementById("weed").classList.contains("active")) bonus+=0.10
+if(document.getElementById("pf").classList.contains("active")) bonus+=0.05
 
-let liters=yieldBase*size*bonus
-let money=(liters/1000)*price
+let totalYield=yieldHa*size*fert*bonus
+let profit=(totalYield/1000)*price
 
-document.getElementById("result").innerText=
-"Ertrag: "+Math.round(liters)+" L | Gewinn: "+Math.round(money)+" €"
+document.getElementById("result").innerHTML=
+"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
 
 }
+
+let fields=[]
+let crops=[]
 
 function addField(){
 
 let name=document.getElementById("fieldName").value
 let size=document.getElementById("fieldSize").value
 
-if(!name)return
-
-fields.push({name,size,crops:[]})
-
-localStorage.setItem("fields",JSON.stringify(fields))
+fields.push({name,size})
 
 renderFields()
 
@@ -262,14 +362,12 @@ renderFields()
 function renderFields(){
 
 let box=document.getElementById("fieldButtons")
-
 box.innerHTML=""
 
 fields.forEach((f,i)=>{
 
 let btn=document.createElement("button")
 btn.innerText=f.name+" ("+f.size+"ha)"
-btn.onclick=()=>selectField(i)
 
 box.appendChild(btn)
 
@@ -277,26 +375,11 @@ box.appendChild(btn)
 
 }
 
-function selectField(i){
-
-currentField=i
-
-renderCrops()
-
-}
-
 function addCrop(){
-
-if(currentField===null){
-alert("Bitte zuerst ein Feld auswählen")
-return
-}
 
 let crop=document.getElementById("cropSelect").value
 
-fields[currentField].crops.push(crop)
-
-localStorage.setItem("fields",JSON.stringify(fields))
+crops.push(crop)
 
 renderCrops()
 
@@ -305,12 +388,9 @@ renderCrops()
 function renderCrops(){
 
 let box=document.getElementById("cropList")
-
 box.innerHTML=""
 
-if(currentField===null)return
-
-fields[currentField].crops.forEach(c=>{
+crops.forEach(c=>{
 
 let span=document.createElement("span")
 span.innerText=c+" → "
@@ -320,49 +400,6 @@ box.appendChild(span)
 })
 
 }
-
-function renderCalendar(){
-
-let box=document.getElementById("calendarList")
-
-Object.keys(cropData).forEach(c=>{
-
-let row=document.createElement("div")
-row.className="cropItem"
-
-row.innerHTML="<span>"+c+"</span><span>"+cropData[c].sow.join(', ')+" → "+cropData[c].harvest+"</span>"
-
-box.appendChild(row)
-
-})
-
-}
-
-function init(){
-
-let select1=document.getElementById("cropProfit")
-let select2=document.getElementById("cropSelect")
-
-Object.keys(cropData).forEach(c=>{
-
-let op1=document.createElement("option")
-op1.value=c
-op1.innerText=c
-select1.appendChild(op1)
-
-let op2=document.createElement("option")
-op2.value=c
-op2.innerText=c
-select2.appendChild(op2)
-
-})
-
-renderFields()
-renderCalendar()
-
-}
-
-init()
 
 </script>
 
