@@ -1,37 +1,60 @@
-function toggleWork(el){
-el.classList.toggle("active")
-}
+let cropsData = {}
 
-function selectFert(el){
+async function loadCrops(){
 
-document.querySelectorAll(".fertBtn").forEach(btn=>{
-btn.classList.remove("active")
-})
+ const response = await fetch("../assets/data/crops.json")
+ cropsData = await response.json()
 
-el.classList.add("active")
+ buildCalendar()
 
 }
 
-function calc(){
+function buildCalendar(){
 
-let yieldHa=document.getElementById("crop").value
-let size=document.getElementById("size").value
-let price=document.getElementById("price").value
+ const calendar = document.getElementById("calendar")
 
-let fert=document.querySelector(".fertBtn.active").dataset.value
+ if(!calendar) return
 
-let bonus=1
+ calendar.innerHTML = ""
 
-if(document.getElementById("mulch").classList.contains("active")) bonus+=0.025
-if(document.getElementById("roll").classList.contains("active")) bonus+=0.025
-if(document.getElementById("lime").classList.contains("active")) bonus+=0.15
-if(document.getElementById("weed").classList.contains("active")) bonus+=0.10
-if(document.getElementById("pf").classList.contains("active")) bonus+=0.05
+ Object.keys(cropsData).forEach(crop => {
 
-let totalYield=yieldHa*size*fert*bonus
-let profit=(totalYield/1000)*price
+  const item = document.createElement("div")
+  item.className = "calendarItem"
 
-document.getElementById("result").innerHTML =
-"Ertrag: "+Math.round(totalYield)+" L<br>Gewinn: "+Math.round(profit)+" €"
+  const sow = cropsData[crop].sow.join("–")
+  const harvest = cropsData[crop].harvest.join("–")
+
+  item.innerHTML = `
+  <span>${crop}</span>
+  <span>${sow}</span>
+  <span>${harvest}</span>
+  `
+
+  calendar.appendChild(item)
+
+ })
 
 }
+
+function buildTimeline(crop){
+
+ const data = cropsData[crop]
+
+ if(!data) return
+
+ const timeline = document.getElementById("timeline")
+
+ const row = document.createElement("div")
+ row.className = "timelineRow"
+
+ row.innerHTML = `
+ <div class="timelineLabel">${crop}</div>
+ <div class="timelineBar"></div>
+ `
+
+ timeline.appendChild(row)
+
+}
+
+window.onload = loadCrops
