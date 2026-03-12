@@ -1,4 +1,6 @@
-/* ===== Grundlayout ===== */
+/* =========================================
+   GLOBAL
+========================================= */
 
 body{
 margin:0;
@@ -7,7 +9,9 @@ background:#1f2a31;
 color:white;
 }
 
-/* ===== Layout ===== */
+/* =========================================
+   LAYOUT
+========================================= */
 
 .layout{
 display:flex;
@@ -16,7 +20,35 @@ padding:20px;
 align-items:flex-start;
 }
 
-/* ===== Hauptpanel ===== */
+/* =========================================
+   SEITENLEISTE (falls vorhanden)
+========================================= */
+
+.sidebar{
+width:220px;
+background:#24313a;
+padding:20px;
+border-radius:12px;
+}
+
+.sidebar button{
+width:100%;
+margin-bottom:10px;
+padding:10px;
+background:#2e3d47;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.sidebar button:hover{
+background:#4CAF50;
+}
+
+/* =========================================
+   PANEL
+========================================= */
 
 .panel{
 flex:1;
@@ -25,39 +57,15 @@ border-radius:12px;
 padding:20px;
 }
 
-/* ===== Pflanzenkalender ===== */
-
-.calendar{
-width:320px;
-background:#263640;
-border-radius:12px;
-padding:20px;
-}
-
-.calendarHeader{
-display:grid;
-grid-template-columns:1fr 90px 90px;
-font-weight:bold;
-margin-bottom:8px;
-border-bottom:1px solid rgba(255,255,255,0.2);
-padding-bottom:6px;
-}
-
-.calendarItem{
-display:grid;
-grid-template-columns:1fr 90px 90px;
-padding:4px 0;
-border-bottom:1px solid rgba(255,255,255,0.08);
-font-size:14px;
-}
-
-/* ===== Timeline Monate ===== */
+/* =========================================
+   TIMELINE MONATE
+========================================= */
 
 .timelineMonths{
 display:grid;
 grid-template-columns:repeat(12,1fr);
 gap:4px;
-margin-bottom:10px;
+margin-bottom:12px;
 }
 
 .month{
@@ -74,21 +82,44 @@ transition:0.2s;
 background:#4CAF50;
 }
 
-/* ===== Timeline Reihen ===== */
+/* =========================================
+   TIMELINE REIHEN
+========================================= */
 
-.timelineRow{
-font-family:monospace;
-margin-bottom:6px;
+.timelineBarRow{
+position:relative;
+height:42px;
+margin-bottom:10px;
+background:rgba(255,255,255,0.03);
+border-radius:6px;
 }
 
-.timelineRow span{
-display:inline-block;
-width:20px;
-text-align:center;
-font-size:14px;
+/* =========================================
+   TIMELINE BALKEN
+========================================= */
+
+.timelineBar{
+position:absolute;
+top:6px;
+height:30px;
+border-radius:6px;
+padding-left:10px;
+display:flex;
+align-items:center;
+font-size:13px;
+color:white;
+
+background:linear-gradient(
+90deg,
+#4CAF50 0%,
+#FFC107 60%,
+#FF9800 100%
+);
 }
 
-/* ===== Pflanzen Auswahl ===== */
+/* =========================================
+   PFLANZEN AUSWAHL
+========================================= */
 
 .cropSelectBox{
 margin-top:10px;
@@ -108,7 +139,37 @@ cursor:pointer;
 background:#4CAF50;
 }
 
-/* ===== Überschriften ===== */
+/* =========================================
+   PFLANZENKALENDER
+========================================= */
+
+.calendar{
+width:320px;
+background:#263640;
+padding:20px;
+border-radius:12px;
+}
+
+.calendarHeader{
+display:grid;
+grid-template-columns:1fr 90px 90px;
+font-weight:bold;
+margin-bottom:8px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+padding-bottom:6px;
+}
+
+.calendarItem{
+display:grid;
+grid-template-columns:1fr 90px 90px;
+padding:4px 0;
+border-bottom:1px solid rgba(255,255,255,0.08);
+font-size:14px;
+}
+
+/* =========================================
+   TITEL
+========================================= */
 
 h1{
 margin-top:0;
