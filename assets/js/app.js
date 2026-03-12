@@ -3,23 +3,26 @@ const months = [
 "Jul","Aug","Sep","Okt","Nov","Dez"
 ]
 
-let cropsData = {}
+let crops = {}
 let timeline = []
 
-async function init(){
+async function initFeldplanung(){
 
- const res = await fetch("../assets/data/crops.json")
- cropsData = await res.json()
+ const res = await fetch("assets/data/crops.json")
+ crops = await res.json()
 
- buildMonthBar()
+ buildMonths()
  buildCalendar()
 
 }
 
-function buildMonthBar(){
+function buildMonths(){
 
- const container = document.getElementById("timelineMonths")
- container.innerHTML=""
+ const row = document.querySelector(".timelineMonths")
+
+ if(!row) return
+
+ row.innerHTML=""
 
  months.forEach((m,i)=>{
 
@@ -29,7 +32,7 @@ function buildMonthBar(){
 
   div.onclick=()=>monthClick(i)
 
-  container.appendChild(div)
+  row.appendChild(div)
 
  })
 
@@ -37,49 +40,56 @@ function buildMonthBar(){
 
 function buildCalendar(){
 
- const box=document.getElementById("calendar")
- if(!box) return
+ const cal=document.getElementById("calendar")
+ if(!cal) return
 
- box.innerHTML=""
+ cal.innerHTML=""
 
- Object.keys(cropsData).forEach(crop=>{
+ Object.keys(crops).forEach(name=>{
 
-  const row=document.createElement("div")
-  row.className="calendarItem"
+  const item=document.createElement("div")
+  item.className="calendarItem"
 
-  row.innerHTML=
-  "<span>"+crop+"</span>"+
-  "<span>"+cropsData[crop].sow.join("-")+"</span>"+
-  "<span>"+cropsData[crop].harvest.join("-")+"</span>"
+  const sow=crops[name].sow.join("–")
+  const harvest=crops[name].harvest.join("–")
 
-  box.appendChild(row)
+  item.innerHTML=`
+  <span>${name}</span>
+  <span>${sow}</span>
+  <span>${harvest}</span>
+  `
+
+  cal.appendChild(item)
 
  })
 
 }
 
-function monthClick(monthIndex){
+function monthClick(index){
 
  const possible=[]
 
- Object.keys(cropsData).forEach(crop=>{
+ Object.keys(crops).forEach(c=>{
 
-  if(cropsData[crop].sow.includes(months[monthIndex])){
-   possible.push(crop)
+  if(crops[c].sow.includes(months[index])){
+   possible.push(c)
   }
 
  })
 
- showCropSelection(monthIndex,possible)
+ showCropOptions(index,possible)
 
 }
 
-function showCropSelection(monthIndex,crops){
+function showCropOptions(monthIndex,list){
 
- const box=document.getElementById("cropSelectBox")
+ const box=document.querySelector(".cropOptions")
+
+ if(!box) return
+
  box.innerHTML=""
 
- crops.forEach(crop=>{
+ list.forEach(crop=>{
 
   const btn=document.createElement("button")
   btn.innerText=crop
@@ -92,20 +102,22 @@ function showCropSelection(monthIndex,crops){
 
 }
 
-function addCrop(monthIndex,crop){
+function addCrop(startMonth,crop){
 
- const firstSow=months.indexOf(cropsData[crop].sow[0])
- const firstHarvest=months.indexOf(cropsData[crop].harvest[0])
+ const sowList=crops[crop].sow
+ const harvestList=crops[crop].harvest
 
- let growth=firstHarvest-firstSow
- if(growth<0) growth+=12
+ let sowIndex=sowList.indexOf(months[startMonth])
 
- const harvestMonth=monthIndex+growth
+ if(sowIndex===-1) sowIndex=0
+
+ const harvestMonthName=harvestList[sowIndex]
+ const harvestIndex=months.indexOf(harvestMonthName)
 
  timeline.push({
   crop:crop,
-  sow:monthIndex,
-  harvest:harvestMonth
+  start:startMonth,
+  end:harvestIndex
  })
 
  renderTimeline()
@@ -114,31 +126,43 @@ function addCrop(monthIndex,crop){
 
 function renderTimeline(){
 
- const box=document.getElementById("timelineRows")
- box.innerHTML=""
+ const rows=document.querySelector(".timelineRows")
+ if(!rows) return
 
- timeline.forEach(item=>{
+ rows.innerHTML=""
+
+ timeline.forEach(t=>{
 
   const row=document.createElement("div")
-  row.className="timelineBarRow"
+  row.className="timelineRow"
 
-  const bar=document.createElement("div")
-  bar.className="timelineBar"
+  for(let i=0;i<12;i++){
 
-  const start=(item.sow%12)*8.33
-  const width=((item.harvest-item.sow)%12)*8.33
+   const cell=document.createElement("span")
 
-  bar.style.left=start+"%"
-  bar.style.width=width+"%"
+   if(i===t.start)
+    cell.innerText="A"
 
-  bar.innerText=item.crop
+   else if(i===t.end)
+    cell.innerText="E"
 
-  row.appendChild(bar)
+   else if(
+    (t.start < t.end && i>t.start && i<t.end) ||
+    (t.start > t.end && (i>t.start || i<t.end))
+   )
+    cell.innerText="█"
 
-  box.appendChild(row)
+   else
+    cell.innerText="."
+
+   row.appendChild(cell)
+
+  }
+
+  rows.appendChild(row)
 
  })
 
 }
 
-window.onload=init
+document.addEventListener("DOMContentLoaded",initFeldplanung)
