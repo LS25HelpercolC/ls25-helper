@@ -1,24 +1,49 @@
-const months = [
+const months=[
 "Jan","Feb","Mär","Apr","Mai","Jun",
 "Jul","Aug","Sep","Okt","Nov","Dez"
 ]
 
-let cropsData = {}
-let timeline = []
-let timelineMonth = 0
+let cropsData={}
+let timeline=[]
 
-async function loadData(){
+async function init(){
 
- const res = await fetch("../assets/data/crops.json")
- cropsData = await res.json()
+ const res=await fetch("../assets/data/crops.json")
+ cropsData=await res.json()
 
- renderMonths()
+ buildCalendar()
+ buildMonthBar()
 
 }
 
-function renderMonths(){
+function buildCalendar(){
 
- const container = document.getElementById("timelineMonths")
+ const box=document.getElementById("calendar")
+ box.innerHTML=""
+
+ Object.keys(cropsData).forEach(crop=>{
+
+  const item=document.createElement("div")
+  item.className="calendarItem"
+
+  const sow=cropsData[crop].sow.join("–")
+  const harvest=cropsData[crop].harvest.join("–")
+
+  item.innerHTML=`
+  <span>${crop}</span>
+  <span>${sow}</span>
+  <span>${harvest}</span>
+  `
+
+  box.appendChild(item)
+
+ })
+
+}
+
+function buildMonthBar(){
+
+ const container=document.getElementById("timelineMonths")
  container.innerHTML=""
 
  months.forEach((m,i)=>{
@@ -37,17 +62,17 @@ function renderMonths(){
 
 function monthClick(monthIndex){
 
- const list = []
+ const crops=[]
 
  Object.keys(cropsData).forEach(crop=>{
 
   if(cropsData[crop].sow.includes(months[monthIndex])){
-   list.push(crop)
+   crops.push(crop)
   }
 
  })
 
- showCropSelection(monthIndex,list)
+ showCropSelection(monthIndex,crops)
 
 }
 
@@ -71,20 +96,17 @@ function showCropSelection(monthIndex,crops){
 
 function addCrop(monthIndex,crop){
 
- const sowMonth = monthIndex
+ const firstSow=months.indexOf(cropsData[crop].sow[0])
+ const firstHarvest=months.indexOf(cropsData[crop].harvest[0])
 
- const firstSow = months.indexOf(cropsData[crop].sow[0])
- const firstHarvest = months.indexOf(cropsData[crop].harvest[0])
-
- let growth = firstHarvest-firstSow
-
+ let growth=firstHarvest-firstSow
  if(growth<0) growth+=12
 
- const harvestMonth = sowMonth + growth
+ const harvestMonth=monthIndex+growth
 
  timeline.push({
   crop:crop,
-  sow:sowMonth,
+  sow:monthIndex,
   harvest:harvestMonth
  })
 
@@ -102,26 +124,18 @@ function renderTimeline(){
   let row=document.createElement("div")
   row.className="timelineRow"
 
-  let rowMonths=[]
-
   for(let i=0;i<12;i++){
 
-   const globalMonth=i
+   const cell=document.createElement("span")
 
-   let char=" "
+   if(i===item.sow%12) cell.innerText="A"
+   else if(i===item.harvest%12) cell.innerText="E"
+   else if(i>item.sow%12 && i<item.harvest%12) cell.innerText="█"
+   else cell.innerText="."
 
-   if(globalMonth===item.sow%12) char="A"
-   else if(globalMonth===item.harvest%12) char="E"
-   else if(
-    globalMonth>item.sow%12 &&
-    globalMonth<item.harvest%12
-   ) char="█"
-
-   rowMonths.push(char)
+   row.appendChild(cell)
 
   }
-
-  row.innerText=rowMonths.join(" ")
 
   box.appendChild(row)
 
@@ -129,4 +143,4 @@ function renderTimeline(){
 
 }
 
-window.onload=loadData
+window.onload=init
