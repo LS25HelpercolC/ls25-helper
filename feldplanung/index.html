@@ -173,15 +173,31 @@ function showCropSelection(monthIndex,crops){
 
 }
 
+function getHarvestMonth(crop,monthIndex){
+
+ const sowList=cropsData[crop].sow
+ const harvestList=cropsData[crop].harvest
+
+ for(let i=0;i<sowList.length;i++){
+
+  if(months[monthIndex]===sowList[i]){
+
+   const harvestName=harvestList[i]
+   return months.indexOf(harvestName)
+
+  }
+
+ }
+
+ return null
+
+}
+
 function addCrop(monthIndex,crop){
 
- const firstSow=months.indexOf(cropsData[crop].sow[0])
- const firstHarvest=months.indexOf(cropsData[crop].harvest[0])
+ const harvestMonth=getHarvestMonth(crop,monthIndex)
 
- let growth=firstHarvest-firstSow
- if(growth<0)growth+=12
-
- const harvestMonth=monthIndex+growth
+ if(harvestMonth===null)return
 
  timeline.push({
   crop:crop,
@@ -207,10 +223,27 @@ function drawTimeline(){
 
    const c=document.createElement("span")
 
-   if(i===t.sow%12)c.innerText="A"
-   else if(i===t.harvest%12)c.innerText="E"
-   else if(i>t.sow%12&&i<t.harvest%12)c.innerText="█"
-   else c.innerText="."
+   if(i===t.sow)c.innerText="A"
+
+   else if(i===t.harvest)c.innerText="E"
+
+   else{
+
+    let inside=false
+
+    if(t.harvest>t.sow){
+
+     if(i>t.sow && i<t.harvest)inside=true
+
+    }else{
+
+     if(i>t.sow || i<t.harvest)inside=true
+
+    }
+
+    c.innerText=inside?"█":"."
+
+   }
 
    row.appendChild(c)
 
