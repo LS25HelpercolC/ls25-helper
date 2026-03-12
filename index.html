@@ -62,23 +62,23 @@ border:none;
 
 <h2>🚜 LS25 Helper</h2>
 
-<button onclick="openPage('profit/index.html')">
+<button onclick="openPage('profit/index.html','profit.jpg')">
 Profit Rechner
 </button>
 
-<button onclick="openPage('feldplanung/index.html')">
+<button onclick="openPage('feldplanung/index.html','fields.jpg')">
 Feldplanung
 </button>
 
-<button onclick="openPage('arbeitszeit/index.html')">
+<button onclick="openPage('arbeitszeit/index.html','work.png')">
 Arbeitszeit
 </button>
 
-<button onclick="openPage('tierfutter/index.html')">
+<button onclick="openPage('tierfutter/index.html','animals.jpg')">
 Tierfutter
 </button>
 
-<button onclick="openPage('todo/index.html')">
+<button onclick="openPage('todo/index.html','farm.jpg')">
 Farm To-Do
 </button>
 
@@ -94,9 +94,10 @@ Farm To-Do
 
 <script>
 
-function openPage(page){
+function openPage(page,bg){
 
 document.getElementById("frame").src = page
+document.body.style.backgroundImage = "url('"+bg+"')"
 
 }
 
