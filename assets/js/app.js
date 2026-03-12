@@ -1,204 +1,144 @@
 const months = [
 "Jan","Feb","Mär","Apr","Mai","Jun",
 "Jul","Aug","Sep","Okt","Nov","Dez"
-];
+]
 
-let cropsData = {};
-let timeline = [];
-
-/* =========================
-   INITIALISIERUNG
-========================= */
+let cropsData = {}
+let timeline = []
 
 async function init(){
 
- try{
+ const res = await fetch("../assets/data/crops.json")
+ cropsData = await res.json()
 
-  const res = await fetch("../assets/data/crops.json");
-  cropsData = await res.json();
-
- }catch(e){
-
-  console.error("crops.json konnte nicht geladen werden",e);
-
- }
-
- buildCalendar();
- buildMonthBar();
+ buildMonthBar()
+ buildCalendar()
 
 }
-
-/* =========================
-   PFLANZENKALENDER
-========================= */
-
-function buildCalendar(){
-
- const box = document.getElementById("calendar");
- if(!box) return;
-
- box.innerHTML = "";
-
- Object.keys(cropsData).forEach(crop=>{
-
-  const row = document.createElement("div");
-  row.className = "calendarItem";
-
-  row.innerHTML =
-  "<span>"+crop+"</span>"+
-  "<span>"+cropsData[crop].sow.join("-")+"</span>"+
-  "<span>"+cropsData[crop].harvest.join("-")+"</span>";
-
-  box.appendChild(row);
-
- });
-
-}
-
-/* =========================
-   MONATSLEISTE
-========================= */
 
 function buildMonthBar(){
 
- const container = document.getElementById("timelineMonths");
- if(!container) return;
-
- container.innerHTML = "";
+ const container = document.getElementById("timelineMonths")
+ container.innerHTML=""
 
  months.forEach((m,i)=>{
 
-  const div = document.createElement("div");
-  div.className = "month";
-  div.innerText = m;
+  const div=document.createElement("div")
+  div.className="month"
+  div.innerText=m
 
-  div.onclick = ()=>monthClick(i);
+  div.onclick=()=>monthClick(i)
 
-  container.appendChild(div);
+  container.appendChild(div)
 
- });
+ })
 
 }
 
-/* =========================
-   MONAT GEKLICKT
-========================= */
+function buildCalendar(){
+
+ const box=document.getElementById("calendar")
+ if(!box) return
+
+ box.innerHTML=""
+
+ Object.keys(cropsData).forEach(crop=>{
+
+  const row=document.createElement("div")
+  row.className="calendarItem"
+
+  row.innerHTML=
+  "<span>"+crop+"</span>"+
+  "<span>"+cropsData[crop].sow.join("-")+"</span>"+
+  "<span>"+cropsData[crop].harvest.join("-")+"</span>"
+
+  box.appendChild(row)
+
+ })
+
+}
 
 function monthClick(monthIndex){
 
- const list = [];
+ const possible=[]
 
  Object.keys(cropsData).forEach(crop=>{
 
   if(cropsData[crop].sow.includes(months[monthIndex])){
-   list.push(crop);
+   possible.push(crop)
   }
 
- });
+ })
 
- showCropSelection(monthIndex,list);
+ showCropSelection(monthIndex,possible)
 
 }
-
-/* =========================
-   PFLANZEN AUSWAHL
-========================= */
 
 function showCropSelection(monthIndex,crops){
 
- const box = document.getElementById("cropSelectBox");
- if(!box) return;
-
- box.innerHTML = "";
+ const box=document.getElementById("cropSelectBox")
+ box.innerHTML=""
 
  crops.forEach(crop=>{
 
-  const btn = document.createElement("button");
-  btn.innerText = crop;
+  const btn=document.createElement("button")
+  btn.innerText=crop
 
-  btn.onclick = ()=>addCrop(monthIndex,crop);
+  btn.onclick=()=>addCrop(monthIndex,crop)
 
-  box.appendChild(btn);
+  box.appendChild(btn)
 
- });
+ })
 
 }
-
-/* =========================
-   PFLANZE HINZUFÜGEN
-========================= */
 
 function addCrop(monthIndex,crop){
 
- const firstSow = months.indexOf(cropsData[crop].sow[0]);
- const firstHarvest = months.indexOf(cropsData[crop].harvest[0]);
+ const firstSow=months.indexOf(cropsData[crop].sow[0])
+ const firstHarvest=months.indexOf(cropsData[crop].harvest[0])
 
- let growth = firstHarvest - firstSow;
+ let growth=firstHarvest-firstSow
+ if(growth<0) growth+=12
 
- if(growth < 0) growth += 12;
-
- const harvestMonth = monthIndex + growth;
+ const harvestMonth=monthIndex+growth
 
  timeline.push({
-  crop: crop,
-  sow: monthIndex,
-  harvest: harvestMonth
- });
+  crop:crop,
+  sow:monthIndex,
+  harvest:harvestMonth
+ })
 
- renderTimeline();
+ renderTimeline()
 
 }
-
-/* =========================
-   TIMELINE ZEICHNEN
-========================= */
 
 function renderTimeline(){
 
- const box = document.getElementById("timelineRows");
- if(!box) return;
-
- box.innerHTML = "";
+ const box=document.getElementById("timelineRows")
+ box.innerHTML=""
 
  timeline.forEach(item=>{
 
-  const row = document.createElement("div");
-  row.className = "timelineRow";
+  const row=document.createElement("div")
+  row.className="timelineBarRow"
 
-  for(let i=0;i<12;i++){
+  const bar=document.createElement("div")
+  bar.className="timelineBar"
 
-   const cell = document.createElement("span");
+  const start=(item.sow%12)*8.33
+  const width=((item.harvest-item.sow)%12)*8.33
 
-   if(i === item.sow % 12){
+  bar.style.left=start+"%"
+  bar.style.width=width+"%"
 
-    cell.innerText = "A";
+  bar.innerText=item.crop
 
-   }else if(i === item.harvest % 12){
+  row.appendChild(bar)
 
-    cell.innerText = "E";
+  box.appendChild(row)
 
-   }else if(i > item.sow % 12 && i < item.harvest % 12){
-
-    cell.innerText = "█";
-
-   }else{
-
-    cell.innerText = ".";
-
-   }
-
-   row.appendChild(cell);
-
-  }
-
-  box.appendChild(row);
-
- });
+ })
 
 }
 
-/* =========================
-   START
-========================= */
-
-window.onload = init;
+window.onload=init
