@@ -2,30 +2,151 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<title>LS25 Helper – Feldplanung</title>
+
+<link rel="stylesheet" href="../assets/css/style.css">
 
 <style>
 
 body{
+margin:0;
 font-family:Arial;
+background:url('../assets/images/farm-bg.jpg') center/cover no-repeat fixed;
 color:white;
 }
 
 .layout{
 display:flex;
+height:100vh;
+padding:20px;
+box-sizing:border-box;
 gap:20px;
 }
 
-.planner{
+/* MAIN PANEL */
+
+.panel{
 flex:1;
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(8px);
+border-radius:14px;
+padding:25px;
+display:flex;
+flex-direction:column;
+gap:20px;
 }
+
+/* TITLE */
+
+.panel h1{
+margin:0;
+font-size:26px;
+}
+
+/* FRUCHTFOLGE */
+
+.cropRow{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.crop{
+padding:10px 14px;
+border-radius:8px;
+background:#3a3a3a;
+cursor:pointer;
+}
+
+.crop.active{
+background:#4CAF50;
+}
+
+/* BUTTON */
+
+.btn{
+padding:10px 16px;
+border-radius:8px;
+background:#2e3d47;
+border:none;
+color:white;
+cursor:pointer;
+}
+
+/* TIMELINE */
+
+.timeline{
+margin-top:10px;
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.timelineRow{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.timelineLabel{
+width:120px;
+}
+
+.timelineBar{
+flex:1;
+height:28px;
+border-radius:14px;
+background:linear-gradient(90deg,#3ea94c,#d4c43c,#e67e22);
+position:relative;
+}
+
+/* CALENDAR */
 
 .calendar{
 width:260px;
-background:#222;
-padding:15px;
-border-radius:10px;
-font-size:13px;
-line-height:1.6;
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(8px);
+border-radius:14px;
+padding:20px;
+}
+
+.calendar h3{
+margin-top:0;
+}
+
+.calendarItem{
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+border-bottom:1px solid rgba(255,255,255,0.1);
+font-size:14px;
+}
+
+/* FIELD LIST */
+
+.fields{
+width:220px;
+background:rgba(0,0,0,0.55);
+backdrop-filter:blur(8px);
+border-radius:14px;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.fieldBtn{
+padding:10px;
+background:#2e3d47;
+border:none;
+border-radius:8px;
+color:white;
+text-align:left;
+cursor:pointer;
+}
+
+.fieldBtn.active{
+background:#4CAF50;
 }
 
 </style>
@@ -33,131 +154,133 @@ line-height:1.6;
 
 <body>
 
-<h1>Feldplanung</h1>
-
 <div class="layout">
 
-<div class="planner">
+<!-- FIELD LIST -->
 
-Feldname
-<input id="fieldName">
+<div class="fields">
 
-Größe
-<input id="fieldSize">
+<button class="fieldBtn active">
+🌱 Feld 1 – 5 ha
+</button>
 
-<button onclick="addField()">Feld speichern</button>
+<button class="fieldBtn">
+🌾 Feld 2 – 4 ha
+</button>
 
-<div id="fieldButtons"></div>
-
-<hr>
-
-<select id="cropSelect">
-
-<option>Weizen</option>
-<option>Gerste</option>
-<option>Raps</option>
-<option>Mais</option>
-<option>Sojabohnen</option>
-<option>Sonnenblumen</option>
-<option>Ölrettich (Zwischenfrucht)</option>
-<option>Brach</option>
-
-</select>
-
-<button onclick="addCrop()">Frucht hinzufügen</button>
-
-<div id="cropList"></div>
+<button class="btn">
++ Feld hinzufügen
+</button>
 
 </div>
 
+
+<!-- MAIN PANEL -->
+
+<div class="panel">
+
+<h1>Feldplanung</h1>
+
+<div>
+
+<b>Fruchtfolge:</b>
+
+<div class="cropRow">
+
+<div class="crop active">🌱 Sojabohnen</div>
+<div class="crop">🌻 Sonnenblumen</div>
+<div class="crop">🌾 Hafer</div>
+
+<button class="btn">+ Frucht</button>
+
+</div>
+
+</div>
+
+
+<div class="timeline">
+
+<div class="timelineRow">
+
+<div class="timelineLabel">
+Sojabohnen
+</div>
+
+<div class="timelineBar"></div>
+
+</div>
+
+
+<div class="timelineRow">
+
+<div class="timelineLabel">
+Weizen
+</div>
+
+<div class="timelineBar"></div>
+
+</div>
+
+
+<div class="timelineRow">
+
+<div class="timelineLabel">
+Hafer
+</div>
+
+<div class="timelineBar"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- CALENDAR -->
 
 <div class="calendar">
 
-<h3>🌱 Pflanzenkalender</h3>
+<h3>🌾 Pflanzkalender</h3>
 
-Weizen — Sep–Okt → Jul<br>
-Gerste — Sep–Okt → Jun<br>
-Hafer — Sep–Okt → Jul<br>
-Raps — Aug → Jul<br>
-Mais — Apr–Mai → Okt<br>
-Sojabohnen — Apr–Mai → Sep<br>
-Sonnenblumen — Mär–Apr → Sep<br>
-Kartoffeln — Apr → Sep<br>
-Zuckerrüben — Mär–Apr → Okt<br>
-Erbsen — Mär–Apr → Jul<br>
-Karotten — Apr → Jul<br>
-Pastinaken — Apr → Jun<br>
-Trauben — Apr → Okt<br>
-Oliven — Apr → Okt<br>
-Reis — Apr → Okt<br>
-Sorghum — Apr → Okt<br>
-Pappel — Mär–Apr → Ganzjährig<br>
-Ölrettich — Aug–Sep → Nov<br>
-Gras — Mär–Okt → mehrfach
+<div class="calendarItem">
+<span>Weizen</span>
+<span>Sep–Okt</span>
+</div>
 
+<div class="calendarItem">
+<span>Gerste</span>
+<span>Sep–Okt</span>
+</div>
+
+<div class="calendarItem">
+<span>Hafer</span>
+<span>Sep–Okt</span>
+</div>
+
+<div class="calendarItem">
+<span>Raps</span>
+<span>Aug</span>
+</div>
+
+<div class="calendarItem">
+<span>Mais</span>
+<span>Apr</span>
+</div>
+
+<div class="calendarItem">
+<span>Sojabohnen</span>
+<span>Sep</span>
+</div>
+
+<div class="calendarItem">
+<span>Sonnenblumen</span>
+<span>Apr</span>
 </div>
 
 </div>
 
-<script>
-
-let fields=[]
-let crops=[]
-
-function addField(){
-
-let name=document.getElementById("fieldName").value
-let size=document.getElementById("fieldSize").value
-
-fields.push({name,size})
-
-renderFields()
-
-}
-
-function renderFields(){
-
-let box=document.getElementById("fieldButtons")
-box.innerHTML=""
-
-fields.forEach((f,i)=>{
-
-let btn=document.createElement("button")
-btn.innerText=f.name+" ("+f.size+"ha)"
-
-box.appendChild(btn)
-
-})
-
-}
-
-function addCrop(){
-
-let crop=document.getElementById("cropSelect").value
-
-crops.push(crop)
-
-renderCrops()
-
-}
-
-function renderCrops(){
-
-let box=document.getElementById("cropList")
-box.innerHTML=""
-
-crops.forEach(c=>{
-
-let span=document.createElement("span")
-span.innerText=c+" → "
-
-box.appendChild(span)
-
-})
-
-}
-
-</script>
+</div>
 
 </body>
 </html>
