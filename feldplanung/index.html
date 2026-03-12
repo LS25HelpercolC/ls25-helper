@@ -1,286 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+
 <meta charset="UTF-8">
-<title>LS25 Helper – Feldplanung</title>
+<title>Feldplanung</title>
 
 <link rel="stylesheet" href="../assets/css/style.css">
 
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:url('../assets/images/farm-bg.jpg') center/cover no-repeat fixed;
-color:white;
-}
-
-.layout{
-display:flex;
-height:100vh;
-padding:20px;
-box-sizing:border-box;
-gap:20px;
-}
-
-/* MAIN PANEL */
-
-.panel{
-flex:1;
-background:rgba(0,0,0,0.55);
-backdrop-filter:blur(8px);
-border-radius:14px;
-padding:25px;
-display:flex;
-flex-direction:column;
-gap:20px;
-}
-
-/* TITLE */
-
-.panel h1{
-margin:0;
-font-size:26px;
-}
-
-/* FRUCHTFOLGE */
-
-.cropRow{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-}
-
-.crop{
-padding:10px 14px;
-border-radius:8px;
-background:#3a3a3a;
-cursor:pointer;
-}
-
-.crop.active{
-background:#4CAF50;
-}
-
-/* BUTTON */
-
-.btn{
-padding:10px 16px;
-border-radius:8px;
-background:#2e3d47;
-border:none;
-color:white;
-cursor:pointer;
-}
-
-/* TIMELINE */
-
-.timeline{
-margin-top:10px;
-display:flex;
-flex-direction:column;
-gap:20px;
-}
-
-.timelineRow{
-display:flex;
-align-items:center;
-gap:10px;
-}
-
-.timelineLabel{
-width:120px;
-}
-
-.timelineBar{
-flex:1;
-height:28px;
-border-radius:14px;
-background:linear-gradient(90deg,#3ea94c,#d4c43c,#e67e22);
-position:relative;
-}
-
-/* CALENDAR */
-
-.calendar{
-width:260px;
-background:rgba(0,0,0,0.55);
-backdrop-filter:blur(8px);
-border-radius:14px;
-padding:20px;
-}
-
-.calendar h3{
-margin-top:0;
-}
-
-.calendarItem{
-display:flex;
-justify-content:space-between;
-padding:6px 0;
-border-bottom:1px solid rgba(255,255,255,0.1);
-font-size:14px;
-}
-
-/* FIELD LIST */
-
-.fields{
-width:220px;
-background:rgba(0,0,0,0.55);
-backdrop-filter:blur(8px);
-border-radius:14px;
-padding:20px;
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.fieldBtn{
-padding:10px;
-background:#2e3d47;
-border:none;
-border-radius:8px;
-color:white;
-text-align:left;
-cursor:pointer;
-}
-
-.fieldBtn.active{
-background:#4CAF50;
-}
-
-</style>
 </head>
 
 <body>
 
 <div class="layout">
 
-<!-- FIELD LIST -->
-
-<div class="fields">
-
-<button class="fieldBtn active">
-🌱 Feld 1 – 5 ha
-</button>
-
-<button class="fieldBtn">
-🌾 Feld 2 – 4 ha
-</button>
-
-<button class="btn">
-+ Feld hinzufügen
-</button>
-
-</div>
-
-
-<!-- MAIN PANEL -->
-
 <div class="panel">
 
 <h1>Feldplanung</h1>
 
-<div>
-
-<b>Fruchtfolge:</b>
-
-<div class="cropRow">
-
-<div class="crop active">🌱 Sojabohnen</div>
-<div class="crop">🌻 Sonnenblumen</div>
-<div class="crop">🌾 Hafer</div>
-
-<button class="btn">+ Frucht</button>
-
-</div>
-
-</div>
-
-
-<div class="timeline">
+<div class="timeline" id="timeline">
 
 <div class="timelineRow">
-
-<div class="timelineLabel">
-Sojabohnen
-</div>
-
+<div class="timelineLabel">Beispiel Frucht</div>
 <div class="timelineBar"></div>
-
-</div>
-
-
-<div class="timelineRow">
-
-<div class="timelineLabel">
-Weizen
-</div>
-
-<div class="timelineBar"></div>
-
-</div>
-
-
-<div class="timelineRow">
-
-<div class="timelineLabel">
-Hafer
-</div>
-
-<div class="timelineBar"></div>
-
 </div>
 
 </div>
 
 </div>
 
-
-<!-- CALENDAR -->
 
 <div class="calendar">
 
-<h3>🌾 Pflanzkalender</h3>
+<h3>Pflanzenkalender</h3>
 
-<div class="calendarItem">
-<span>Weizen</span>
-<span>Sep–Okt</span>
-</div>
-
-<div class="calendarItem">
-<span>Gerste</span>
-<span>Sep–Okt</span>
-</div>
-
-<div class="calendarItem">
-<span>Hafer</span>
-<span>Sep–Okt</span>
-</div>
-
-<div class="calendarItem">
-<span>Raps</span>
-<span>Aug</span>
-</div>
-
-<div class="calendarItem">
-<span>Mais</span>
-<span>Apr</span>
-</div>
-
-<div class="calendarItem">
-<span>Sojabohnen</span>
-<span>Sep</span>
-</div>
-
-<div class="calendarItem">
-<span>Sonnenblumen</span>
-<span>Apr</span>
-</div>
+<div id="calendar"></div>
 
 </div>
 
 </div>
+
+<script src="../assets/js/app.js"></script>
 
 </body>
 </html>
