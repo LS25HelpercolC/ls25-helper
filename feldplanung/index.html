@@ -1,6 +1,163 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+
+<style>
+
+body{
+font-family:Arial;
+color:white;
+}
+
+.layout{
+display:flex;
+gap:20px;
+}
+
+.planner{
+flex:1;
+}
+
+.calendar{
+width:260px;
+background:#222;
+padding:15px;
+border-radius:10px;
+font-size:13px;
+line-height:1.6;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Feldplanung</h1>
+
+<div class="layout">
+
+<div class="planner">
+
 Feldname
-Feldgröße
-Feld speichern
-Fruchtfolge
-Timeline
-Pflanzenkalender rechts
+<input id="fieldName">
+
+Größe
+<input id="fieldSize">
+
+<button onclick="addField()">Feld speichern</button>
+
+<div id="fieldButtons"></div>
+
+<hr>
+
+<select id="cropSelect">
+
+<option>Weizen</option>
+<option>Gerste</option>
+<option>Raps</option>
+<option>Mais</option>
+<option>Sojabohnen</option>
+<option>Sonnenblumen</option>
+<option>Ölrettich (Zwischenfrucht)</option>
+<option>Brach</option>
+
+</select>
+
+<button onclick="addCrop()">Frucht hinzufügen</button>
+
+<div id="cropList"></div>
+
+</div>
+
+
+<div class="calendar">
+
+<h3>🌱 Pflanzenkalender</h3>
+
+Weizen — Sep–Okt → Jul<br>
+Gerste — Sep–Okt → Jun<br>
+Hafer — Sep–Okt → Jul<br>
+Raps — Aug → Jul<br>
+Mais — Apr–Mai → Okt<br>
+Sojabohnen — Apr–Mai → Sep<br>
+Sonnenblumen — Mär–Apr → Sep<br>
+Kartoffeln — Apr → Sep<br>
+Zuckerrüben — Mär–Apr → Okt<br>
+Erbsen — Mär–Apr → Jul<br>
+Karotten — Apr → Jul<br>
+Pastinaken — Apr → Jun<br>
+Trauben — Apr → Okt<br>
+Oliven — Apr → Okt<br>
+Reis — Apr → Okt<br>
+Sorghum — Apr → Okt<br>
+Pappel — Mär–Apr → Ganzjährig<br>
+Ölrettich — Aug–Sep → Nov<br>
+Gras — Mär–Okt → mehrfach
+
+</div>
+
+</div>
+
+<script>
+
+let fields=[]
+let crops=[]
+
+function addField(){
+
+let name=document.getElementById("fieldName").value
+let size=document.getElementById("fieldSize").value
+
+fields.push({name,size})
+
+renderFields()
+
+}
+
+function renderFields(){
+
+let box=document.getElementById("fieldButtons")
+box.innerHTML=""
+
+fields.forEach((f,i)=>{
+
+let btn=document.createElement("button")
+btn.innerText=f.name+" ("+f.size+"ha)"
+
+box.appendChild(btn)
+
+})
+
+}
+
+function addCrop(){
+
+let crop=document.getElementById("cropSelect").value
+
+crops.push(crop)
+
+renderCrops()
+
+}
+
+function renderCrops(){
+
+let box=document.getElementById("cropList")
+box.innerHTML=""
+
+crops.forEach(c=>{
+
+let span=document.createElement("span")
+span.innerText=c+" → "
+
+box.appendChild(span)
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
