@@ -16,13 +16,16 @@ color:white;
 .app{
 display:flex;
 height:100vh;
-backdrop-filter:blur(6px);
 }
 
 .sidebar{
 width:220px;
 background:#1e2a33;
 padding:20px;
+}
+
+.sidebar h2{
+margin-top:0;
 }
 
 .sidebar button{
@@ -35,6 +38,10 @@ color:white;
 border-radius:6px;
 cursor:pointer;
 text-align:left;
+}
+
+.sidebar button:hover{
+background:#3a4c59;
 }
 
 .content{
@@ -93,7 +100,10 @@ Farm To-Do
 function openPage(page,bg){
 
 document.getElementById("frame").src = page
-document.body.style.backgroundImage = "url('"+bg+"')"
+
+if(bg){
+document.body.style.backgroundImage="url('"+bg+"')"
+}
 
 }
 
