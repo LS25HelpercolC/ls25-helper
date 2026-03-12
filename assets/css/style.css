@@ -1,40 +1,80 @@
+/* ===== Grundlayout ===== */
+
 body{
 margin:0;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
+background:#1f2a31;
 color:white;
-background:url("../images/farm-bg.jpg") center/cover no-repeat fixed;
 }
+
+/* ===== Layout ===== */
 
 .layout{
 display:flex;
 gap:20px;
 padding:20px;
+align-items:flex-start;
 }
+
+/* ===== Hauptpanel ===== */
 
 .panel{
 flex:1;
-background:rgba(0,0,0,0.55);
+background:#263640;
 border-radius:12px;
 padding:20px;
 }
 
+/* ===== Pflanzenkalender ===== */
+
+.calendar{
+width:320px;
+background:#263640;
+border-radius:12px;
+padding:20px;
+}
+
+.calendarHeader{
+display:grid;
+grid-template-columns:1fr 90px 90px;
+font-weight:bold;
+margin-bottom:8px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+padding-bottom:6px;
+}
+
+.calendarItem{
+display:grid;
+grid-template-columns:1fr 90px 90px;
+padding:4px 0;
+border-bottom:1px solid rgba(255,255,255,0.08);
+font-size:14px;
+}
+
+/* ===== Timeline Monate ===== */
+
 .timelineMonths{
 display:grid;
 grid-template-columns:repeat(12,1fr);
+gap:4px;
 margin-bottom:10px;
 }
 
 .month{
-background:#2e3d47;
+background:#344955;
 padding:6px;
 text-align:center;
 cursor:pointer;
 border-radius:4px;
+font-size:13px;
+transition:0.2s;
 }
 
 .month:hover{
 background:#4CAF50;
 }
+
+/* ===== Timeline Reihen ===== */
 
 .timelineRow{
 font-family:monospace;
@@ -45,31 +85,36 @@ margin-bottom:6px;
 display:inline-block;
 width:20px;
 text-align:center;
+font-size:14px;
+}
+
+/* ===== Pflanzen Auswahl ===== */
+
+.cropSelectBox{
+margin-top:10px;
 }
 
 .cropSelectBox button{
 margin:4px;
 padding:6px 10px;
+border:none;
+background:#344955;
+color:white;
+border-radius:4px;
+cursor:pointer;
 }
 
-.calendar{
-width:320px;
-background:rgba(0,0,0,0.55);
-padding:20px;
-border-radius:12px;
+.cropSelectBox button:hover{
+background:#4CAF50;
 }
 
-.calendarHeader{
-display:grid;
-grid-template-columns:1fr 80px 80px;
-font-weight:bold;
-border-bottom:1px solid rgba(255,255,255,0.2);
-margin-bottom:6px;
+/* ===== Überschriften ===== */
+
+h1{
+margin-top:0;
+margin-bottom:15px;
 }
 
-.calendarItem{
-display:grid;
-grid-template-columns:1fr 80px 80px;
-padding:4px 0;
-border-bottom:1px solid rgba(255,255,255,0.08);
+h3{
+margin-top:0;
 }
