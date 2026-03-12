@@ -7,6 +7,45 @@
 
 <link rel="stylesheet" href="../assets/css/style.css">
 
+<style>
+
+.timelineMonths{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+margin-bottom:10px;
+}
+
+.month{
+background:#2e3d47;
+padding:6px;
+text-align:center;
+cursor:pointer;
+border-radius:4px;
+}
+
+.month:hover{
+background:#4CAF50;
+}
+
+.timelineRow{
+font-family:monospace;
+margin-bottom:6px;
+}
+
+.timelineRow span{
+display:inline-block;
+width:20px;
+text-align:center;
+}
+
+.cropSelectBox button{
+margin:4px;
+padding:6px 10px;
+cursor:pointer;
+}
+
+</style>
+
 </head>
 
 <body>
@@ -19,7 +58,7 @@
 
 <div id="timelineMonths" class="timelineMonths"></div>
 
-<div id="timelineRows" class="timelineRows"></div>
+<div id="timelineRows"></div>
 
 <div id="cropSelectBox" class="cropSelectBox"></div>
 
@@ -41,7 +80,151 @@
 
 </div>
 
-<script src="../assets/js/feldplanung.js"></script>
+<script>
+
+const months=[
+"Jan","Feb","Mär","Apr","Mai","Jun",
+"Jul","Aug","Sep","Okt","Nov","Dez"
+]
+
+let cropsData={}
+let timeline=[]
+
+async function init(){
+
+ const res=await fetch("../assets/data/crops.json")
+ cropsData=await res.json()
+
+ buildCalendar()
+ buildMonthBar()
+
+}
+
+function buildCalendar(){
+
+ const box=document.getElementById("calendar")
+ box.innerHTML=""
+
+ Object.keys(cropsData).forEach(crop=>{
+
+  const row=document.createElement("div")
+  row.className="calendarItem"
+
+  row.innerHTML=
+  "<span>"+crop+"</span>"+
+  "<span>"+cropsData[crop].sow.join("-")+"</span>"+
+  "<span>"+cropsData[crop].harvest.join("-")+"</span>"
+
+  box.appendChild(row)
+
+ })
+
+}
+
+function buildMonthBar(){
+
+ const container=document.getElementById("timelineMonths")
+
+ months.forEach((m,i)=>{
+
+  const div=document.createElement("div")
+  div.className="month"
+  div.innerText=m
+
+  div.onclick=()=>monthClick(i)
+
+  container.appendChild(div)
+
+ })
+
+}
+
+function monthClick(monthIndex){
+
+ const list=[]
+
+ Object.keys(cropsData).forEach(crop=>{
+
+  if(cropsData[crop].sow.includes(months[monthIndex])){
+   list.push(crop)
+  }
+
+ })
+
+ showCropSelection(monthIndex,list)
+
+}
+
+function showCropSelection(monthIndex,crops){
+
+ const box=document.getElementById("cropSelectBox")
+ box.innerHTML=""
+
+ crops.forEach(crop=>{
+
+  const btn=document.createElement("button")
+  btn.innerText=crop
+
+  btn.onclick=()=>addCrop(monthIndex,crop)
+
+  box.appendChild(btn)
+
+ })
+
+}
+
+function addCrop(monthIndex,crop){
+
+ const firstSow=months.indexOf(cropsData[crop].sow[0])
+ const firstHarvest=months.indexOf(cropsData[crop].harvest[0])
+
+ let growth=firstHarvest-firstSow
+ if(growth<0)growth+=12
+
+ const harvestMonth=monthIndex+growth
+
+ timeline.push({
+  crop:crop,
+  sow:monthIndex,
+  harvest:harvestMonth
+ })
+
+ drawTimeline()
+
+}
+
+function drawTimeline(){
+
+ const box=document.getElementById("timelineRows")
+ box.innerHTML=""
+
+ timeline.forEach(t=>{
+
+  const row=document.createElement("div")
+  row.className="timelineRow"
+
+  for(let i=0;i<12;i++){
+
+   const c=document.createElement("span")
+
+   if(i===t.sow%12)c.innerText="A"
+   else if(i===t.harvest%12)c.innerText="E"
+   else if(i>t.sow%12&&i<t.harvest%12)c.innerText="█"
+   else c.innerText="."
+
+   row.appendChild(c)
+
+  }
+
+  box.appendChild(row)
+
+ })
+
+}
+
+window.onload=init
+
+</script>
 
 </body>
 </html>
