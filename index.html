@@ -9,14 +9,13 @@
 body{
 font-family:Arial;
 margin:0;
-background:url('farm.jpg') center/cover no-repeat fixed;
+background:#2c3e50;
 color:white;
 }
 
 .app{
 display:flex;
 height:100vh;
-backdrop-filter:blur(6px);
 }
 
 .sidebar{
@@ -42,99 +41,42 @@ cursor:pointer;
 
 .main{
 flex:1;
-display:flex;
-padding:20px;
-gap:20px;
+padding:30px;
 overflow:auto;
 }
 
 .card{
-background:rgba(0,0,0,0.55);
+background:rgba(0,0,0,0.45);
 padding:20px;
-border-radius:14px;
-flex:1;
+border-radius:12px;
+margin-bottom:20px;
 }
 
-.rightPanel{
-width:260px;
-background:rgba(0,0,0,0.55);
-padding:20px;
-border-radius:14px;
+.hidden{
+display:none;
 }
 
-h1{
-margin-top:0;
+input,select{
+padding:6px;
+margin:4px;
+border-radius:4px;
+border:none;
 }
 
 button.action{
 background:#4CAF50;
-border:none;
 padding:8px 14px;
-color:white;
-border-radius:6px;
-cursor:pointer;
-}
-
-.fieldButtons button{
-margin:4px;
-padding:6px 10px;
 border:none;
-border-radius:6px;
-background:#2e3d47;
 color:white;
+border-radius:6px;
 cursor:pointer;
-}
-
-.timeline{
-margin-top:20px;
-}
-
-.year{
-margin:20px 0;
-}
-
-.months{
-display:flex;
-justify-content:space-between;
-font-size:12px;
-margin-bottom:6px;
-}
-
-.bar{
-height:16px;
-background:#333;
-border-radius:10px;
-position:relative;
-overflow:hidden;
-}
-
-.fill{
-height:100%;
-background:linear-gradient(
-90deg,
-#2ecc71,
-#f1c40f,
-#e67e22
-);
-}
-
-.brach{
-background:#777;
-}
-
-.currentLine{
-position:absolute;
-width:2px;
-background:white;
-height:100%;
-opacity:0.8;
 }
 
 .cropItem{
 display:flex;
 justify-content:space-between;
-margin:4px 0;
 font-size:13px;
+margin:4px 0;
 }
 
 </style>
@@ -148,59 +90,91 @@ font-size:13px;
 
 <h2>🚜 LS25 Helper</h2>
 
-<button>Profit Rechner</button>
-<button>Feldplanung</button>
-<button>Arbeitszeit</button>
-<button>Tierfutter</button>
-<button>Farm To-Do</button>
-<button>In Entwicklung</button>
+<button onclick="showTab('profit')">Profit Rechner</button>
+<button onclick="showTab('fields')">Feldplanung</button>
+<button onclick="showTab('calendar')">Pflanzenkalender</button>
+
+</div>
+
+<div class="main">
+
+
+<!-- PROFIT RECHNER -->
+
+<div id="profit" class="card">
+
+<h1>Profit Rechner</h1>
+
+Frucht
+<select id="cropProfit"></select>
+
+<br>
+
+Feldgröße (ha)
+<input id="fieldSizeProfit" type="number">
+
+<br>
+
+Preis (€ pro 1000l)
+<input id="priceProfit" type="number">
+
+<h3>Additive</h3>
+
+<label><input type="checkbox" id="fert1"> Düngen 1x (+25%)</label><br>
+<label><input type="checkbox" id="fert2"> Düngen 2x (+50%)</label><br>
+<label><input type="checkbox" id="mulch"> Mulchen (+2.5%)</label><br>
+<label><input type="checkbox" id="roll"> Walzen (+2.5%)</label><br>
+<label><input type="checkbox" id="lime"> Kalk (+15%)</label><br>
+<label><input type="checkbox" id="weed"> Unkraut entfernt (+10%)</label><br>
+<label><input type="checkbox" id="pf"> Precision Farming (+5%)</label>
+
+<br><br>
+
+<button class="action" onclick="calculateProfit()">Berechnen</button>
+
+<h3 id="result"></h3>
 
 </div>
 
 
-<div class="main">
+<!-- FELDPLANUNG -->
 
-<div class="card">
+<div id="fields" class="card hidden">
 
 <h1>Feldplanung</h1>
-
-<div>
 
 Feldname
 <input id="fieldName">
 
-Größe
+Größe (ha)
 <input id="fieldSize">
 
-<button class="action" onclick="addField()">+ Feld</button>
+<button class="action" onclick="addField()">Feld speichern</button>
 
-</div>
-
-<div class="fieldButtons" id="fieldButtons"></div>
+<div id="fieldButtons"></div>
 
 <hr>
 
 <select id="cropSelect"></select>
-<button class="action" onclick="addCrop()">+ Frucht hinzufügen</button>
+<button class="action" onclick="addCrop()">Frucht hinzufügen</button>
 
 <div id="cropList"></div>
 
-<div class="timeline" id="timeline"></div>
+</div>
+
+
+<!-- PFLANZENKALENDER -->
+
+<div id="calendar" class="card hidden">
+
+<h1>Pflanzenkalender</h1>
+
+<div id="calendarList"></div>
 
 </div>
 
 
-
-<div class="rightPanel">
-
-<h3>🌱 Pflanzkalender</h3>
-
-<div id="calendar"></div>
-
 </div>
-
-</div>
-
 </div>
 
 
@@ -208,36 +182,67 @@ Größe
 
 const cropData = {
 
-"Weizen":{sow:[9,10],harvest:7},
-"Gerste":{sow:[9,10],harvest:6},
-"Hafer":{sow:[9,10],harvest:7},
-"Raps":{sow:[8],harvest:7},
-"Mais (Korn)":{sow:[4,5],harvest:10},
-"Mais (Silomais)":{sow:[4,5],harvest:10},
-"Sojabohnen":{sow:[4,5],harvest:9},
-"Sonnenblumen":{sow:[3,4],harvest:9},
-"Kartoffeln":{sow:[4],harvest:9},
-"Zuckerrüben":{sow:[3,4],harvest:10},
-"Erbsen":{sow:[3,4],harvest:7},
-"Karotten":{sow:[4],harvest:7},
-"Pastinaken":{sow:[4],harvest:6},
-"Trauben":{sow:[4],harvest:10},
-"Oliven":{sow:[4],harvest:10},
-"Reis":{sow:[4],harvest:10},
-"Sorghum":{sow:[4],harvest:10},
-"Pappel":{sow:[3,4],harvest:12},
-"Ölrettich":{sow:[8,9],harvest:11},
-"Gras":{sow:[3,4],harvest:10},
-
-"Brach":{sow:[1],harvest:12}
+"Weizen":{yield:8000,sow:["Sep","Okt"],harvest:"Jul"},
+"Gerste":{yield:7800,sow:["Sep","Okt"],harvest:"Jun"},
+"Hafer":{yield:7000,sow:["Sep","Okt"],harvest:"Jul"},
+"Raps":{yield:6500,sow:["Aug"],harvest:"Jul"},
+"Mais (Korn)":{yield:9000,sow:["Apr","Mai"],harvest:"Okt"},
+"Mais (Silomais)":{yield:9000,sow:["Apr","Mai"],harvest:"Okt"},
+"Sojabohnen":{yield:4500,sow:["Apr","Mai"],harvest:"Sep"},
+"Sonnenblumen":{yield:4800,sow:["Mär","Apr"],harvest:"Sep"},
+"Kartoffeln":{yield:40000,sow:["Apr"],harvest:"Sep"},
+"Zuckerrüben":{yield:42000,sow:["Mär","Apr"],harvest:"Okt"},
+"Erbsen":{yield:4500,sow:["Mär","Apr"],harvest:"Jul"},
+"Karotten":{yield:38000,sow:["Apr"],harvest:"Jul"},
+"Pastinaken":{yield:35000,sow:["Apr"],harvest:"Jun"},
+"Trauben":{yield:12000,sow:["Apr"],harvest:"Okt"},
+"Oliven":{yield:10000,sow:["Apr"],harvest:"Okt"},
+"Reis":{yield:7000,sow:["Apr"],harvest:"Okt"},
+"Sorghum":{yield:7500,sow:["Apr"],harvest:"Okt"},
+"Pappel":{yield:12000,sow:["Mär","Apr"],harvest:"Ganzjährig"},
+"Ölrettich":{yield:0,sow:["Aug","Sep"],harvest:"Nov"},
+"Gras":{yield:15000,sow:["Mär","Apr"],harvest:"Mehrfach"}
 
 }
 
 let fields = JSON.parse(localStorage.getItem("fields")) || []
-let currentField=null
-let crops=[]
+let currentField = null
 
-const months=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
+function showTab(tab){
+
+document.getElementById("profit").classList.add("hidden")
+document.getElementById("fields").classList.add("hidden")
+document.getElementById("calendar").classList.add("hidden")
+
+document.getElementById(tab).classList.remove("hidden")
+
+}
+
+function calculateProfit(){
+
+let crop=document.getElementById("cropProfit").value
+let size=document.getElementById("fieldSizeProfit").value
+let price=document.getElementById("priceProfit").value
+
+let yieldBase=cropData[crop].yield
+
+let bonus=1
+
+if(fert1.checked) bonus+=0.25
+if(fert2.checked) bonus+=0.50
+if(mulch.checked) bonus+=0.025
+if(roll.checked) bonus+=0.025
+if(lime.checked) bonus+=0.15
+if(weed.checked) bonus+=0.10
+if(pf.checked) bonus+=0.05
+
+let liters=yieldBase*size*bonus
+let money=(liters/1000)*price
+
+document.getElementById("result").innerText=
+"Ertrag: "+Math.round(liters)+" L | Gewinn: "+Math.round(money)+" €"
+
+}
 
 function addField(){
 
@@ -263,9 +268,7 @@ box.innerHTML=""
 fields.forEach((f,i)=>{
 
 let btn=document.createElement("button")
-
 btn.innerText=f.name+" ("+f.size+"ha)"
-
 btn.onclick=()=>selectField(i)
 
 box.appendChild(btn)
@@ -278,32 +281,24 @@ function selectField(i){
 
 currentField=i
 
-crops=fields[i].crops || []
-
 renderCrops()
-
-generateTimeline()
 
 }
 
 function addCrop(){
 
-if(crops.length>=10){
-alert("Maximal 10 Einträge pro Feld")
+if(currentField===null){
+alert("Bitte zuerst ein Feld auswählen")
 return
 }
 
 let crop=document.getElementById("cropSelect").value
 
-crops.push(crop)
-
-fields[currentField].crops=crops
+fields[currentField].crops.push(crop)
 
 localStorage.setItem("fields",JSON.stringify(fields))
 
 renderCrops()
-
-generateTimeline()
 
 }
 
@@ -313,10 +308,11 @@ let box=document.getElementById("cropList")
 
 box.innerHTML=""
 
-crops.forEach(c=>{
+if(currentField===null)return
+
+fields[currentField].crops.forEach(c=>{
 
 let span=document.createElement("span")
-
 span.innerText=c+" → "
 
 box.appendChild(span)
@@ -325,79 +321,16 @@ box.appendChild(span)
 
 }
 
-function generateTimeline(){
-
-let container=document.getElementById("timeline")
-
-container.innerHTML=""
-
-let currentMonth=new Date().getMonth()
-
-crops.forEach((crop,index)=>{
-
-let data=cropData[crop]
-
-let year=document.createElement("div")
-year.className="year"
-
-let monthsRow=document.createElement("div")
-monthsRow.className="months"
-
-months.forEach(m=>{
-
-let span=document.createElement("span")
-span.innerText=m
-monthsRow.appendChild(span)
-
-})
-
-let bar=document.createElement("div")
-bar.className="bar"
-
-let fill=document.createElement("div")
-
-if(crop==="Brach"){
-fill.className="fill brach"
-}else{
-fill.className="fill"
-}
-
-let start=data.sow[0]-1
-let end=data.harvest
-
-fill.style.marginLeft=(start/12*100)+"%"
-fill.style.width=((end-start)/12*100)+"%"
-
-let line=document.createElement("div")
-line.className="currentLine"
-line.style.left=(currentMonth/12*100)+"%"
-
-bar.appendChild(fill)
-bar.appendChild(line)
-
-year.appendChild(monthsRow)
-year.appendChild(bar)
-
-container.appendChild(year)
-
-})
-
-}
-
 function renderCalendar(){
 
-let box=document.getElementById("calendar")
+let box=document.getElementById("calendarList")
 
 Object.keys(cropData).forEach(c=>{
-
-let data=cropData[c]
 
 let row=document.createElement("div")
 row.className="cropItem"
 
-let sow=data.sow.join(",")
-
-row.innerHTML="<span>"+c+"</span><span>"+sow+" → "+data.harvest+"</span>"
+row.innerHTML="<span>"+c+"</span><span>"+cropData[c].sow.join(', ')+" → "+cropData[c].harvest+"</span>"
 
 box.appendChild(row)
 
@@ -407,20 +340,24 @@ box.appendChild(row)
 
 function init(){
 
-let select=document.getElementById("cropSelect")
+let select1=document.getElementById("cropProfit")
+let select2=document.getElementById("cropSelect")
 
 Object.keys(cropData).forEach(c=>{
 
-let option=document.createElement("option")
-option.value=c
-option.innerText=c
+let op1=document.createElement("option")
+op1.value=c
+op1.innerText=c
+select1.appendChild(op1)
 
-select.appendChild(option)
+let op2=document.createElement("option")
+op2.value=c
+op2.innerText=c
+select2.appendChild(op2)
 
 })
 
 renderFields()
-
 renderCalendar()
 
 }
