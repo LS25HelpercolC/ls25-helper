@@ -7,10 +7,8 @@ background:url("../images/farm-bg.jpg") center/cover no-repeat fixed;
 
 .layout{
 display:flex;
-height:100vh;
-padding:20px;
 gap:20px;
-box-sizing:border-box;
+padding:20px;
 }
 
 .panel{
@@ -18,48 +16,60 @@ flex:1;
 background:rgba(0,0,0,0.55);
 border-radius:12px;
 padding:20px;
-backdrop-filter:blur(8px);
 }
 
-/* Pflanzenkalender */
+.timelineMonths{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+margin-bottom:10px;
+}
+
+.month{
+background:#2e3d47;
+padding:6px;
+text-align:center;
+cursor:pointer;
+border-radius:4px;
+}
+
+.month:hover{
+background:#4CAF50;
+}
+
+.timelineRow{
+font-family:monospace;
+margin-bottom:6px;
+}
+
+.timelineRow span{
+display:inline-block;
+width:20px;
+text-align:center;
+}
+
+.cropSelectBox button{
+margin:4px;
+padding:6px 10px;
+}
 
 .calendar{
 width:320px;
 background:rgba(0,0,0,0.55);
-border-radius:12px;
 padding:20px;
-overflow:auto;
-backdrop-filter:blur(8px);
+border-radius:12px;
 }
-
-.calendar h3{
-margin-top:0;
-margin-bottom:15px;
-}
-
-/* Tabellenkopf */
 
 .calendarHeader{
 display:grid;
-grid-template-columns:1fr 90px 90px;
+grid-template-columns:1fr 80px 80px;
 font-weight:bold;
-padding-bottom:8px;
 border-bottom:1px solid rgba(255,255,255,0.2);
-margin-bottom:10px;
+margin-bottom:6px;
 }
-
-/* Zeilen */
 
 .calendarItem{
 display:grid;
-grid-template-columns:1fr 90px 90px;
-padding:6px 0;
+grid-template-columns:1fr 80px 80px;
+padding:4px 0;
 border-bottom:1px solid rgba(255,255,255,0.08);
-font-size:14px;
-}
-
-.calendarItem span:nth-child(2),
-.calendarItem span:nth-child(3){
-text-align:right;
-opacity:0.9;
 }
