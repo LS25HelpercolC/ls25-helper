@@ -65,7 +65,28 @@ function buildCalendar(){
 
 }
 
+function getLastHarvestMonth(){
+
+ if(timeline.length===0) return null
+
+ const last = timeline[timeline.length-1]
+
+ return last.end
+
+}
+
 function monthClick(index){
+
+ const lastHarvest = getLastHarvestMonth()
+
+ if(lastHarvest !== null){
+
+  if(index !== lastHarvest){
+   alert("Feld ist noch belegt bis zur Ernte.")
+   return
+  }
+
+ }
 
  const possible=[]
 
@@ -139,19 +160,17 @@ function renderTimeline(){
 
     const cell=document.createElement("span")
 
-    const index=i
-
-    if(index===t.start && y===0)
+    if(i===t.start && y===0)
      cell.innerText="A"
 
-    else if(index===t.end && (t.end>t.start ? y===0 : y===1))
+    else if(i===t.end && (t.end>t.start ? y===0 : y===1))
      cell.innerText="E"
 
     else if(
-     (t.start < t.end && y===0 && index>t.start && index<t.end) ||
+     (t.start < t.end && y===0 && i>t.start && i<t.end) ||
      (t.start > t.end && (
-       (y===0 && index>t.start) ||
-       (y===1 && index<t.end)
+       (y===0 && i>t.start) ||
+       (y===1 && i<t.end)
      ))
     )
      cell.innerText="█"
