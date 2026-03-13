@@ -1,3 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LS25 Helper – Feldplanung</title>
+
+<link rel="stylesheet" href="../assets/css/style.css">
+
+<style>
+
+.layout{
+display:flex;
+gap:20px;
+}
+
+.crop-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:12px;
+margin-bottom:25px;
+}
+
+.crop{
+background:#1e2b33;
+padding:12px;
+border-radius:8px;
+text-align:center;
+cursor:pointer;
+}
+
+.crop img{
+width:60px;
+height:60px;
+display:block;
+margin:auto;
+margin-bottom:6px;
+}
+
+.crop.active{
+background:#2e7d32;
+}
+
+.month-bar{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:6px;
+margin-top:15px;
+margin-bottom:20px;
+}
+
+.month{
+padding:6px;
+background:#23323b;
+text-align:center;
+border-radius:4px;
+cursor:pointer;
+}
+
+.month.allowed{
+background:#2ecc71;
+color:black;
+font-weight:bold;
+}
+
+#timeline{
+margin-top:30px;
+}
+
+.year{
+margin-bottom:25px;
+}
+
+.timeline-bar{
+height:28px;
+background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
+border-radius:6px;
+margin-top:8px;
+display:flex;
+align-items:center;
+padding-left:10px;
+font-weight:bold;
+}
+
+.timeline-bar img{
+height:18px;
+margin-right:6px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="panel">
+
+<h1>Feldplanung</h1>
+
+<div id="cropGrid" class="crop-grid"></div>
+
+<div id="monthBar" class="month-bar"></div>
+
+<div id="timeline"></div>
+
+</div>
+
+<div class="calendar" id="calendar">
+
+<h3>Pflanzenkalender</h3>
+
+<div class="calendarHeader">
+<span>Frucht</span>
+<span>Aussaat</span>
+<span>Ernte</span>
+</div>
+
+</div>
+
+</div>
+
 <script>
 
 const months=[
@@ -35,6 +156,8 @@ const cropIcons={
 
 async function init(){
 
+ try{
+
  const res=await fetch("../assets/data/crops.json")
  crops=await res.json()
 
@@ -42,11 +165,18 @@ async function init(){
  buildCrops()
  buildMonths()
 
+ }catch(e){
+
+ console.error("Fehler beim Laden:",e)
+
+ }
+
 }
 
 function buildCalendar(){
 
  const cal=document.getElementById("calendar")
+ if(!cal) return
 
  Object.keys(crops).forEach(name=>{
 
@@ -56,11 +186,10 @@ function buildCalendar(){
   const item=document.createElement("div")
   item.className="calendarItem"
 
-  item.innerHTML=`
-  <span>${name}</span>
-  <span>${sow}</span>
-  <span>${harvest}</span>
-  `
+  item.innerHTML=
+  `<span>${name}</span>
+   <span>${sow}</span>
+   <span>${harvest}</span>`
 
   cal.appendChild(item)
 
@@ -71,6 +200,8 @@ function buildCalendar(){
 function buildCrops(){
 
  const grid=document.getElementById("cropGrid")
+ if(!grid) return
+
  grid.innerHTML=""
 
  Object.keys(crops).forEach(crop=>{
@@ -109,6 +240,7 @@ function selectCrop(crop,el){
 function buildMonths(){
 
  const bar=document.getElementById("monthBar")
+ if(!bar) return
 
  months.forEach((m,i)=>{
 
@@ -126,6 +258,8 @@ function buildMonths(){
 
 function highlightMonths(){
 
+ if(!selectedCrop) return
+
  document.querySelectorAll(".month").forEach((m,i)=>{
 
   m.classList.remove("allowed")
@@ -140,8 +274,8 @@ function highlightMonths(){
 
 function monthClick(index){
 
- if(!selectedCrop)return
- if(!crops[selectedCrop].sow.includes(months[index]))return
+ if(!selectedCrop) return
+ if(!crops[selectedCrop].sow.includes(months[index])) return
 
  timeline.push({
   crop:selectedCrop,
@@ -155,6 +289,8 @@ function monthClick(index){
 function drawTimeline(){
 
  const box=document.getElementById("timeline")
+ if(!box) return
+
  box.innerHTML=""
 
  timeline.forEach((t,i)=>{
@@ -167,7 +303,7 @@ function drawTimeline(){
   row.innerHTML=
   `<div>Plan ${i+1}</div>
    <div class="timeline-bar">
-   <img src="../assets/images/crops/${icon}" style="height:18px;margin-right:6px;vertical-align:middle;">
+   <img src="../assets/images/crops/${icon}">
    ${t.crop}
    </div>`
 
@@ -180,3 +316,6 @@ function drawTimeline(){
 window.onload=init
 
 </script>
+
+</body>
+</html>
