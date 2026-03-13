@@ -3,10 +3,40 @@ const months = [
 "Jul","Aug","Sep","Okt","Nov","Dez"
 ]
 
-const YEARS = 5
-
 let crops = {}
 let timeline = []
+
+/* =========================================
+   ICON MAPPING (Fix für kaputte Icons)
+========================================= */
+
+const cropIcons = {
+"weizen":"wheat.png",
+"gerste":"barley.png",
+"hafer":"oats.png",
+"raps":"rapeseed.png",
+"mais (korn)":"corn.png",
+"mais (silomais)":"corn.png",
+"sojabohnen":"soybean.png",
+"sonnenblumen":"sunflower.png",
+"kartoffeln":"potato.png",
+"zuckerrüben":"sugarbeet.png",
+"erbsen":"pea.png",
+"karotten":"carrot.png",
+"pastinaken":"parsnip.png",
+"reis":"rice.png",
+"sorghum":"sorghum.png",
+"trauben":"grape.png",
+"oliven":"olive.png",
+"pappel":"poplar.png",
+"ölrettich":"oilradish.png",
+"gras":"grass.png",
+"brach":"fallow.png"
+}
+
+/* =========================================
+   INIT
+========================================= */
 
 async function initFeldplanung(){
 
@@ -17,6 +47,10 @@ async function initFeldplanung(){
  buildCalendar()
 
 }
+
+/* =========================================
+   MONATSLEISTE
+========================================= */
 
 function buildMonths(){
 
@@ -37,6 +71,10 @@ function buildMonths(){
  })
 
 }
+
+/* =========================================
+   PFLANZENKALENDER (bleibt unverändert)
+========================================= */
 
 function buildCalendar(){
 
@@ -65,12 +103,20 @@ function buildCalendar(){
 
 }
 
+/* =========================================
+   FELD BLOCKIERUNG
+========================================= */
+
 function getLastHarvestMonth(){
 
  if(timeline.length===0) return null
  return timeline[timeline.length-1].end
 
 }
+
+/* =========================================
+   MONAT KLICK
+========================================= */
 
 function monthClick(index){
 
@@ -99,6 +145,10 @@ function monthClick(index){
 
 }
 
+/* =========================================
+   CROP AUSWAHL
+========================================= */
+
 function showCropOptions(monthIndex,list){
 
  const box=document.querySelector(".cropSelectBox")
@@ -117,6 +167,10 @@ function showCropOptions(monthIndex,list){
  })
 
 }
+
+/* =========================================
+   CROP HINZUFÜGEN
+========================================= */
 
 function addCrop(startMonth,crop){
 
@@ -138,6 +192,10 @@ function addCrop(startMonth,crop){
  renderTimeline()
 
 }
+
+/* =========================================
+   TIMELINE
+========================================= */
 
 function renderTimeline(){
 
@@ -164,7 +222,13 @@ function renderTimeline(){
   bar.style.left = left + "%"
   bar.style.width = width + "%"
 
-  bar.innerText = t.crop
+  const iconFile = cropIcons[t.crop.toLowerCase()]
+
+  if(iconFile){
+   bar.innerHTML = `<img src="../assets/images/crops/${iconFile}" style="height:20px;margin-right:6px;"> ${t.crop}`
+  }else{
+   bar.innerText = t.crop
+  }
 
   row.appendChild(bar)
   container.appendChild(row)
