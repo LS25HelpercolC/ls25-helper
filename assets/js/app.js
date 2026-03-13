@@ -101,7 +101,7 @@ function monthClick(index){
 
 function showCropOptions(monthIndex,list){
 
- const box=document.querySelector(".cropOptions")
+ const box=document.querySelector(".cropSelectBox")
  if(!box) return
 
  box.innerHTML=""
@@ -141,61 +141,35 @@ function addCrop(startMonth,crop){
 
 function renderTimeline(){
 
- const rows=document.querySelector(".timelineRows")
- if(!rows) return
+ const container=document.querySelector(".timeline")
+ if(!container) return
 
- rows.innerHTML=""
+ container.innerHTML=""
 
  timeline.forEach(t=>{
 
   const row=document.createElement("div")
-  row.className="timelineRow"
+  row.className="timelineBarRow"
 
-  for(let y=0;y<YEARS;y++){
+  const bar=document.createElement("div")
+  bar.className="timelineBar"
 
-   for(let i=0;i<12;i++){
+  const duration = (t.end >= t.start)
+  ? (t.end - t.start + 1)
+  : (12 - t.start + t.end + 1)
 
-    const cell=document.createElement("div")
-    cell.className="cell"
+  const left = (t.start / 12) * 100
+  const width = (duration / 12) * 100
 
-    if(i===t.start && y===0){
-     cell.classList.add("sow")
-     cell.innerHTML=getIcon(t.crop)
-    }
+  bar.style.left = left + "%"
+  bar.style.width = width + "%"
 
-    else if(i===t.end && (t.end>t.start ? y===0 : y===1)){
-     cell.classList.add("harvest")
-     cell.innerHTML=getIcon(t.crop)
-    }
+  bar.innerText = t.crop
 
-    else if(
-     (t.start < t.end && y===0 && i>t.start && i<t.end) ||
-     (t.start > t.end && (
-       (y===0 && i>t.start) ||
-       (y===1 && i<t.end)
-     ))
-    ){
-     cell.classList.add("grow")
-     cell.innerHTML=getIcon(t.crop)
-    }
-
-    row.appendChild(cell)
-
-   }
-
-  }
-
-  rows.appendChild(row)
+  row.appendChild(bar)
+  container.appendChild(row)
 
  })
-
-}
-
-function getIcon(crop){
-
- const name=crop.toLowerCase()
-
- return `<img src="../assets/images/crops/${name}.png" class="cropIcon">`
 
 }
 
