@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -7,6 +8,8 @@
 <link rel="stylesheet" href="../assets/css/style.css">
 
 <style>
+
+/* LAYOUT */
 
 .layout{
 display:flex;
@@ -22,6 +25,8 @@ flex:3;
 flex:1;
 max-width:320px;
 }
+
+/* CROPS */
 
 .crop-grid{
 display:grid;
@@ -49,6 +54,8 @@ margin-bottom:6px;
 background:#2e7d32;
 }
 
+/* MONATE */
+
 .month-bar{
 display:grid;
 grid-template-columns:repeat(12,1fr);
@@ -70,34 +77,85 @@ color:black;
 font-weight:bold;
 }
 
-.timeline-row{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-gap:4px;
+/* TIMELINE */
+
+.timelineYear{
+margin-bottom:22px;
+}
+
+.yearLabel{
+font-weight:bold;
 margin-bottom:6px;
 }
 
-.cell{
-height:26px;
-border-radius:4px;
+.timelineMonths{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:4px;
+font-size:12px;
+opacity:0.8;
+margin-bottom:6px;
+}
+
+.timelineMonths div{
+text-align:center;
+}
+
+.timelineBarRow{
+position:relative;
+height:32px;
+background:rgba(255,255,255,0.05);
+border-radius:6px;
+}
+
+.timelineBar{
+position:absolute;
+top:4px;
+height:24px;
+border-radius:6px;
 display:flex;
 align-items:center;
-justify-content:center;
+padding-left:8px;
 font-size:12px;
+font-weight:bold;
+color:white;
+
+background:linear-gradient(
+90deg,
+#2ecc71 0%,
+#f1c40f 60%,
+#e67e22 100%
+);
 }
 
-.sow{background:#2ecc71;}
-.grow{background:#f1c40f;}
-.harvest{background:#e67e22;}
-
-.cell img{
+.timelineBar img{
 height:16px;
+margin-right:6px;
 }
+
+/* KALENDER */
 
 .calendar{
 background:#263640;
 padding:16px;
 border-radius:10px;
+}
+
+.calendarHeader{
+display:grid;
+grid-template-columns:1fr 80px 80px;
+font-weight:bold;
+margin-bottom:8px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+padding-bottom:6px;
+}
+
+.calendarItem{
+display:grid;
+grid-template-columns:1fr 80px 80px;
+padding:4px 0;
+border-bottom:1px solid rgba(255,255,255,0.08);
+font-size:13px;
 }
 
 </style>
@@ -144,7 +202,7 @@ const YEARS=5
 
 let crops={}
 let selectedCrop=null
-let timeline=JSON.parse(localStorage.getItem("ls25plan")) || []
+let timeline=[]
 
 const cropIcons={
 "Weizen":"wheat.png",
@@ -172,181 +230,188 @@ const cropIcons={
 
 async function init(){
 
- const res=await fetch("../assets/data/crops.json")
- crops=await res.json()
+const res=await fetch("../assets/data/crops.json")
+crops=await res.json()
 
- buildCalendar()
- buildCrops()
- buildMonths()
- drawTimeline()
+buildCalendar()
+buildCrops()
+buildMonths()
 
 }
 
 function buildCalendar(){
 
- const cal=document.getElementById("calendar")
+const cal=document.getElementById("calendar")
 
- Object.keys(crops).forEach(name=>{
+Object.keys(crops).forEach(name=>{
 
-  const sow=crops[name].sow.join("–")
-  const harvest=crops[name].harvest.join("–")
+const sow=crops[name].sow.join("–")
+const harvest=crops[name].harvest.join("–")
 
-  const item=document.createElement("div")
-  item.className="calendarItem"
+const item=document.createElement("div")
+item.className="calendarItem"
 
-  item.innerHTML=
-  `<span>${name}</span>
-   <span>${sow}</span>
-   <span>${harvest}</span>`
+item.innerHTML=
+`<span>${name}</span>
+<span>${sow}</span>
+<span>${harvest}</span>`
 
-  cal.appendChild(item)
+cal.appendChild(item)
 
- })
+})
 
 }
 
 function buildCrops(){
 
- const grid=document.getElementById("cropGrid")
+const grid=document.getElementById("cropGrid")
 
- Object.keys(crops).forEach(crop=>{
+Object.keys(crops).forEach(crop=>{
 
-  const icon=cropIcons[crop] || "wheat.png"
+const icon=cropIcons[crop] || "wheat.png"
 
-  const el=document.createElement("div")
-  el.className="crop"
+const el=document.createElement("div")
+el.className="crop"
 
-  el.innerHTML=
-  `<img src="../assets/images/crops/${icon}">
-   <div>${crop}</div>`
+el.innerHTML=
+`<img src="../assets/images/crops/${icon}">
+<div>${crop}</div>`
 
-  el.onclick=()=>selectCrop(crop,el)
+el.onclick=()=>selectCrop(crop,el)
 
-  grid.appendChild(el)
+grid.appendChild(el)
 
- })
+})
 
 }
 
 function selectCrop(crop,el){
 
- selectedCrop=crop
+selectedCrop=crop
 
- document.querySelectorAll(".crop").forEach(c=>{
-  c.classList.remove("active")
- })
+document.querySelectorAll(".crop").forEach(c=>{
+c.classList.remove("active")
+})
 
- el.classList.add("active")
+el.classList.add("active")
 
- highlightMonths()
+highlightMonths()
 
 }
 
 function buildMonths(){
 
- const bar=document.getElementById("monthBar")
+const bar=document.getElementById("monthBar")
 
- months.forEach((m,i)=>{
+months.forEach((m,i)=>{
 
-  const el=document.createElement("div")
-  el.className="month"
-  el.innerText=m
+const el=document.createElement("div")
+el.className="month"
+el.innerText=m
 
-  el.onclick=()=>monthClick(i)
+el.onclick=()=>monthClick(i)
 
-  bar.appendChild(el)
+bar.appendChild(el)
 
- })
+})
 
 }
 
 function highlightMonths(){
 
- document.querySelectorAll(".month").forEach((m,i)=>{
+document.querySelectorAll(".month").forEach((m,i)=>{
 
-  m.classList.remove("allowed")
+m.classList.remove("allowed")
 
-  if(selectedCrop && crops[selectedCrop].sow.includes(months[i])){
-   m.classList.add("allowed")
-  }
+if(selectedCrop && crops[selectedCrop].sow.includes(months[i])){
+m.classList.add("allowed")
+}
 
- })
+})
 
 }
 
 function monthClick(index){
 
- if(!selectedCrop)return
- if(!crops[selectedCrop].sow.includes(months[index]))return
+if(!selectedCrop)return
+if(!crops[selectedCrop].sow.includes(months[index]))return
 
- const sowIndex=crops[selectedCrop].sow.indexOf(months[index])
- const harvestMonth=crops[selectedCrop].harvest[sowIndex]
+const sowIndex=crops[selectedCrop].sow.indexOf(months[index])
+const harvestMonth=crops[selectedCrop].harvest[sowIndex]
 
- const end=months.indexOf(harvestMonth)
+const end=months.indexOf(harvestMonth)
 
- timeline.push({
-  crop:selectedCrop,
-  start:index,
-  end:end
- })
+timeline.push({
+crop:selectedCrop,
+start:index,
+end:end
+})
 
- savePlan()
- drawTimeline()
+drawTimeline()
 
-}
-
-function savePlan(){
-localStorage.setItem("ls25plan",JSON.stringify(timeline))
 }
 
 function drawTimeline(){
 
- const box=document.getElementById("timeline")
- box.innerHTML=""
+const box=document.getElementById("timeline")
+box.innerHTML=""
 
- timeline.forEach(t=>{
+for(let y=0;y<YEARS;y++){
 
-  const icon=cropIcons[t.crop]
+const yearBlock=document.createElement("div")
+yearBlock.className="timelineYear"
 
-  for(let y=0;y<YEARS;y++){
+const label=document.createElement("div")
+label.className="yearLabel"
+label.innerText="Jahr "+(y+1)
 
-   const row=document.createElement("div")
-   row.className="timeline-row"
+yearBlock.appendChild(label)
 
-   for(let i=0;i<12;i++){
+const monthRow=document.createElement("div")
+monthRow.className="timelineMonths"
 
-    const cell=document.createElement("div")
-    cell.className="cell"
+months.forEach(m=>{
+const cell=document.createElement("div")
+cell.innerText=m
+monthRow.appendChild(cell)
+})
 
-    if(i===t.start && y===0){
-     cell.classList.add("sow")
-     cell.innerHTML=`<img src="../assets/images/crops/${icon}">`
-    }
+yearBlock.appendChild(monthRow)
 
-    else if(i===t.end && (t.end>t.start?y===0:y===1)){
-     cell.classList.add("harvest")
-     cell.innerHTML=`<img src="../assets/images/crops/${icon}">`
-    }
+const row=document.createElement("div")
+row.className="timelineBarRow"
 
-    else if(
-     (t.start<t.end && y===0 && i>t.start && i<t.end) ||
-     (t.start>t.end && (
-       (y===0 && i>t.start) ||
-       (y===1 && i<t.end)
-     ))
-    ){
-     cell.classList.add("grow")
-    }
+timeline.forEach(t=>{
 
-    row.appendChild(cell)
+const icon=cropIcons[t.crop] || "wheat.png"
 
-   }
+let duration
 
-   box.appendChild(row)
+if(t.start<=t.end){
+duration=t.end-t.start+1
+}else{
+duration=12-t.start+t.end+1
+}
 
-  }
+const bar=document.createElement("div")
+bar.className="timelineBar"
 
- })
+bar.style.left=(t.start/12*100)+"%"
+bar.style.width=(duration/12*100)+"%"
+
+bar.innerHTML=
+`<img src="../assets/images/crops/${icon}">
+${t.crop}`
+
+row.appendChild(bar)
+
+})
+
+yearBlock.appendChild(row)
+
+box.appendChild(yearBlock)
+
+}
 
 }
 
@@ -356,3 +421,4 @@ window.onload=init
 
 </body>
 </html>
+```
