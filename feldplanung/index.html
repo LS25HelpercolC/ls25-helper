@@ -9,60 +9,59 @@
 
 <style>
 
-.timelineMonths{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-margin-bottom:10px;
+.cropSelect{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:20px;
 }
 
-.month{
-background:#2e3d47;
-padding:6px;
+.cropCard{
+width:90px;
 text-align:center;
 cursor:pointer;
-border-radius:4px;
+padding:6px;
+border-radius:6px;
+background:rgba(0,0,0,0.4);
 }
 
-.month:hover{
-background:#4CAF50;
+.cropCard.active{
+background:#2e7d32;
 }
 
-.yearRow{
-margin-bottom:12px;
-font-family:monospace;
-}
-
-.yearLabel{
-margin-bottom:4px;
-font-weight:bold;
+.cropCard img{
+width:48px;
+height:48px;
+display:block;
+margin:auto;
 }
 
 .monthRow{
 display:grid;
 grid-template-columns:repeat(12,1fr);
+margin-bottom:6px;
 }
 
 .monthCell{
 text-align:center;
-}
-
-.cropBox{
-background:#4CAF50;
-color:white;
+padding:4px;
+cursor:pointer;
 border-radius:4px;
-padding:2px;
 }
 
-.rotationBox{
-margin-bottom:15px;
+.monthAllowed{
+background:#2e7d32;
 }
 
-.rotationItem{
-display:inline-block;
-background:#444;
-padding:6px 10px;
-margin-right:5px;
-border-radius:4px;
+.timelineBar{
+height:24px;
+margin-top:6px;
+background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
+border-radius:6px;
+}
+
+.yearBlock{
+margin-bottom:20px;
 }
 
 </style>
@@ -77,11 +76,9 @@ border-radius:4px;
 
 <h1>Feldplanung</h1>
 
-<div class="rotationBox">
-<b>Fruchtfolge:</b>
-<div id="rotationList"></div>
-<button onclick="addRotation()">+ Frucht</button>
-</div>
+<div id="cropSelect" class="cropSelect"></div>
+
+<div id="months"></div>
 
 <div id="timeline"></div>
 
@@ -111,14 +108,14 @@ const months=[
 ]
 
 let cropsData={}
-let rotation=[]
+let selectedCrop=null
+let timeline=[]
 
 async function init(){
 
  const res=await fetch("../assets/data/crops.json")
  cropsData=await res.json()
 
- // Sonderfälle hinzufügen
  cropsData["Ölrettich"]={
   sow:["Aug","Sep"],
   harvest:["Okt","Nov"]
@@ -129,7 +126,140 @@ async function init(){
   harvest:["Dez"]
  }
 
+ buildCropSelect()
  buildCalendar()
+ buildMonthBar()
+
+}
+
+function buildCropSelect(){
+
+ const box=document.getElementById("cropSelect")
+ box.innerHTML=""
+
+ Object.keys(cropsData).forEach(crop=>{
+
+  const card=document.createElement("div")
+  card.className="cropCard"
+
+  card.innerHTML=
+  "<img src='../assets/images/crops/placeholder.png'>"+
+  "<div>"+crop+"</div>"
+
+  card.onclick=()=>{
+   selectedCrop=crop
+   document.querySelectorAll(".cropCard").forEach(c=>c.classList.remove("active"))
+   card.classList.add("active")
+   highlightMonths()
+  }
+
+  box.appendChild(card)
+
+ })
+
+}
+
+function buildMonthBar(){
+
+ const container=document.getElementById("months")
+ container.innerHTML=""
+
+ const row=document.createElement("div")
+ row.className="monthRow"
+
+ months.forEach((m,i)=>{
+
+  const cell=document.createElement("div")
+  cell.className="monthCell"
+  cell.innerText=m
+
+  cell.onclick=()=>monthClick(i)
+
+  row.appendChild(cell)
+
+ })
+
+ container.appendChild(row)
+
+}
+
+function highlightMonths(){
+
+ if(!selectedCrop)return
+
+ const cells=document.querySelectorAll(".monthCell")
+
+ cells.forEach((c,i)=>{
+
+  c.classList.remove("monthAllowed")
+
+  if(cropsData[selectedCrop].sow.includes(months[i])){
+   c.classList.add("monthAllowed")
+  }
+
+ })
+
+}
+
+function monthClick(monthIndex){
+
+ if(!selectedCrop)return
+
+ if(!cropsData[selectedCrop].sow.includes(months[monthIndex]))return
+
+ const sowIndex=months.indexOf(cropsData[selectedCrop].sow[0])
+ const harvestIndex=months.indexOf(cropsData[selectedCrop].harvest[0])
+
+ let growth=harvestIndex-sowIndex
+ if(growth<0)growth+=12
+
+ timeline.push({
+  crop:selectedCrop,
+  sow:monthIndex,
+  harvest:monthIndex+growth
+ })
+
+ drawTimeline()
+
+}
+
+function drawTimeline(){
+
+ const box=document.getElementById("timeline")
+ box.innerHTML=""
+
+ const years=5
+
+ for(let y=0;y<years;y++){
+
+  const block=document.createElement("div")
+  block.className="yearBlock"
+
+  const label=document.createElement("div")
+  label.innerText="Jahr "+(y+1)
+
+  block.appendChild(label)
+
+  const monthsRow=document.createElement("div")
+  monthsRow.className="monthRow"
+
+  months.forEach(m=>{
+   const cell=document.createElement("div")
+   cell.className="monthCell"
+   cell.innerText=m
+   monthsRow.appendChild(cell)
+  })
+
+  block.appendChild(monthsRow)
+
+  const bar=document.createElement("div")
+  bar.className="timelineBar"
+
+  block.appendChild(bar)
+
+  box.appendChild(block)
+
+ }
 
 }
 
@@ -151,125 +281,6 @@ function buildCalendar(){
   box.appendChild(row)
 
  })
-
-}
-
-function addRotation(){
-
- const crop=prompt("Frucht eingeben")
-
- if(!cropsData[crop]){
-  alert("Frucht nicht gefunden")
-  return
- }
-
- rotation.push(crop)
-
- drawRotation()
- drawTimeline()
-
-}
-
-function drawRotation(){
-
- const box=document.getElementById("rotationList")
- box.innerHTML=""
-
- rotation.forEach(c=>{
-
-  const el=document.createElement("div")
-  el.className="rotationItem"
-  el.innerText=c
-
-  box.appendChild(el)
-
- })
-
-}
-
-function getGrowth(crop){
-
- const sowIndex=months.indexOf(cropsData[crop].sow[0])
- const harvestIndex=months.indexOf(cropsData[crop].harvest[0])
-
- let growth=harvestIndex-sowIndex
- if(growth<0)growth+=12
-
- return growth
-
-}
-
-function generateTimeline(years=5){
-
- let segments=[]
-
- let currentMonth=8
- let rotIndex=0
-
- for(let y=0;y<years*12;){
-
-  const crop=rotation[rotIndex]
-
-  const growth=getGrowth(crop)
-
-  segments.push({
-   crop:crop,
-   sow:currentMonth,
-   harvest:(currentMonth+growth)
-  })
-
-  currentMonth=(currentMonth+growth)%12
-
-  y+=growth
-
-  rotIndex++
-  if(rotIndex>=rotation.length)rotIndex=0
-
- }
-
- return segments
-
-}
-
-function drawTimeline(){
-
- const container=document.getElementById("timeline")
- container.innerHTML=""
-
- if(rotation.length===0)return
-
- const years=5
-
- const timeline=generateTimeline(years)
-
- for(let y=0;y<years;y++){
-
-  const row=document.createElement("div")
-  row.className="yearRow"
-
-  const label=document.createElement("div")
-  label.className="yearLabel"
-  label.innerText="Jahr "+(y+1)
-
-  row.appendChild(label)
-
-  const monthsRow=document.createElement("div")
-  monthsRow.className="monthRow"
-
-  for(let m=0;m<12;m++){
-
-   const cell=document.createElement("div")
-   cell.className="monthCell"
-
-   monthsRow.appendChild(cell)
-
-  }
-
-  row.appendChild(monthsRow)
-
-  container.appendChild(row)
-
- }
 
 }
 
