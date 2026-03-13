@@ -1,110 +1,3 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<title>LS25 Helper – Feldplanung</title>
-
-<link rel="stylesheet" href="../assets/css/style.css">
-
-<style>
-
-.crop-grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:12px;
-margin-bottom:25px;
-}
-
-.crop{
-background:#1e2b33;
-padding:12px;
-border-radius:8px;
-text-align:center;
-cursor:pointer;
-}
-
-.crop img{
-width:60px;
-height:60px;
-display:block;
-margin:auto;
-margin-bottom:6px;
-}
-
-.crop.active{
-background:#2e7d32;
-}
-
-.month-bar{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-gap:6px;
-margin-top:15px;
-margin-bottom:20px;
-}
-
-.month{
-padding:6px;
-background:#23323b;
-text-align:center;
-border-radius:4px;
-cursor:pointer;
-}
-
-.month.allowed{
-background:#2e7d32;
-}
-
-#timeline{
-margin-top:30px;
-}
-
-.year{
-margin-bottom:25px;
-}
-
-.timeline-bar{
-height:24px;
-background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
-border-radius:6px;
-margin-top:8px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="layout">
-
-<!-- FELDPLANUNG LINKS -->
-<div class="panel">
-
-<h1>Feldplanung</h1>
-
-<div id="cropGrid" class="crop-grid"></div>
-
-<div id="monthBar" class="month-bar"></div>
-
-<div id="timeline"></div>
-
-</div>
-
-<!-- PFLANZENKALENDER RECHTS -->
-<div class="calendar" id="calendar">
-
-<h3>Pflanzenkalender</h3>
-
-<div class="calendarHeader">
-<span>Frucht</span>
-<span>Aussaat</span>
-<span>Ernte</span>
-</div>
-
-</div>
-
-</div>
-
 <script>
 
 const months=[
@@ -264,24 +157,26 @@ function drawTimeline(){
  const box=document.getElementById("timeline")
  box.innerHTML=""
 
- for(let y=1;y<=5;y++){
+ timeline.forEach((t,i)=>{
+
+  const icon=cropIcons[t.crop] || "wheat.png"
 
   const row=document.createElement("div")
   row.className="year"
 
   row.innerHTML=
-  `<div>Jahr ${y}</div>
-   <div class="timeline-bar"></div>`
+  `<div>Plan ${i+1}</div>
+   <div class="timeline-bar">
+   <img src="../assets/images/crops/${icon}" style="height:18px;margin-right:6px;vertical-align:middle;">
+   ${t.crop}
+   </div>`
 
   box.appendChild(row)
 
- }
+ })
 
 }
 
 window.onload=init
 
 </script>
-
-</body>
-</html>
