@@ -27,21 +27,42 @@ border-radius:4px;
 background:#4CAF50;
 }
 
-.timelineRow{
+.yearRow{
+margin-bottom:12px;
 font-family:monospace;
-margin-bottom:6px;
 }
 
-.timelineRow span{
-display:inline-block;
-width:20px;
+.yearLabel{
+margin-bottom:4px;
+font-weight:bold;
+}
+
+.monthRow{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+}
+
+.monthCell{
 text-align:center;
 }
 
-.cropSelectBox button{
-margin:4px;
+.cropBox{
+background:#4CAF50;
+color:white;
+border-radius:4px;
+padding:2px;
+}
+
+.rotationBox{
+margin-bottom:15px;
+}
+
+.rotationItem{
+display:inline-block;
+background:#444;
 padding:6px 10px;
-cursor:pointer;
+margin-right:5px;
+border-radius:4px;
 }
 
 </style>
@@ -56,11 +77,13 @@ cursor:pointer;
 
 <h1>Feldplanung</h1>
 
-<div id="timelineMonths" class="timelineMonths"></div>
+<div class="rotationBox">
+<b>Fruchtfolge:</b>
+<div id="rotationList"></div>
+<button onclick="addRotation()">+ Frucht</button>
+</div>
 
-<div id="timelineRows"></div>
-
-<div id="cropSelectBox" class="cropSelectBox"></div>
+<div id="timeline"></div>
 
 </div>
 
@@ -88,15 +111,25 @@ const months=[
 ]
 
 let cropsData={}
-let timeline=[]
+let rotation=[]
 
 async function init(){
 
  const res=await fetch("../assets/data/crops.json")
  cropsData=await res.json()
 
+ // Sonderfälle hinzufügen
+ cropsData["Ölrettich"]={
+  sow:["Aug","Sep"],
+  harvest:["Okt","Nov"]
+ }
+
+ cropsData["Brach"]={
+  sow:["Jan"],
+  harvest:["Dez"]
+ }
+
  buildCalendar()
- buildMonthBar()
 
 }
 
@@ -121,137 +154,122 @@ function buildCalendar(){
 
 }
 
-function buildMonthBar(){
+function addRotation(){
 
- const container=document.getElementById("timelineMonths")
+ const crop=prompt("Frucht eingeben")
 
- months.forEach((m,i)=>{
+ if(!cropsData[crop]){
+  alert("Frucht nicht gefunden")
+  return
+ }
 
-  const div=document.createElement("div")
-  div.className="month"
-  div.innerText=m
+ rotation.push(crop)
 
-  div.onclick=()=>monthClick(i)
-
-  container.appendChild(div)
-
- })
+ drawRotation()
+ drawTimeline()
 
 }
 
-function monthClick(monthIndex){
+function drawRotation(){
 
- const list=[]
-
- Object.keys(cropsData).forEach(crop=>{
-
-  if(cropsData[crop].sow.includes(months[monthIndex])){
-   list.push(crop)
-  }
-
- })
-
- showCropSelection(monthIndex,list)
-
-}
-
-function showCropSelection(monthIndex,crops){
-
- const box=document.getElementById("cropSelectBox")
+ const box=document.getElementById("rotationList")
  box.innerHTML=""
 
- crops.forEach(crop=>{
+ rotation.forEach(c=>{
 
-  const btn=document.createElement("button")
-  btn.innerText=crop
+  const el=document.createElement("div")
+  el.className="rotationItem"
+  el.innerText=c
 
-  btn.onclick=()=>addCrop(monthIndex,crop)
-
-  box.appendChild(btn)
+  box.appendChild(el)
 
  })
 
 }
 
-function getHarvestMonth(crop,monthIndex){
+function getGrowth(crop){
 
- const sowList=cropsData[crop].sow
- const harvestList=cropsData[crop].harvest
+ const sowIndex=months.indexOf(cropsData[crop].sow[0])
+ const harvestIndex=months.indexOf(cropsData[crop].harvest[0])
 
- for(let i=0;i<sowList.length;i++){
+ let growth=harvestIndex-sowIndex
+ if(growth<0)growth+=12
 
-  if(months[monthIndex]===sowList[i]){
+ return growth
 
-   const harvestName=harvestList[i]
-   return months.indexOf(harvestName)
+}
 
-  }
+function generateTimeline(years=5){
+
+ let segments=[]
+
+ let currentMonth=8
+ let rotIndex=0
+
+ for(let y=0;y<years*12;){
+
+  const crop=rotation[rotIndex]
+
+  const growth=getGrowth(crop)
+
+  segments.push({
+   crop:crop,
+   sow:currentMonth,
+   harvest:(currentMonth+growth)
+  })
+
+  currentMonth=(currentMonth+growth)%12
+
+  y+=growth
+
+  rotIndex++
+  if(rotIndex>=rotation.length)rotIndex=0
 
  }
 
- return null
-
-}
-
-function addCrop(monthIndex,crop){
-
- const harvestMonth=getHarvestMonth(crop,monthIndex)
-
- if(harvestMonth===null)return
-
- timeline.push({
-  crop:crop,
-  sow:monthIndex,
-  harvest:harvestMonth
- })
-
- drawTimeline()
+ return segments
 
 }
 
 function drawTimeline(){
 
- const box=document.getElementById("timelineRows")
- box.innerHTML=""
+ const container=document.getElementById("timeline")
+ container.innerHTML=""
 
- timeline.forEach(t=>{
+ if(rotation.length===0)return
+
+ const years=5
+
+ const timeline=generateTimeline(years)
+
+ for(let y=0;y<years;y++){
 
   const row=document.createElement("div")
-  row.className="timelineRow"
+  row.className="yearRow"
 
-  for(let i=0;i<12;i++){
+  const label=document.createElement("div")
+  label.className="yearLabel"
+  label.innerText="Jahr "+(y+1)
 
-   const c=document.createElement("span")
+  row.appendChild(label)
 
-   if(i===t.sow)c.innerText="A"
+  const monthsRow=document.createElement("div")
+  monthsRow.className="monthRow"
 
-   else if(i===t.harvest)c.innerText="E"
+  for(let m=0;m<12;m++){
 
-   else{
+   const cell=document.createElement("div")
+   cell.className="monthCell"
 
-    let inside=false
-
-    if(t.harvest>t.sow){
-
-     if(i>t.sow && i<t.harvest)inside=true
-
-    }else{
-
-     if(i>t.sow || i<t.harvest)inside=true
-
-    }
-
-    c.innerText=inside?"█":"."
-
-   }
-
-   row.appendChild(c)
+   monthsRow.appendChild(cell)
 
   }
 
-  box.appendChild(row)
+  row.appendChild(monthsRow)
 
- })
+  container.appendChild(row)
+
+ }
 
 }
 
