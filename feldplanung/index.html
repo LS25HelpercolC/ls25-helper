@@ -11,6 +11,16 @@
 .layout{
 display:flex;
 gap:20px;
+align-items:flex-start;
+}
+
+.panel{
+flex:3;
+}
+
+.calendar{
+flex:1;
+max-width:320px;
 }
 
 .crop-grid{
@@ -29,8 +39,7 @@ cursor:pointer;
 }
 
 .crop img{
-width:60px;
-height:60px;
+width:50px;
 display:block;
 margin:auto;
 margin-bottom:6px;
@@ -44,7 +53,6 @@ background:#2e7d32;
 display:grid;
 grid-template-columns:repeat(12,1fr);
 gap:6px;
-margin-top:15px;
 margin-bottom:20px;
 }
 
@@ -76,23 +84,20 @@ display:flex;
 align-items:center;
 justify-content:center;
 font-size:12px;
-font-weight:bold;
 }
 
-.sow{
-background:#2ecc71;
-}
-
-.grow{
-background:#f1c40f;
-}
-
-.harvest{
-background:#e67e22;
-}
+.sow{background:#2ecc71;}
+.grow{background:#f1c40f;}
+.harvest{background:#e67e22;}
 
 .cell img{
 height:16px;
+}
+
+.calendar{
+background:#263640;
+padding:16px;
+border-radius:10px;
 }
 
 </style>
@@ -139,7 +144,7 @@ const YEARS=5
 
 let crops={}
 let selectedCrop=null
-let timeline=[]
+let timeline=JSON.parse(localStorage.getItem("ls25plan")) || []
 
 const cropIcons={
 "Weizen":"wheat.png",
@@ -173,6 +178,7 @@ async function init(){
  buildCalendar()
  buildCrops()
  buildMonths()
+ drawTimeline()
 
 }
 
@@ -260,7 +266,7 @@ function highlightMonths(){
 
   m.classList.remove("allowed")
 
-  if(crops[selectedCrop].sow.includes(months[i])){
+  if(selectedCrop && crops[selectedCrop].sow.includes(months[i])){
    m.classList.add("allowed")
   }
 
@@ -273,11 +279,8 @@ function monthClick(index){
  if(!selectedCrop)return
  if(!crops[selectedCrop].sow.includes(months[index]))return
 
- const sowList=crops[selectedCrop].sow
- const harvestList=crops[selectedCrop].harvest
-
- const sowIndex=sowList.indexOf(months[index])
- const harvestMonth=harvestList[sowIndex]
+ const sowIndex=crops[selectedCrop].sow.indexOf(months[index])
+ const harvestMonth=crops[selectedCrop].harvest[sowIndex]
 
  const end=months.indexOf(harvestMonth)
 
@@ -287,8 +290,13 @@ function monthClick(index){
   end:end
  })
 
+ savePlan()
  drawTimeline()
 
+}
+
+function savePlan(){
+localStorage.setItem("ls25plan",JSON.stringify(timeline))
 }
 
 function drawTimeline(){
