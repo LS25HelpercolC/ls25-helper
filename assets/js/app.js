@@ -3,12 +3,14 @@ const months = [
 "Jul","Aug","Sep","Okt","Nov","Dez"
 ]
 
+const YEARS = 5
+
 let crops = {}
 let timeline = []
 
 async function initFeldplanung(){
 
- const res = await fetch("assets/data/crops.json")
+ const res = await fetch("../assets/data/crops.json")
  crops = await res.json()
 
  buildMonths()
@@ -19,7 +21,6 @@ async function initFeldplanung(){
 function buildMonths(){
 
  const row = document.querySelector(".timelineMonths")
-
  if(!row) return
 
  row.innerHTML=""
@@ -29,7 +30,6 @@ function buildMonths(){
   const div=document.createElement("div")
   div.className="month"
   div.innerText=m
-
   div.onclick=()=>monthClick(i)
 
   row.appendChild(div)
@@ -84,7 +84,6 @@ function monthClick(index){
 function showCropOptions(monthIndex,list){
 
  const box=document.querySelector(".cropOptions")
-
  if(!box) return
 
  box.innerHTML=""
@@ -93,7 +92,6 @@ function showCropOptions(monthIndex,list){
 
   const btn=document.createElement("button")
   btn.innerText=crop
-
   btn.onclick=()=>addCrop(monthIndex,crop)
 
   box.appendChild(btn)
@@ -108,8 +106,7 @@ function addCrop(startMonth,crop){
  const harvestList=crops[crop].harvest
 
  let sowIndex=sowList.indexOf(months[startMonth])
-
- if(sowIndex===-1) sowIndex=0
+ if(sowIndex===-1) return
 
  const harvestMonthName=harvestList[sowIndex]
  const harvestIndex=months.indexOf(harvestMonthName)
@@ -136,26 +133,35 @@ function renderTimeline(){
   const row=document.createElement("div")
   row.className="timelineRow"
 
-  for(let i=0;i<12;i++){
+  for(let y=0;y<YEARS;y++){
 
-   const cell=document.createElement("span")
+   for(let i=0;i<12;i++){
 
-   if(i===t.start)
-    cell.innerText="A"
+    const cell=document.createElement("span")
 
-   else if(i===t.end)
-    cell.innerText="E"
+    const index=i
 
-   else if(
-    (t.start < t.end && i>t.start && i<t.end) ||
-    (t.start > t.end && (i>t.start || i<t.end))
-   )
-    cell.innerText="█"
+    if(index===t.start && y===0)
+     cell.innerText="A"
 
-   else
-    cell.innerText="."
+    else if(index===t.end && (t.end>t.start ? y===0 : y===1))
+     cell.innerText="E"
 
-   row.appendChild(cell)
+    else if(
+     (t.start < t.end && y===0 && index>t.start && index<t.end) ||
+     (t.start > t.end && (
+       (y===0 && index>t.start) ||
+       (y===1 && index<t.end)
+     ))
+    )
+     cell.innerText="█"
+
+    else
+     cell.innerText="."
+
+    row.appendChild(cell)
+
+   }
 
   }
 
