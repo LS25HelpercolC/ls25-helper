@@ -20,7 +20,7 @@ async function initFeldplanung(){
 
 function buildMonths(){
 
- const row = document.querySelector(".timelineMonths")
+ const row=document.querySelector(".timelineMonths")
  if(!row) return
 
  row.innerHTML=""
@@ -68,20 +68,17 @@ function buildCalendar(){
 function getLastHarvestMonth(){
 
  if(timeline.length===0) return null
-
- const last = timeline[timeline.length-1]
-
- return last.end
+ return timeline[timeline.length-1].end
 
 }
 
 function monthClick(index){
 
- const lastHarvest = getLastHarvestMonth()
+ const lastHarvest=getLastHarvestMonth()
 
- if(lastHarvest !== null){
+ if(lastHarvest!==null){
 
-  if(index !== lastHarvest){
+  if(index!==lastHarvest){
    alert("Feld ist noch belegt bis zur Ernte.")
    return
   }
@@ -126,7 +123,7 @@ function addCrop(startMonth,crop){
  const sowList=crops[crop].sow
  const harvestList=crops[crop].harvest
 
- let sowIndex=sowList.indexOf(months[startMonth])
+ const sowIndex=sowList.indexOf(months[startMonth])
  if(sowIndex===-1) return
 
  const harvestMonthName=harvestList[sowIndex]
@@ -158,13 +155,18 @@ function renderTimeline(){
 
    for(let i=0;i<12;i++){
 
-    const cell=document.createElement("span")
+    const cell=document.createElement("div")
+    cell.className="cell"
 
-    if(i===t.start && y===0)
-     cell.innerText="A"
+    if(i===t.start && y===0){
+     cell.classList.add("sow")
+     cell.innerHTML=getIcon(t.crop)
+    }
 
-    else if(i===t.end && (t.end>t.start ? y===0 : y===1))
-     cell.innerText="E"
+    else if(i===t.end && (t.end>t.start ? y===0 : y===1)){
+     cell.classList.add("harvest")
+     cell.innerHTML=getIcon(t.crop)
+    }
 
     else if(
      (t.start < t.end && y===0 && i>t.start && i<t.end) ||
@@ -172,11 +174,10 @@ function renderTimeline(){
        (y===0 && i>t.start) ||
        (y===1 && i<t.end)
      ))
-    )
-     cell.innerText="█"
-
-    else
-     cell.innerText="."
+    ){
+     cell.classList.add("grow")
+     cell.innerHTML=getIcon(t.crop)
+    }
 
     row.appendChild(cell)
 
@@ -187,6 +188,14 @@ function renderTimeline(){
   rows.appendChild(row)
 
  })
+
+}
+
+function getIcon(crop){
+
+ const name=crop.toLowerCase()
+
+ return `<img src="../assets/images/crops/${name}.png" class="cropIcon">`
 
 }
 
