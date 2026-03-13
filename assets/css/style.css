@@ -21,7 +21,7 @@ align-items:flex-start;
 }
 
 /* =========================================
-   SEITENLEISTE (falls vorhanden)
+   SEITENLEISTE
 ========================================= */
 
 .sidebar{
@@ -104,16 +104,18 @@ top:6px;
 height:30px;
 border-radius:6px;
 padding-left:10px;
+padding-right:10px;
 display:flex;
 align-items:center;
 font-size:13px;
 color:white;
 
+/* Aussaat → Wachstum → Ernte */
 background:linear-gradient(
 90deg,
-#4CAF50 0%,
-#FFC107 60%,
-#FF9800 100%
+#2ecc71 0%,
+#f1c40f 70%,
+#e67e22 100%
 );
 }
 
