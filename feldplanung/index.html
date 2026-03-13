@@ -75,6 +75,9 @@ margin-top:8px;
 
 <body>
 
+<div class="layout">
+
+<!-- FELDPLANUNG LINKS -->
 <div class="panel">
 
 <h1>Feldplanung</h1>
@@ -84,6 +87,21 @@ margin-top:8px;
 <div id="monthBar" class="month-bar"></div>
 
 <div id="timeline"></div>
+
+</div>
+
+<!-- PFLANZENKALENDER RECHTS -->
+<div class="calendar" id="calendar">
+
+<h3>Pflanzenkalender</h3>
+
+<div class="calendarHeader">
+<span>Frucht</span>
+<span>Aussaat</span>
+<span>Ernte</span>
+</div>
+
+</div>
 
 </div>
 
@@ -97,8 +115,6 @@ const months=[
 let crops={}
 let selectedCrop=null
 let timeline=[]
-
-/* feste Icon-Zuordnung */
 
 const cropIcons={
 "Weizen":"wheat.png",
@@ -129,18 +145,33 @@ async function init(){
  const res=await fetch("../assets/data/crops.json")
  crops=await res.json()
 
- crops["Ölrettich"]={
-  sow:["Aug","Sep"],
-  harvest:["Okt","Nov"]
- }
-
- crops["Brach"]={
-  sow:["Jan"],
-  harvest:["Dez"]
- }
-
+ buildCalendar()
  buildCrops()
  buildMonths()
+
+}
+
+function buildCalendar(){
+
+ const cal=document.getElementById("calendar")
+
+ Object.keys(crops).forEach(name=>{
+
+  const sow=crops[name].sow.join("–")
+  const harvest=crops[name].harvest.join("–")
+
+  const item=document.createElement("div")
+  item.className="calendarItem"
+
+  item.innerHTML=`
+  <span>${name}</span>
+  <span>${sow}</span>
+  <span>${harvest}</span>
+  `
+
+  cal.appendChild(item)
+
+ })
 
 }
 
@@ -217,7 +248,6 @@ function highlightMonths(){
 function monthClick(index){
 
  if(!selectedCrop)return
-
  if(!crops[selectedCrop].sow.includes(months[index]))return
 
  timeline.push({
