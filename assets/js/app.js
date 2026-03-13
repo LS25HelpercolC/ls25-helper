@@ -6,45 +6,12 @@ const months = [
 let crops = {}
 let timeline = []
 
-/* =========================================
-   ICON MAPPING (Fix für kaputte Icons)
-========================================= */
-
-const cropIcons = {
-"weizen":"wheat.png",
-"gerste":"barley.png",
-"hafer":"oats.png",
-"raps":"rapeseed.png",
-"mais (korn)":"corn.png",
-"mais (silomais)":"corn.png",
-"sojabohnen":"soybean.png",
-"sonnenblumen":"sunflower.png",
-"kartoffeln":"potato.png",
-"zuckerrüben":"sugarbeet.png",
-"erbsen":"pea.png",
-"karotten":"carrot.png",
-"pastinaken":"parsnip.png",
-"reis":"rice.png",
-"sorghum":"sorghum.png",
-"trauben":"grape.png",
-"oliven":"olive.png",
-"pappel":"poplar.png",
-"ölrettich":"oilradish.png",
-"gras":"grass.png",
-"brach":"fallow.png"
-}
-
-/* =========================================
-   INIT
-========================================= */
-
 async function initFeldplanung(){
 
  const res = await fetch("../assets/data/crops.json")
  crops = await res.json()
 
  buildMonths()
- buildCalendar()
 
 }
 
@@ -67,37 +34,6 @@ function buildMonths(){
   div.onclick=()=>monthClick(i)
 
   row.appendChild(div)
-
- })
-
-}
-
-/* =========================================
-   PFLANZENKALENDER (bleibt unverändert)
-========================================= */
-
-function buildCalendar(){
-
- const cal=document.getElementById("calendar")
- if(!cal) return
-
- cal.innerHTML=""
-
- Object.keys(crops).forEach(name=>{
-
-  const item=document.createElement("div")
-  item.className="calendarItem"
-
-  const sow=crops[name].sow.join("–")
-  const harvest=crops[name].harvest.join("–")
-
-  item.innerHTML=`
-  <span>${name}</span>
-  <span>${sow}</span>
-  <span>${harvest}</span>
-  `
-
-  cal.appendChild(item)
 
  })
 
@@ -222,13 +158,7 @@ function renderTimeline(){
   bar.style.left = left + "%"
   bar.style.width = width + "%"
 
-  const iconFile = cropIcons[t.crop.toLowerCase()]
-
-  if(iconFile){
-   bar.innerHTML = `<img src="../assets/images/crops/${iconFile}" style="height:20px;margin-right:6px;"> ${t.crop}`
-  }else{
-   bar.innerText = t.crop
-  }
+  bar.innerText = t.crop
 
   row.appendChild(bar)
   container.appendChild(row)
