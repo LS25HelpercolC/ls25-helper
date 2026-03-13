@@ -98,6 +98,32 @@ let crops={}
 let selectedCrop=null
 let timeline=[]
 
+/* feste Icon-Zuordnung */
+
+const cropIcons={
+"Weizen":"wheat.png",
+"Gerste":"barley.png",
+"Hafer":"oats.png",
+"Raps":"rapeseed.png",
+"Mais (Korn)":"corn.png",
+"Mais (Silomais)":"corn.png",
+"Sojabohnen":"soybean.png",
+"Sonnenblumen":"sunflower.png",
+"Kartoffeln":"potato.png",
+"Zuckerrüben":"sugarbeet.png",
+"Erbsen":"pea.png",
+"Karotten":"carrot.png",
+"Pastinaken":"carrot.png",
+"Reis":"rice.png",
+"Sorghum":"sorghum.png",
+"Trauben":"grape.png",
+"Oliven":"olive.png",
+"Pappel":"poplar.png",
+"Ölrettich":"oilradish.png",
+"Gras":"grass.png",
+"Brach":"fallow.png"
+}
+
 async function init(){
 
  const res=await fetch("../assets/data/crops.json")
@@ -125,20 +151,13 @@ function buildCrops(){
 
  Object.keys(crops).forEach(crop=>{
 
-  const name=crop
-  .toLowerCase()
-  .replace("ä","a")
-  .replace("ö","o")
-  .replace("ü","u")
-  .replace("(","")
-  .replace(")","")
-  .replace(" ","")
+  const icon=cropIcons[crop] || "wheat.png"
 
   const el=document.createElement("div")
   el.className="crop"
 
   el.innerHTML=
-  `<img src="../assets/images/crops/${name}.png">
+  `<img src="../assets/images/crops/${icon}">
    <div>${crop}</div>`
 
   el.onclick=()=>selectCrop(crop,el)
