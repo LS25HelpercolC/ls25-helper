@@ -62,28 +62,37 @@ color:black;
 font-weight:bold;
 }
 
-#timeline{
-margin-top:30px;
+.timeline-row{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:4px;
+margin-bottom:6px;
 }
 
-.year{
-margin-bottom:25px;
-}
-
-.timeline-bar{
-height:28px;
-background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
-border-radius:6px;
-margin-top:8px;
+.cell{
+height:26px;
+border-radius:4px;
 display:flex;
 align-items:center;
-padding-left:10px;
+justify-content:center;
+font-size:12px;
 font-weight:bold;
 }
 
-.timeline-bar img{
-height:18px;
-margin-right:6px;
+.sow{
+background:#2ecc71;
+}
+
+.grow{
+background:#f1c40f;
+}
+
+.harvest{
+background:#e67e22;
+}
+
+.cell img{
+height:16px;
 }
 
 </style>
@@ -126,6 +135,8 @@ const months=[
 "Jul","Aug","Sep","Okt","Nov","Dez"
 ]
 
+const YEARS=5
+
 let crops={}
 let selectedCrop=null
 let timeline=[]
@@ -156,8 +167,6 @@ const cropIcons={
 
 async function init(){
 
- try{
-
  const res=await fetch("../assets/data/crops.json")
  crops=await res.json()
 
@@ -165,18 +174,11 @@ async function init(){
  buildCrops()
  buildMonths()
 
- }catch(e){
-
- console.error("Fehler beim Laden:",e)
-
- }
-
 }
 
 function buildCalendar(){
 
  const cal=document.getElementById("calendar")
- if(!cal) return
 
  Object.keys(crops).forEach(name=>{
 
@@ -200,9 +202,6 @@ function buildCalendar(){
 function buildCrops(){
 
  const grid=document.getElementById("cropGrid")
- if(!grid) return
-
- grid.innerHTML=""
 
  Object.keys(crops).forEach(crop=>{
 
@@ -240,7 +239,6 @@ function selectCrop(crop,el){
 function buildMonths(){
 
  const bar=document.getElementById("monthBar")
- if(!bar) return
 
  months.forEach((m,i)=>{
 
@@ -258,8 +256,6 @@ function buildMonths(){
 
 function highlightMonths(){
 
- if(!selectedCrop) return
-
  document.querySelectorAll(".month").forEach((m,i)=>{
 
   m.classList.remove("allowed")
@@ -274,12 +270,21 @@ function highlightMonths(){
 
 function monthClick(index){
 
- if(!selectedCrop) return
- if(!crops[selectedCrop].sow.includes(months[index])) return
+ if(!selectedCrop)return
+ if(!crops[selectedCrop].sow.includes(months[index]))return
+
+ const sowList=crops[selectedCrop].sow
+ const harvestList=crops[selectedCrop].harvest
+
+ const sowIndex=sowList.indexOf(months[index])
+ const harvestMonth=harvestList[sowIndex]
+
+ const end=months.indexOf(harvestMonth)
 
  timeline.push({
   crop:selectedCrop,
-  start:index
+  start:index,
+  end:end
  })
 
  drawTimeline()
@@ -289,25 +294,49 @@ function monthClick(index){
 function drawTimeline(){
 
  const box=document.getElementById("timeline")
- if(!box) return
-
  box.innerHTML=""
 
- timeline.forEach((t,i)=>{
+ timeline.forEach(t=>{
 
-  const icon=cropIcons[t.crop] || "wheat.png"
+  const icon=cropIcons[t.crop]
 
-  const row=document.createElement("div")
-  row.className="year"
+  for(let y=0;y<YEARS;y++){
 
-  row.innerHTML=
-  `<div>Plan ${i+1}</div>
-   <div class="timeline-bar">
-   <img src="../assets/images/crops/${icon}">
-   ${t.crop}
-   </div>`
+   const row=document.createElement("div")
+   row.className="timeline-row"
 
-  box.appendChild(row)
+   for(let i=0;i<12;i++){
+
+    const cell=document.createElement("div")
+    cell.className="cell"
+
+    if(i===t.start && y===0){
+     cell.classList.add("sow")
+     cell.innerHTML=`<img src="../assets/images/crops/${icon}">`
+    }
+
+    else if(i===t.end && (t.end>t.start?y===0:y===1)){
+     cell.classList.add("harvest")
+     cell.innerHTML=`<img src="../assets/images/crops/${icon}">`
+    }
+
+    else if(
+     (t.start<t.end && y===0 && i>t.start && i<t.end) ||
+     (t.start>t.end && (
+       (y===0 && i>t.start) ||
+       (y===1 && i<t.end)
+     ))
+    ){
+     cell.classList.add("grow")
+    }
+
+    row.appendChild(cell)
+
+   }
+
+   box.appendChild(row)
+
+  }
 
  })
 
