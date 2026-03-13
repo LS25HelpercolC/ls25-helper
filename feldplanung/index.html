@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
 <meta charset="UTF-8">
 <title>LS25 Helper – Feldplanung</title>
 
@@ -9,94 +8,82 @@
 
 <style>
 
-.cropSelect{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-bottom:20px;
+.crop-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:12px;
+margin-bottom:25px;
 }
 
-.cropCard{
-width:90px;
+.crop{
+background:#1e2b33;
+padding:12px;
+border-radius:8px;
 text-align:center;
 cursor:pointer;
-padding:6px;
-border-radius:6px;
-background:rgba(0,0,0,0.4);
 }
 
-.cropCard.active{
-background:#2e7d32;
-}
-
-.cropCard img{
-width:48px;
-height:48px;
+.crop img{
+width:60px;
+height:60px;
 display:block;
 margin:auto;
-}
-
-.monthRow{
-display:grid;
-grid-template-columns:repeat(12,1fr);
 margin-bottom:6px;
 }
 
-.monthCell{
-text-align:center;
-padding:4px;
-cursor:pointer;
-border-radius:4px;
-}
-
-.monthAllowed{
+.crop.active{
 background:#2e7d32;
 }
 
-.timelineBar{
-height:24px;
-margin-top:6px;
-background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
-border-radius:6px;
-}
-
-.yearBlock{
+.month-bar{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:6px;
+margin-top:15px;
 margin-bottom:20px;
 }
 
-</style>
+.month{
+padding:6px;
+background:#23323b;
+text-align:center;
+border-radius:4px;
+cursor:pointer;
+}
 
+.month.allowed{
+background:#2e7d32;
+}
+
+#timeline{
+margin-top:30px;
+}
+
+.year{
+margin-bottom:25px;
+}
+
+.timeline-bar{
+height:24px;
+background:linear-gradient(90deg,#2ecc71,#f1c40f,#e67e22);
+border-radius:6px;
+margin-top:8px;
+}
+
+</style>
 </head>
 
 <body>
-
-<div class="layout">
 
 <div class="panel">
 
 <h1>Feldplanung</h1>
 
-<div id="cropSelect" class="cropSelect"></div>
+<div id="cropGrid" class="crop-grid"></div>
 
-<div id="months"></div>
+<div id="monthBar" class="month-bar"></div>
 
 <div id="timeline"></div>
-
-</div>
-
-<div class="calendar">
-
-<h3>Pflanzenkalender</h3>
-
-<div class="calendarHeader">
-<span>Pflanze</span>
-<span>Aussaat</span>
-<span>Ernte</span>
-</div>
-
-<div id="calendar"></div>
-
-</div>
 
 </div>
 
@@ -107,116 +94,116 @@ const months=[
 "Jul","Aug","Sep","Okt","Nov","Dez"
 ]
 
-let cropsData={}
+let crops={}
 let selectedCrop=null
 let timeline=[]
 
 async function init(){
 
  const res=await fetch("../assets/data/crops.json")
- cropsData=await res.json()
+ crops=await res.json()
 
- cropsData["Ölrettich"]={
+ crops["Ölrettich"]={
   sow:["Aug","Sep"],
   harvest:["Okt","Nov"]
  }
 
- cropsData["Brach"]={
+ crops["Brach"]={
   sow:["Jan"],
   harvest:["Dez"]
  }
 
- buildCropSelect()
- buildCalendar()
- buildMonthBar()
+ buildCrops()
+ buildMonths()
 
 }
 
-function buildCropSelect(){
+function buildCrops(){
 
- const box=document.getElementById("cropSelect")
- box.innerHTML=""
+ const grid=document.getElementById("cropGrid")
+ grid.innerHTML=""
 
- Object.keys(cropsData).forEach(crop=>{
+ Object.keys(crops).forEach(crop=>{
 
-  const card=document.createElement("div")
-  card.className="cropCard"
+  const name=crop
+  .toLowerCase()
+  .replace("ä","a")
+  .replace("ö","o")
+  .replace("ü","u")
+  .replace("(","")
+  .replace(")","")
+  .replace(" ","")
 
-  card.innerHTML=
-  "<img src='../assets/images/crops/placeholder.png'>"+
-  "<div>"+crop+"</div>"
+  const el=document.createElement("div")
+  el.className="crop"
 
-  card.onclick=()=>{
-   selectedCrop=crop
-   document.querySelectorAll(".cropCard").forEach(c=>c.classList.remove("active"))
-   card.classList.add("active")
-   highlightMonths()
-  }
+  el.innerHTML=
+  `<img src="../assets/images/crops/${name}.png">
+   <div>${crop}</div>`
 
-  box.appendChild(card)
+  el.onclick=()=>selectCrop(crop,el)
+
+  grid.appendChild(el)
 
  })
 
 }
 
-function buildMonthBar(){
+function selectCrop(crop,el){
 
- const container=document.getElementById("months")
- container.innerHTML=""
+ selectedCrop=crop
 
- const row=document.createElement("div")
- row.className="monthRow"
+ document.querySelectorAll(".crop").forEach(c=>{
+  c.classList.remove("active")
+ })
+
+ el.classList.add("active")
+
+ highlightMonths()
+
+}
+
+function buildMonths(){
+
+ const bar=document.getElementById("monthBar")
 
  months.forEach((m,i)=>{
 
-  const cell=document.createElement("div")
-  cell.className="monthCell"
-  cell.innerText=m
+  const el=document.createElement("div")
+  el.className="month"
+  el.innerText=m
 
-  cell.onclick=()=>monthClick(i)
+  el.onclick=()=>monthClick(i)
 
-  row.appendChild(cell)
+  bar.appendChild(el)
 
  })
-
- container.appendChild(row)
 
 }
 
 function highlightMonths(){
 
- if(!selectedCrop)return
+ document.querySelectorAll(".month").forEach((m,i)=>{
 
- const cells=document.querySelectorAll(".monthCell")
+  m.classList.remove("allowed")
 
- cells.forEach((c,i)=>{
-
-  c.classList.remove("monthAllowed")
-
-  if(cropsData[selectedCrop].sow.includes(months[i])){
-   c.classList.add("monthAllowed")
+  if(crops[selectedCrop].sow.includes(months[i])){
+   m.classList.add("allowed")
   }
 
  })
 
 }
 
-function monthClick(monthIndex){
+function monthClick(index){
 
  if(!selectedCrop)return
 
- if(!cropsData[selectedCrop].sow.includes(months[monthIndex]))return
-
- const sowIndex=months.indexOf(cropsData[selectedCrop].sow[0])
- const harvestIndex=months.indexOf(cropsData[selectedCrop].harvest[0])
-
- let growth=harvestIndex-sowIndex
- if(growth<0)growth+=12
+ if(!crops[selectedCrop].sow.includes(months[index]))return
 
  timeline.push({
   crop:selectedCrop,
-  sow:monthIndex,
-  harvest:monthIndex+growth
+  start:index
  })
 
  drawTimeline()
@@ -228,59 +215,18 @@ function drawTimeline(){
  const box=document.getElementById("timeline")
  box.innerHTML=""
 
- const years=5
-
- for(let y=0;y<years;y++){
-
-  const block=document.createElement("div")
-  block.className="yearBlock"
-
-  const label=document.createElement("div")
-  label.innerText="Jahr "+(y+1)
-
-  block.appendChild(label)
-
-  const monthsRow=document.createElement("div")
-  monthsRow.className="monthRow"
-
-  months.forEach(m=>{
-   const cell=document.createElement("div")
-   cell.className="monthCell"
-   cell.innerText=m
-   monthsRow.appendChild(cell)
-  })
-
-  block.appendChild(monthsRow)
-
-  const bar=document.createElement("div")
-  bar.className="timelineBar"
-
-  block.appendChild(bar)
-
-  box.appendChild(block)
-
- }
-
-}
-
-function buildCalendar(){
-
- const box=document.getElementById("calendar")
- box.innerHTML=""
-
- Object.keys(cropsData).forEach(crop=>{
+ for(let y=1;y<=5;y++){
 
   const row=document.createElement("div")
-  row.className="calendarItem"
+  row.className="year"
 
   row.innerHTML=
-  "<span>"+crop+"</span>"+
-  "<span>"+cropsData[crop].sow.join("-")+"</span>"+
-  "<span>"+cropsData[crop].harvest.join("-")+"</span>"
+  `<div>Jahr ${y}</div>
+   <div class="timeline-bar"></div>`
 
   box.appendChild(row)
 
- })
+ }
 
 }
 
