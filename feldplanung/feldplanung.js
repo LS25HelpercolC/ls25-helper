@@ -41,7 +41,13 @@ buildCrops()
 buildMonths()
 
 if(Object.keys(fields).length===0){
-fields["Feld 1"]=[]
+
+fields["Feld 1"]={
+name:"Feld 1",
+size:10,
+plans:[]
+}
+
 }
 
 currentField=Object.keys(fields)[0]
@@ -62,18 +68,20 @@ function drawFieldMenu(){
 const menu=document.getElementById("fieldMenu")
 menu.innerHTML=""
 
-Object.keys(fields).forEach(name=>{
+Object.keys(fields).forEach(id=>{
+
+const field=fields[id]
 
 const btn=document.createElement("button")
 
-btn.innerText=name
+btn.innerText=field.name+" ("+field.size+" ha)"
 
-if(name===currentField){
+if(id===currentField){
 btn.style.background="#4CAF50"
 }
 
 btn.onclick=()=>{
-currentField=name
+currentField=id
 drawFieldMenu()
 drawTimeline()
 }
@@ -86,11 +94,21 @@ menu.appendChild(btn)
 
 document.getElementById("addFieldBtn").onclick=()=>{
 
-let i=1
-while(fields["Feld "+i])i++
+let name=prompt("Feldname?")
+if(!name)return
 
-fields["Feld "+i]=[]
-currentField="Feld "+i
+let size=parseFloat(prompt("Feldgröße (ha)?"))
+if(!size)size=1
+
+let id="field_"+Date.now()
+
+fields[id]={
+name:name,
+size:size,
+plans:[]
+}
+
+currentField=id
 
 save()
 
@@ -182,7 +200,7 @@ const harvestMonth=crops[selectedCrop].harvest[sowIndex]
 
 const end=months.indexOf(harvestMonth)
 
-fields[currentField].push({
+fields[currentField].plans.push({
 crop:selectedCrop,
 start:index,
 end:end
@@ -201,7 +219,7 @@ function drawTimeline(){
 const box=document.getElementById("timeline")
 box.innerHTML=""
 
-const plans=fields[currentField]||[]
+const plans=fields[currentField].plans
 
 for(let y=0;y<YEARS;y++){
 
