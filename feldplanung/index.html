@@ -3,207 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <title>LS25 Helper – Feldplanung</title>
-
 <link rel="stylesheet" href="../assets/css/style.css">
-
-<style>
-
-.layout{
-display:flex;
-gap:20px;
-align-items:flex-start;
-}
-
-/* LINKER BEREICH */
-
-.leftPanel{
-width:180px;
-}
-
-.fieldButton{
-background:#23323b;
-padding:8px;
-border-radius:6px;
-margin-bottom:6px;
-cursor:pointer;
-}
-
-.fieldButton.active{
-background:#4CAF50;
-}
-
-.addField{
-background:#2ecc71;
-padding:8px;
-border-radius:6px;
-text-align:center;
-cursor:pointer;
-margin-top:10px;
-}
-
-/* HAUPTBEREICH */
-
-.panel{
-flex:3;
-}
-
-.calendar{
-flex:1;
-max-width:320px;
-}
-
-/* CROPS */
-
-.crop-grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:12px;
-margin-bottom:20px;
-}
-
-.crop{
-background:#1e2b33;
-padding:12px;
-border-radius:8px;
-text-align:center;
-cursor:pointer;
-}
-
-.crop img{
-width:50px;
-display:block;
-margin:auto;
-margin-bottom:6px;
-}
-
-.crop.active{
-background:#2e7d32;
-}
-
-/* MONATE */
-
-.month-bar{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-gap:6px;
-margin-bottom:20px;
-}
-
-.month{
-padding:6px;
-background:#23323b;
-text-align:center;
-border-radius:4px;
-cursor:pointer;
-}
-
-.month.allowed{
-background:#2ecc71;
-color:black;
-font-weight:bold;
-}
-
-/* TIMELINE */
-
-.timelineYear{
-margin-bottom:20px;
-}
-
-.yearLabel{
-font-weight:bold;
-margin-bottom:6px;
-}
-
-.timelineMonths{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-gap:4px;
-font-size:12px;
-opacity:0.8;
-margin-bottom:6px;
-}
-
-.timelineMonths div{
-text-align:center;
-}
-
-.timelineBarRow{
-position:relative;
-height:32px;
-background:rgba(255,255,255,0.05);
-border-radius:6px;
-}
-
-.timelineBar{
-position:absolute;
-top:4px;
-height:24px;
-border-radius:6px;
-display:flex;
-align-items:center;
-padding-left:8px;
-font-size:12px;
-font-weight:bold;
-color:white;
-
-background:linear-gradient(
-90deg,
-#2ecc71 0%,
-#f1c40f 60%,
-#e67e22 100%
-);
-}
-
-.timelineBar img{
-height:16px;
-margin-right:6px;
-}
-
-/* KALENDER */
-
-.calendar{
-background:#263640;
-padding:16px;
-border-radius:10px;
-}
-
-.calendarHeader{
-display:grid;
-grid-template-columns:1fr 80px 80px;
-font-weight:bold;
-margin-bottom:8px;
-border-bottom:1px solid rgba(255,255,255,0.2);
-padding-bottom:6px;
-}
-
-.calendarItem{
-display:grid;
-grid-template-columns:1fr 80px 80px;
-padding:4px 0;
-border-bottom:1px solid rgba(255,255,255,0.08);
-font-size:13px;
-}
-
-</style>
 </head>
 
 <body>
 
 <div class="layout">
 
-<!-- FELDLISTE -->
+<div class="sidebar">
 
-<div class="leftPanel">
+<h2>🚜 LS25 Helper</h2>
 
-<h3>Felder</h3>
+<button>Profit Rechner</button>
 
-<div id="fieldList"></div>
+<div class="menuGroup">
 
-<div class="addField" onclick="addField()">+ Feld</div>
+<button class="active">Feldplanung</button>
+
+<div id="fieldMenu"></div>
+
+<button id="addFieldBtn">+ Feld</button>
 
 </div>
 
-<!-- FELDPLANUNG -->
+<button>Arbeitszeit</button>
+<button>Tierfutter</button>
+<button>Farm To-Do</button>
+
+</div>
 
 <div class="panel">
 
@@ -217,9 +44,7 @@ font-size:13px;
 
 </div>
 
-<!-- PFLANZENKALENDER -->
-
-<div class="calendar" id="calendar">
+<div class="calendar">
 
 <h3>Pflanzenkalender</h3>
 
@@ -229,312 +54,13 @@ font-size:13px;
 <span>Ernte</span>
 </div>
 
-</div>
+<div id="calendarList"></div>
 
 </div>
 
-<script>
+</div>
 
-const months=[
-"Jan","Feb","Mär","Apr","Mai","Jun",
-"Jul","Aug","Sep","Okt","Nov","Dez"
-]
-
-const YEARS=5
-
-let crops={}
-let selectedCrop=null
-
-let fields=JSON.parse(localStorage.getItem("ls25_fields"))||{}
-let currentField=null
-
-const cropIcons={
-"Weizen":"wheat.png",
-"Gerste":"barley.png",
-"Hafer":"oats.png",
-"Raps":"rapeseed.png",
-"Mais (Korn)":"corn.png",
-"Mais (Silomais)":"corn.png",
-"Sojabohnen":"soybean.png",
-"Sonnenblumen":"sunflower.png",
-"Kartoffeln":"potato.png",
-"Zuckerrüben":"sugarbeet.png",
-"Erbsen":"pea.png",
-"Karotten":"carrot.png",
-"Pastinaken":"carrot.png",
-"Reis":"rice.png",
-"Sorghum":"sorghum.png",
-"Trauben":"grape.png",
-"Oliven":"olive.png",
-"Pappel":"poplar.png",
-"Ölrettich":"oilradish.png",
-"Gras":"grass.png",
-"Brach":"fallow.png"
-}
-
-async function init(){
-
-const res=await fetch("../assets/data/crops.json")
-crops=await res.json()
-
-buildCalendar()
-buildCrops()
-buildMonths()
-
-if(Object.keys(fields).length===0){
-fields["Feld 1"]=[]
-currentField="Feld 1"
-}else{
-currentField=Object.keys(fields)[0]
-}
-
-drawFieldList()
-drawTimeline()
-
-}
-
-function save(){
-localStorage.setItem("ls25_fields",JSON.stringify(fields))
-}
-
-/* FELDER */
-
-function drawFieldList(){
-
-const list=document.getElementById("fieldList")
-list.innerHTML=""
-
-Object.keys(fields).forEach(name=>{
-
-const div=document.createElement("div")
-div.className="fieldButton"
-
-if(name===currentField){
-div.classList.add("active")
-}
-
-div.innerText=name
-
-div.onclick=()=>{
-currentField=name
-drawFieldList()
-drawTimeline()
-}
-
-list.appendChild(div)
-
-})
-
-}
-
-function addField(){
-
-let i=1
-while(fields["Feld "+i])i++
-
-fields["Feld "+i]=[]
-currentField="Feld "+i
-
-save()
-
-drawFieldList()
-drawTimeline()
-
-}
-
-/* KALENDER */
-
-function buildCalendar(){
-
-const cal=document.getElementById("calendar")
-
-Object.keys(crops).forEach(name=>{
-
-const sow=crops[name].sow.join("–")
-const harvest=crops[name].harvest.join("–")
-
-const item=document.createElement("div")
-item.className="calendarItem"
-
-item.innerHTML=
-`<span>${name}</span>
-<span>${sow}</span>
-<span>${harvest}</span>`
-
-cal.appendChild(item)
-
-})
-
-}
-
-/* CROPS */
-
-function buildCrops(){
-
-const grid=document.getElementById("cropGrid")
-
-Object.keys(crops).forEach(crop=>{
-
-const icon=cropIcons[crop]||"wheat.png"
-
-const el=document.createElement("div")
-el.className="crop"
-
-el.innerHTML=
-`<img src="../assets/images/crops/${icon}">
-<div>${crop}</div>`
-
-el.onclick=()=>selectCrop(crop,el)
-
-grid.appendChild(el)
-
-})
-
-}
-
-function selectCrop(crop,el){
-
-selectedCrop=crop
-
-document.querySelectorAll(".crop").forEach(c=>{
-c.classList.remove("active")
-})
-
-el.classList.add("active")
-
-highlightMonths()
-
-}
-
-/* MONATE */
-
-function buildMonths(){
-
-const bar=document.getElementById("monthBar")
-
-months.forEach((m,i)=>{
-
-const el=document.createElement("div")
-el.className="month"
-el.innerText=m
-
-el.onclick=()=>monthClick(i)
-
-bar.appendChild(el)
-
-})
-
-}
-
-function highlightMonths(){
-
-document.querySelectorAll(".month").forEach((m,i)=>{
-
-m.classList.remove("allowed")
-
-if(selectedCrop && crops[selectedCrop].sow.includes(months[i])){
-m.classList.add("allowed")
-}
-
-})
-
-}
-
-/* PLANUNG */
-
-function monthClick(index){
-
-if(!selectedCrop)return
-if(!crops[selectedCrop].sow.includes(months[index]))return
-
-const sowIndex=crops[selectedCrop].sow.indexOf(months[index])
-const harvestMonth=crops[selectedCrop].harvest[sowIndex]
-
-const end=months.indexOf(harvestMonth)
-
-fields[currentField].push({
-crop:selectedCrop,
-start:index,
-end:end
-})
-
-save()
-
-drawTimeline()
-
-}
-
-/* TIMELINE */
-
-function drawTimeline(){
-
-const box=document.getElementById("timeline")
-box.innerHTML=""
-
-const timeline=fields[currentField]||[]
-
-for(let y=0;y<YEARS;y++){
-
-const yearBlock=document.createElement("div")
-yearBlock.className="timelineYear"
-
-const label=document.createElement("div")
-label.className="yearLabel"
-label.innerText="Jahr "+(y+1)
-
-yearBlock.appendChild(label)
-
-const monthRow=document.createElement("div")
-monthRow.className="timelineMonths"
-
-months.forEach(m=>{
-const cell=document.createElement("div")
-cell.innerText=m
-monthRow.appendChild(cell)
-})
-
-yearBlock.appendChild(monthRow)
-
-const row=document.createElement("div")
-row.className="timelineBarRow"
-
-timeline.forEach(t=>{
-
-const icon=cropIcons[t.crop]||"wheat.png"
-
-let duration
-
-if(t.start<=t.end){
-duration=t.end-t.start+1
-}else{
-duration=12-t.start+t.end+1
-}
-
-const bar=document.createElement("div")
-bar.className="timelineBar"
-
-bar.style.left=(t.start/12*100)+"%"
-bar.style.width=(duration/12*100)+"%"
-
-bar.innerHTML=
-`<img src="../assets/images/crops/${icon}">
-${t.crop}`
-
-row.appendChild(bar)
-
-})
-
-yearBlock.appendChild(row)
-
-box.appendChild(yearBlock)
-
-}
-
-}
-
-window.onload=init
-
-</script>
+<script src="feldplanung.js"></script>
 
 </body>
 </html>
