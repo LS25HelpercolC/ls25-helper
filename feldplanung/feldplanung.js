@@ -1,11 +1,10 @@
 const months=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
-
 const YEARS=5
 
 let crops={}
 let selectedCrop=null
 
-let fields=JSON.parse(localStorage.getItem("ls25_fields"))||{}
+let fields=JSON.parse(localStorage.getItem("ls25_fields")) || {}
 let currentField=null
 
 const cropIcons={
@@ -41,13 +40,13 @@ buildCrops()
 buildMonths()
 
 if(Object.keys(fields).length===0){
-
-fields["Feld 1"]={
+fields={
+"field_1":{
 name:"Feld 1",
 size:10,
 plans:[]
 }
-
+}
 }
 
 currentField=Object.keys(fields)[0]
@@ -73,17 +72,37 @@ Object.keys(fields).forEach(id=>{
 const field=fields[id]
 
 const btn=document.createElement("button")
+btn.className="fieldButton"
 
 btn.innerText=field.name+" ("+field.size+" ha)"
 
 if(id===currentField){
-btn.style.background="#4CAF50"
+btn.classList.add("active")
 }
 
 btn.onclick=()=>{
 currentField=id
 drawFieldMenu()
 drawTimeline()
+}
+
+btn.oncontextmenu=(e)=>{
+e.preventDefault()
+
+if(confirm("Feld löschen?")){
+delete fields[id]
+
+if(Object.keys(fields).length===0){
+fields={}
+currentField=null
+}else{
+currentField=Object.keys(fields)[0]
+}
+
+save()
+drawFieldMenu()
+drawTimeline()
+}
 }
 
 menu.appendChild(btn)
@@ -111,7 +130,6 @@ plans:[]
 currentField=id
 
 save()
-
 drawFieldMenu()
 drawTimeline()
 
@@ -122,13 +140,14 @@ drawTimeline()
 function buildCrops(){
 
 const grid=document.getElementById("cropGrid")
+grid.innerHTML=""
 
 Object.keys(crops).forEach(crop=>{
 
+const icon=cropIcons[crop] || "wheat.png"
+
 const el=document.createElement("div")
 el.className="crop"
-
-const icon=cropIcons[crop]||"wheat.png"
 
 el.innerHTML=
 `<img src="../assets/images/crops/${icon}">
@@ -159,6 +178,7 @@ grid.appendChild(el)
 function buildMonths(){
 
 const bar=document.getElementById("monthBar")
+bar.innerHTML=""
 
 months.forEach((m,i)=>{
 
@@ -194,6 +214,7 @@ function monthClick(index){
 
 if(!selectedCrop)return
 if(!crops[selectedCrop].sow.includes(months[index]))return
+if(!currentField)return
 
 const sowIndex=crops[selectedCrop].sow.indexOf(months[index])
 const harvestMonth=crops[selectedCrop].harvest[sowIndex]
@@ -207,7 +228,6 @@ end:end
 })
 
 save()
-
 drawTimeline()
 
 }
@@ -218,6 +238,8 @@ function drawTimeline(){
 
 const box=document.getElementById("timeline")
 box.innerHTML=""
+
+if(!currentField)return
 
 const plans=fields[currentField].plans
 
@@ -248,31 +270,31 @@ row.className="timelineBarRow"
 
 plans.forEach(p=>{
 
-const icon=cropIcons[p.crop]||"wheat.png"
+const icon=cropIcons[p.crop] || "wheat.png"
 
 let duration
+let start=p.start
+let end=p.end
 
-if(p.start<=p.end){
-duration=p.end-p.start+1
+if(start<=end){
+duration=end-start+1
 }else{
-duration=12-p.start+p.end+1
+duration=12-start+end+1
 }
 
 const bar=document.createElement("div")
 bar.className="timelineBar"
 
-bar.style.left=(p.start/12*100)+"%"
+bar.style.left=(start/12*100)+"%"
 bar.style.width=(duration/12*100)+"%"
 
-bar.innerHTML=
-`<img src="../assets/images/crops/${icon}">${p.crop}`
+bar.innerHTML=`<img src="../assets/images/crops/${icon}">${p.crop}`
 
 row.appendChild(bar)
 
 })
 
 year.appendChild(row)
-
 box.appendChild(year)
 
 }
@@ -284,6 +306,7 @@ box.appendChild(year)
 function buildCalendar(){
 
 const list=document.getElementById("calendarList")
+list.innerHTML=""
 
 Object.keys(crops).forEach(name=>{
 
