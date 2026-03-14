@@ -4,27 +4,200 @@
 <meta charset="UTF-8">
 <title>LS25 Helper – Feldplanung</title>
 <link rel="stylesheet" href="../assets/css/style.css">
+
+<style>
+
+/* Layout */
+.layout{
+display:flex;
+gap:20px;
+padding:20px;
+align-items:flex-start;
+}
+
+/* Nur eine Sidebar */
+.sidebar{
+width:220px;
+background:#24313a;
+padding:20px;
+border-radius:12px;
+}
+
+/* Feldliste unter Feldplanung */
+.fieldSubmenu{
+margin-top:10px;
+margin-bottom:10px;
+padding-left:10px;
+}
+
+.fieldButton{
+width:100%;
+margin-bottom:6px;
+padding:8px;
+background:#344955;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+text-align:left;
+}
+
+.fieldButton.active{
+background:#4CAF50;
+}
+
+.addField{
+width:100%;
+padding:8px;
+background:#2ecc71;
+border:none;
+border-radius:6px;
+cursor:pointer;
+margin-bottom:10px;
+}
+
+/* Hauptbereich */
+.panel{
+flex:1;
+background:#263640;
+border-radius:12px;
+padding:20px;
+}
+
+/* Crop Grid */
+.crop-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:12px;
+margin-bottom:20px;
+}
+
+.crop{
+background:#1e2b33;
+padding:10px;
+border-radius:8px;
+text-align:center;
+cursor:pointer;
+}
+
+.crop img{
+width:60px;
+margin-bottom:5px;
+}
+
+.crop.active{
+background:#4CAF50;
+}
+
+/* Monate */
+.month-bar{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:6px;
+margin-bottom:20px;
+}
+
+.month{
+padding:6px;
+background:#344955;
+text-align:center;
+border-radius:4px;
+cursor:pointer;
+}
+
+.month.allowed{
+background:#4CAF50;
+}
+
+/* Timeline */
+.timelineYear{
+margin-bottom:20px;
+}
+
+.yearLabel{
+margin-bottom:6px;
+font-weight:bold;
+}
+
+.timelineMonths{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+font-size:12px;
+opacity:0.8;
+margin-bottom:4px;
+}
+
+.timelineBarRow{
+position:relative;
+height:30px;
+background:rgba(255,255,255,0.05);
+border-radius:6px;
+}
+
+.timelineBar{
+position:absolute;
+height:24px;
+top:3px;
+border-radius:6px;
+display:flex;
+align-items:center;
+padding-left:6px;
+font-size:12px;
+background:linear-gradient(
+90deg,
+#2ecc71 0%,
+#f1c40f 60%,
+#e67e22 100%
+);
+}
+
+.timelineBar img{
+height:14px;
+margin-right:4px;
+}
+
+/* Pflanzenkalender */
+.calendar{
+width:300px;
+background:#263640;
+padding:20px;
+border-radius:12px;
+}
+
+.calendarHeader{
+display:grid;
+grid-template-columns:1fr 90px 90px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.calendarItem{
+display:grid;
+grid-template-columns:1fr 90px 90px;
+font-size:13px;
+padding:4px 0;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="layout">
 
+<!-- Sidebar -->
 <div class="sidebar">
 
 <h2>🚜 LS25 Helper</h2>
 
 <button>Profit Rechner</button>
 
-<div class="menuGroup">
-
 <button class="active">Feldplanung</button>
 
-<div id="fieldMenu"></div>
+<div class="fieldSubmenu" id="fieldMenu"></div>
 
-<button id="addFieldBtn">+ Feld</button>
-
-</div>
+<button class="addField" id="addFieldBtn">+ Feld</button>
 
 <button>Arbeitszeit</button>
 <button>Tierfutter</button>
@@ -32,6 +205,7 @@
 
 </div>
 
+<!-- Hauptbereich -->
 <div class="panel">
 
 <h1>Feldplanung</h1>
@@ -44,6 +218,7 @@
 
 </div>
 
+<!-- Pflanzenkalender -->
 <div class="calendar">
 
 <h3>Pflanzenkalender</h3>
