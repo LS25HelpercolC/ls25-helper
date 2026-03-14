@@ -6,10 +6,7 @@ let selectedCrop=null
 let fields={}
 let currentField=null
 
-const YEARS=5
-
-function getIconName(name){
-
+function iconName(name){
 return name
 .toLowerCase()
 .replaceAll(" ","_")
@@ -19,7 +16,6 @@ return name
 .replaceAll("ö","oe")
 .replaceAll("ü","ue")
 .replaceAll("ß","ss")
-
 }
 
 async function init(){
@@ -46,7 +42,7 @@ drawTimeline()
 
 }
 
-/* FELDER */
+/* Felder */
 
 function drawFieldMenu(){
 
@@ -69,18 +65,6 @@ btn.onclick=()=>{
 currentField=id
 drawFieldMenu()
 drawTimeline()
-}
-
-btn.oncontextmenu=(e)=>{
-e.preventDefault()
-
-if(confirm("Feld löschen?")){
-delete fields[id]
-currentField=Object.keys(fields)[0] || null
-drawFieldMenu()
-drawTimeline()
-}
-
 }
 
 menu.appendChild(btn)
@@ -112,7 +96,7 @@ drawTimeline()
 
 }
 
-/* CROPS */
+/* Crops */
 
 function buildCrops(){
 
@@ -121,7 +105,7 @@ grid.innerHTML=""
 
 Object.keys(crops).forEach(crop=>{
 
-const icon=getIconName(crop)
+const icon=iconName(crop)
 
 const el=document.createElement("div")
 el.className="crop"
@@ -151,7 +135,7 @@ grid.appendChild(el)
 
 }
 
-/* MONATE */
+/* Monate */
 
 function buildMonths(){
 
@@ -186,7 +170,7 @@ m.classList.add("allowed")
 
 }
 
-/* PLANUNG */
+/* Planung */
 
 function monthClick(index){
 
@@ -208,14 +192,12 @@ drawTimeline()
 
 }
 
-/* TIMELINE */
+/* Timeline */
 
 function drawTimeline(){
 
 const box=document.getElementById("timeline")
 box.innerHTML=""
-
-if(!currentField)return
 
 const plans=fields[currentField].plans
 
@@ -270,7 +252,7 @@ box.appendChild(yearBox)
 
 const row=document.getElementById("row_"+year)
 
-const icon=getIconName(plan.crop)
+const icon=iconName(plan.crop)
 
 const bar=document.createElement("div")
 bar.className="timelineBar"
@@ -288,7 +270,7 @@ globalMonth+=duration
 
 }
 
-/* KALENDER */
+/* Kalender */
 
 function buildCalendar(){
 
