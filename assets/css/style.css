@@ -1,17 +1,9 @@
-/* =========================================
-   GLOBAL
-========================================= */
-
 body{
 margin:0;
 font-family:Arial, Helvetica, sans-serif;
 background:#1f2a31;
 color:white;
 }
-
-/* =========================================
-   LAYOUT
-========================================= */
 
 .layout{
 display:flex;
@@ -20,36 +12,6 @@ padding:20px;
 align-items:flex-start;
 }
 
-/* =========================================
-   SEITENLEISTE
-========================================= */
-
-.sidebar{
-width:220px;
-background:#24313a;
-padding:20px;
-border-radius:12px;
-}
-
-.sidebar button{
-width:100%;
-margin-bottom:10px;
-padding:10px;
-background:#2e3d47;
-border:none;
-color:white;
-border-radius:6px;
-cursor:pointer;
-}
-
-.sidebar button:hover{
-background:#4CAF50;
-}
-
-/* =========================================
-   PANEL
-========================================= */
-
 .panel{
 flex:1;
 background:#263640;
@@ -57,100 +19,143 @@ border-radius:12px;
 padding:20px;
 }
 
-/* =========================================
-   TIMELINE MONATE
-========================================= */
-
-.timelineMonths{
-display:grid;
-grid-template-columns:repeat(12,1fr);
-gap:4px;
-margin-bottom:12px;
-}
-
-.month{
-background:#344955;
-padding:6px;
-text-align:center;
-cursor:pointer;
-border-radius:4px;
-font-size:13px;
-transition:0.2s;
-}
-
-.month:hover{
-background:#4CAF50;
-}
-
-/* =========================================
-   TIMELINE REIHEN
-========================================= */
-
-.timelineBarRow{
-position:relative;
-height:42px;
-margin-bottom:10px;
-background:rgba(255,255,255,0.03);
-border-radius:6px;
-}
-
-/* =========================================
-   TIMELINE BALKEN
-========================================= */
-
-.timelineBar{
-position:absolute;
-top:6px;
-height:30px;
-border-radius:6px;
-padding-left:10px;
-padding-right:10px;
-display:flex;
-align-items:center;
-font-size:13px;
-color:white;
-
-/* Aussaat → Wachstum → Ernte */
-background:linear-gradient(
-90deg,
-#2ecc71 0%,
-#f1c40f 70%,
-#e67e22 100%
-);
-}
-
-/* =========================================
-   PFLANZEN AUSWAHL
-========================================= */
-
-.cropSelectBox{
-margin-top:10px;
-}
-
-.cropSelectBox button{
-margin:4px;
-padding:6px 10px;
-border:none;
-background:#344955;
-color:white;
-border-radius:4px;
-cursor:pointer;
-}
-
-.cropSelectBox button:hover{
-background:#4CAF50;
-}
-
-/* =========================================
-   PFLANZENKALENDER
-========================================= */
-
 .calendar{
 width:320px;
 background:#263640;
 padding:20px;
 border-radius:12px;
 }
+
+/* Feldliste */
+
+.fieldButton{
+display:block;
+width:100%;
+margin-bottom:6px;
+padding:8px;
+background:#344955;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+text-align:left;
+}
+
+.fieldButton.active{
+background:#4CAF50;
+}
+
+#addFieldBtn{
+margin-bottom:15px;
+padding:8px;
+width:100%;
+background:#4CAF50;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* Crop Grid */
+
+.crop-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:12px;
+margin-top:15px;
+margin-bottom:20px;
+}
+
+.crop{
+background:#1f2a31;
+padding:10px;
+border-radius:8px;
+text-align:center;
+cursor:pointer;
+}
+
+.crop img{
+width:48px;
+height:48px;
+object-fit:contain;
+display:block;
+margin:0 auto 6px auto;
+}
+
+.crop.active{
+background:#4CAF50;
+}
+
+/* Monate */
+
+.month-bar{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+gap:4px;
+margin-bottom:15px;
+}
+
+.month{
+background:#344955;
+padding:6px;
+text-align:center;
+border-radius:4px;
+cursor:pointer;
+}
+
+.month.allowed{
+background:#4CAF50;
+}
+
+/* Timeline */
+
+.timelineYear{
+margin-bottom:20px;
+}
+
+.yearLabel{
+margin-bottom:6px;
+font-weight:bold;
+}
+
+.timelineMonths{
+display:grid;
+grid-template-columns:repeat(12,1fr);
+font-size:12px;
+opacity:0.8;
+margin-bottom:4px;
+}
+
+.timelineBarRow{
+position:relative;
+height:32px;
+background:rgba(255,255,255,0.05);
+border-radius:6px;
+}
+
+.timelineBar{
+position:absolute;
+height:24px;
+top:4px;
+border-radius:6px;
+display:flex;
+align-items:center;
+padding-left:6px;
+font-size:12px;
+background:linear-gradient(
+90deg,
+#4CAF50 0%,
+#FFC107 60%,
+#FF9800 100%
+);
+}
+
+.timelineBar img{
+height:16px;
+margin-right:6px;
+}
+
+/* Kalender */
 
 .calendarHeader{
 display:grid;
@@ -167,17 +172,4 @@ grid-template-columns:1fr 90px 90px;
 padding:4px 0;
 border-bottom:1px solid rgba(255,255,255,0.08);
 font-size:14px;
-}
-
-/* =========================================
-   TITEL
-========================================= */
-
-h1{
-margin-top:0;
-margin-bottom:15px;
-}
-
-h3{
-margin-top:0;
 }
