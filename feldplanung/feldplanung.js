@@ -7,7 +7,7 @@ let selectedCrop=null
 let fields=JSON.parse(localStorage.getItem("ls25_fields")) || {}
 let currentField=null
 
-/* Alte Daten automatisch reparieren */
+/* Alte Daten reparieren */
 
 Object.keys(fields).forEach(id=>{
 if(!fields[id].plans){
@@ -255,16 +255,38 @@ if(!currentField)return
 
 const plans=fields[currentField].plans || []
 
-for(let y=0;y<YEARS;y++){
+let globalMonth=0
 
-const year=document.createElement("div")
-year.className="timelineYear"
+plans.forEach(plan=>{
+
+let start=plan.start
+let end=plan.end
+
+let duration
+
+if(start<=end){
+duration=end-start+1
+}else{
+duration=12-start+end+1
+}
+
+let year=Math.floor(globalMonth/12)
+
+if(year>=YEARS)return
+
+let yearBox=document.getElementById("year_"+year)
+
+if(!yearBox){
+
+yearBox=document.createElement("div")
+yearBox.className="timelineYear"
+yearBox.id="year_"+year
 
 const label=document.createElement("div")
 label.className="yearLabel"
-label.innerText="Jahr "+(y+1)
+label.innerText="Jahr "+(year+1)
 
-year.appendChild(label)
+yearBox.appendChild(label)
 
 const monthRow=document.createElement("div")
 monthRow.className="timelineMonths"
@@ -275,39 +297,35 @@ d.innerText=m
 monthRow.appendChild(d)
 })
 
-year.appendChild(monthRow)
+yearBox.appendChild(monthRow)
 
 const row=document.createElement("div")
 row.className="timelineBarRow"
+row.id="row_"+year
 
-plans.forEach(p=>{
+yearBox.appendChild(row)
 
-const icon=cropIcons[p.crop] || "wheat.png"
+box.appendChild(yearBox)
 
-let duration
-
-if(p.start<=p.end){
-duration=p.end-p.start+1
-}else{
-duration=12-p.start+p.end+1
 }
+
+const row=document.getElementById("row_"+year)
+
+const icon=cropIcons[plan.crop] || "wheat.png"
 
 const bar=document.createElement("div")
 bar.className="timelineBar"
 
-bar.style.left=(p.start/12*100)+"%"
+bar.style.left=((globalMonth%12)/12*100)+"%"
 bar.style.width=(duration/12*100)+"%"
 
-bar.innerHTML=`<img src="../assets/images/crops/${icon}">${p.crop}`
+bar.innerHTML=`<img src="../assets/images/crops/${icon}">${plan.crop}`
 
 row.appendChild(bar)
 
+globalMonth+=duration
+
 })
-
-year.appendChild(row)
-box.appendChild(year)
-
-}
 
 }
 
