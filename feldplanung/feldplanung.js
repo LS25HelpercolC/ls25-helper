@@ -1,5 +1,4 @@
 const months=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
-const YEARS=5
 
 let crops={}
 let selectedCrop=null
@@ -7,17 +6,7 @@ let selectedCrop=null
 let fields=JSON.parse(localStorage.getItem("ls25_fields")) || {}
 let currentField=null
 
-/* Alte Daten reparieren */
-
-Object.keys(fields).forEach(id=>{
-if(!fields[id].plans){
-fields[id]={
-name:"Feld",
-size:10,
-plans:[]
-}
-}
-})
+const YEARS=5
 
 const cropIcons={
 "Weizen":"wheat.png",
@@ -47,6 +36,8 @@ async function init(){
 const res=await fetch("../assets/data/crops.json")
 crops=await res.json()
 
+repairFields()
+
 buildCalendar()
 buildCrops()
 buildMonths()
@@ -70,11 +61,27 @@ drawTimeline()
 
 }
 
+function repairFields(){
+
+Object.keys(fields).forEach(id=>{
+
+if(!fields[id].plans){
+fields[id]={
+name:"Feld",
+size:10,
+plans:[]
+}
+}
+
+})
+
+}
+
 function save(){
 localStorage.setItem("ls25_fields",JSON.stringify(fields))
 }
 
-/* Felder */
+/* FELDER */
 
 function drawFieldMenu(){
 
@@ -147,7 +154,7 @@ drawTimeline()
 
 }
 
-/* Crops */
+/* CROPS */
 
 function buildCrops(){
 
@@ -185,7 +192,7 @@ grid.appendChild(el)
 
 }
 
-/* Monate */
+/* MONATE */
 
 function buildMonths(){
 
@@ -220,13 +227,12 @@ m.classList.add("allowed")
 
 }
 
-/* Planung */
+/* PLANUNG */
 
 function monthClick(index){
 
 if(!selectedCrop)return
 if(!crops[selectedCrop].sow.includes(months[index]))return
-if(!currentField)return
 
 const sowIndex=crops[selectedCrop].sow.indexOf(months[index])
 const harvestMonth=crops[selectedCrop].harvest[sowIndex]
@@ -244,7 +250,7 @@ drawTimeline()
 
 }
 
-/* Timeline */
+/* TIMELINE */
 
 function drawTimeline(){
 
@@ -259,15 +265,12 @@ let globalMonth=0
 
 plans.forEach(plan=>{
 
-let start=plan.start
-let end=plan.end
-
 let duration
 
-if(start<=end){
-duration=end-start+1
+if(plan.start<=plan.end){
+duration=plan.end-plan.start+1
 }else{
-duration=12-start+end+1
+duration=12-plan.start+plan.end+1
 }
 
 let year=Math.floor(globalMonth/12)
@@ -287,17 +290,6 @@ label.className="yearLabel"
 label.innerText="Jahr "+(year+1)
 
 yearBox.appendChild(label)
-
-const monthRow=document.createElement("div")
-monthRow.className="timelineMonths"
-
-months.forEach(m=>{
-const d=document.createElement("div")
-d.innerText=m
-monthRow.appendChild(d)
-})
-
-yearBox.appendChild(monthRow)
 
 const row=document.createElement("div")
 row.className="timelineBarRow"
@@ -329,7 +321,7 @@ globalMonth+=duration
 
 }
 
-/* Kalender */
+/* KALENDER */
 
 function buildCalendar(){
 
