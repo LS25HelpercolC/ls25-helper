@@ -64,15 +64,9 @@ drawTimeline()
 function repairFields(){
 
 Object.keys(fields).forEach(id=>{
-
 if(!fields[id].plans){
-fields[id]={
-name:"Feld",
-size:10,
-plans:[]
+fields[id]={name:"Feld",size:10,plans:[]}
 }
-}
-
 })
 
 }
@@ -80,8 +74,6 @@ plans:[]
 function save(){
 localStorage.setItem("ls25_fields",JSON.stringify(fields))
 }
-
-/* FELDER */
 
 function drawFieldMenu(){
 
@@ -94,12 +86,9 @@ const field=fields[id]
 
 const btn=document.createElement("button")
 btn.className="fieldButton"
-
 btn.innerText=field.name+" ("+field.size+" ha)"
 
-if(id===currentField){
-btn.classList.add("active")
-}
+if(id===currentField)btn.classList.add("active")
 
 btn.onclick=()=>{
 currentField=id
@@ -111,17 +100,12 @@ btn.oncontextmenu=(e)=>{
 e.preventDefault()
 
 if(confirm("Feld löschen?")){
-
 delete fields[id]
-
 currentField=Object.keys(fields)[0] || null
-
 save()
 drawFieldMenu()
 drawTimeline()
-
 }
-
 }
 
 menu.appendChild(btn)
@@ -140,11 +124,7 @@ if(!size)size=1
 
 let id="field_"+Date.now()
 
-fields[id]={
-name:name,
-size:size,
-plans:[]
-}
+fields[id]={name:name,size:size,plans:[]}
 
 currentField=id
 
@@ -153,8 +133,6 @@ drawFieldMenu()
 drawTimeline()
 
 }
-
-/* CROPS */
 
 function buildCrops(){
 
@@ -168,22 +146,13 @@ const icon=cropIcons[crop] || "wheat.png"
 const el=document.createElement("div")
 el.className="crop"
 
-el.innerHTML=
-`<img src="../assets/images/crops/${icon}">
-<div>${crop}</div>`
+el.innerHTML=`<img src="../assets/images/crops/${icon}"><div>${crop}</div>`
 
 el.onclick=()=>{
-
 selectedCrop=crop
-
-document.querySelectorAll(".crop").forEach(c=>{
-c.classList.remove("active")
-})
-
+document.querySelectorAll(".crop").forEach(c=>c.classList.remove("active"))
 el.classList.add("active")
-
 highlightMonths()
-
 }
 
 grid.appendChild(el)
@@ -191,8 +160,6 @@ grid.appendChild(el)
 })
 
 }
-
-/* MONATE */
 
 function buildMonths(){
 
@@ -227,8 +194,6 @@ m.classList.add("allowed")
 
 }
 
-/* PLANUNG */
-
 function monthClick(index){
 
 if(!selectedCrop)return
@@ -250,8 +215,6 @@ drawTimeline()
 
 }
 
-/* TIMELINE */
-
 function drawTimeline(){
 
 const box=document.getElementById("timeline")
@@ -259,7 +222,7 @@ box.innerHTML=""
 
 if(!currentField)return
 
-const plans=fields[currentField].plans || []
+const plans=fields[currentField].plans
 
 let globalMonth=0
 
@@ -275,8 +238,6 @@ duration=12-plan.start+plan.end+1
 
 let year=Math.floor(globalMonth/12)
 
-if(year>=YEARS)return
-
 let yearBox=document.getElementById("year_"+year)
 
 if(!yearBox){
@@ -290,6 +251,17 @@ label.className="yearLabel"
 label.innerText="Jahr "+(year+1)
 
 yearBox.appendChild(label)
+
+const monthRow=document.createElement("div")
+monthRow.className="timelineMonths"
+
+months.forEach(m=>{
+const d=document.createElement("div")
+d.innerText=m
+monthRow.appendChild(d)
+})
+
+yearBox.appendChild(monthRow)
 
 const row=document.createElement("div")
 row.className="timelineBarRow"
@@ -321,8 +293,6 @@ globalMonth+=duration
 
 }
 
-/* KALENDER */
-
 function buildCalendar(){
 
 const list=document.getElementById("calendarList")
@@ -333,8 +303,7 @@ Object.keys(crops).forEach(name=>{
 const item=document.createElement("div")
 item.className="calendarItem"
 
-item.innerHTML=
-`<span>${name}</span>
+item.innerHTML=`<span>${name}</span>
 <span>${crops[name].sow.join("-")}</span>
 <span>${crops[name].harvest.join("-")}</span>`
 
