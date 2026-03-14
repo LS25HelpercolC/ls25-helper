@@ -7,6 +7,18 @@ let selectedCrop=null
 let fields=JSON.parse(localStorage.getItem("ls25_fields")) || {}
 let currentField=null
 
+/* Alte Daten automatisch reparieren */
+
+Object.keys(fields).forEach(id=>{
+if(!fields[id].plans){
+fields[id]={
+name:"Feld",
+size:10,
+plans:[]
+}
+}
+})
+
 const cropIcons={
 "Weizen":"wheat.png",
 "Gerste":"barley.png",
@@ -40,13 +52,15 @@ buildCrops()
 buildMonths()
 
 if(Object.keys(fields).length===0){
+
 fields={
-"field_1":{
+field_1:{
 name:"Feld 1",
 size:10,
 plans:[]
 }
 }
+
 }
 
 currentField=Object.keys(fields)[0]
@@ -60,7 +74,7 @@ function save(){
 localStorage.setItem("ls25_fields",JSON.stringify(fields))
 }
 
-/* FELDER */
+/* Felder */
 
 function drawFieldMenu(){
 
@@ -90,19 +104,17 @@ btn.oncontextmenu=(e)=>{
 e.preventDefault()
 
 if(confirm("Feld löschen?")){
+
 delete fields[id]
 
-if(Object.keys(fields).length===0){
-fields={}
-currentField=null
-}else{
-currentField=Object.keys(fields)[0]
-}
+currentField=Object.keys(fields)[0] || null
 
 save()
 drawFieldMenu()
 drawTimeline()
+
 }
+
 }
 
 menu.appendChild(btn)
@@ -135,7 +147,7 @@ drawTimeline()
 
 }
 
-/* CROPS */
+/* Crops */
 
 function buildCrops(){
 
@@ -173,7 +185,7 @@ grid.appendChild(el)
 
 }
 
-/* MONATE */
+/* Monate */
 
 function buildMonths(){
 
@@ -208,7 +220,7 @@ m.classList.add("allowed")
 
 }
 
-/* PLANUNG */
+/* Planung */
 
 function monthClick(index){
 
@@ -232,7 +244,7 @@ drawTimeline()
 
 }
 
-/* TIMELINE */
+/* Timeline */
 
 function drawTimeline(){
 
@@ -241,7 +253,7 @@ box.innerHTML=""
 
 if(!currentField)return
 
-const plans=fields[currentField].plans
+const plans=fields[currentField].plans || []
 
 for(let y=0;y<YEARS;y++){
 
@@ -273,19 +285,17 @@ plans.forEach(p=>{
 const icon=cropIcons[p.crop] || "wheat.png"
 
 let duration
-let start=p.start
-let end=p.end
 
-if(start<=end){
-duration=end-start+1
+if(p.start<=p.end){
+duration=p.end-p.start+1
 }else{
-duration=12-start+end+1
+duration=12-p.start+p.end+1
 }
 
 const bar=document.createElement("div")
 bar.className="timelineBar"
 
-bar.style.left=(start/12*100)+"%"
+bar.style.left=(p.start/12*100)+"%"
 bar.style.width=(duration/12*100)+"%"
 
 bar.innerHTML=`<img src="../assets/images/crops/${icon}">${p.crop}`
@@ -301,7 +311,7 @@ box.appendChild(year)
 
 }
 
-/* KALENDER */
+/* Kalender */
 
 function buildCalendar(){
 
